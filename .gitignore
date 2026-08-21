@@ -11,6 +11,10 @@ build/
 # Temp extraction
 temp_docx/
 
+# Reference documents (large files, do not commit)
+*.docx
+*.pdf
+
 # OS
 .DS_Store
 Thumbs.db
