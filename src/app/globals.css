@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8B0000;
+  --color-primary-dark: #5c0000;
+  --color-gold: #C5A258;
+  --color-gold-light: #e8d5a3;
+  --color-bg: #faf8f5;
+  --color-bg-alt: #f0ece4;
+  --color-text-light: #5a5a5a;
+  --color-border: #d4c9b8;
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-heading: 'Cinzel', 'Times New Roman', serif;
+}
+
+body {
+  font-family: var(--font-serif);
+  background-color: var(--color-bg);
+  color: #2c2c2c;
+  line-height: 1.7;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark Mode */
+html.dark body {
+  background-color: #1a1714;
+  color: #e0ddd5;
+}
+
+html.dark .bg-white {
+  background-color: #2a2520 !important;
+}
+
+html.dark .bg-\[var\(--color-bg-alt\)\] {
+  background-color: #221f1a !important;
+}
+
+html.dark .border-\[var\(--color-border\)\] {
+  border-color: #3d362e !important;
+}
+
+html.dark .text-gray-500 {
+  color: #999 !important;
+}
+
+html.dark .text-gray-600 {
+  color: #aaa !important;
+}
+
+html.dark .text-gray-400 {
+  color: #777 !important;
+}
+
+html.dark .collect {
+  background-color: #252015 !important;
+  border-left-color: var(--color-gold) !important;
+}
+
+html.dark .text-\[var\(--color-primary-dark\)\] {
+  color: #c44 !important;
+}
+
+html.dark .rubric {
+  color: #c44 !important;
+}
+
+html.dark .bg-\[var\(--color-primary-dark\)\] {
+  background-color: #3a0000 !important;
+}
+
+html.dark main {
+  background-color: #1a1714;
+}
+
+/* Dark mode: toggle buttons (Morning/Evening) */
+html.dark .border-\[var\(--color-border\)\] {
+  border-color: #4d4438 !important;
+  color: #ccc !important;
+}
+
+/* Dark mode: section-title override */
+html.dark .section-title {
+  color: #e8a0a0 !important;
+}
+
+/* Dark mode: readings box */
+html.dark .bg-white.border {
+  background-color: #2a2520 !important;
+  border-color: #3d362e !important;
+}
+
+/* Dark mode: link buttons for psalms */
+html.dark a.border-\[var\(--color-primary\)\] {
+  border-color: #c44 !important;
+  color: #e8a0a0 !important;
+}
+
+html.dark a.border-\[var\(--color-primary\)\]:hover {
+  background-color: #5c0000 !important;
+  color: #fff !important;
+}
+
+/* Dark mode: sticky sidebar */
+html.dark aside nav {
+  color: #ccc;
+}
+
+/* Dark mode: gloria text */
+html.dark .gloria {
+  color: #bbb;
+}
+
+/* Dark mode: psalm verse */
+html.dark .psalm-verse {
+  color: #d5d0c8;
+}
+
+/* Dark mode: versicle response */
+html.dark .response {
+  color: #e0ddd5;
+}
+
+/* Liturgical text styling */
+.rubric {
+  @apply text-[var(--color-primary)] italic text-[0.9rem] my-4;
+}
+
+.collect {
+  @apply my-4 p-4 bg-[var(--color-bg-alt)] border-l-3 border-[var(--color-gold)] rounded;
+}
+
+.versicle {
+  @apply mb-1;
+}
+
+.response {
+  @apply font-semibold;
+}
+
+.psalm-verse {
+  @apply mb-3 pl-4 -indent-4;
+}
+
+.gloria {
+  @apply italic my-6 text-center;
+}
+
+.section-title {
+  @apply font-[var(--font-heading)] text-xl text-[var(--color-primary-dark)] my-6 text-center font-medium;
+  font-family: var(--font-heading);
+  scroll-margin-top: 2rem;
+}
+
+/* Offset for anchor links */
+[id] {
+  scroll-margin-top: 2rem;
+}
