@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { DailyReadings } from "@/components/DailyReadings";
 import { CanticleSelector } from "@/components/CanticleSelector";
-import { OccasionalPrayers } from "@/components/OccasionalPrayers";
 
 export const metadata: Metadata = {
   title: "Oración Matutina – LOC 1928",
@@ -145,66 +144,15 @@ export default function OracionMatutina() {
       <h2 className="section-title" id="lecturas">La Primera Lectura</h2>
       <p className="rubric">¶ Enseguida se leerá la Primera Lección, según la Tabla de Lecciones o el Calendario.</p>
 
-      {/* Te Deum */}
+      {/* Cántico después de la Primera Lectura: Te Deum / Benedictus es / Benedicite */}
       <CanticleSelector period="morning" position="first" />
-      <h2 className="section-title">Te Deum laudamus</h2>
-      <div className="my-4 space-y-1">
-        <p>A ti, oh Dios, te alabamos, a ti, Señor, te reconocemos.</p>
-        <p>A ti, eterno Padre, te venera toda la creación.</p>
-        <p>Los ángeles todos, los cielos y todas las potestades te honran.</p>
-        <p>Los querubines y serafines te cantan sin cesar:</p>
-        <p className="font-semibold">Santo, Santo, Santo es el Señor, Dios del universo.</p>
-        <p>Los cielos y la tierra están llenos de la majestad de tu gloria.</p>
-        <p>A ti te ensalza el glorioso coro de los Apóstoles,</p>
-        <p>La multitud admirable de los Profetas,</p>
-        <p>El blanco ejército de los mártires.</p>
-        <p>A ti la Iglesia santa, extendida por toda la tierra, te proclama:</p>
-        <p>Padre, de inmensa majestad,</p>
-        <p>Hijo único y verdadero, digno de adoración,</p>
-        <p>Espíritu Santo, Defensor.</p>
-        <p className="mt-4">Tú eres el Rey de la gloria, Cristo.</p>
-        <p>Tú eres el Hijo único del Padre.</p>
-        <p>Tú, para liberar al hombre, aceptaste la condición humana sin desdeñar el seno de la Virgen.</p>
-        <p>Tú, rotas las cadenas de la muerte, abriste a los creyentes el reino de los cielos.</p>
-        <p>Tú te sientas a la derecha de Dios, en la gloria del Padre.</p>
-        <p>Creemos que un día has de venir como juez.</p>
-        <p>Te rogamos, pues, que vengas en ayuda de tus siervos, a quienes redimiste con tu preciosa sangre.</p>
-        <p>Haz que en la gloria eterna nos asociemos a tus santos.</p>
-        <p className="mt-4">Salva a tu pueblo, Señor, y bendice tu heredad.</p>
-        <p>Sé su pastor y ensálzalo eternamente.</p>
-        <p>Día tras día te bendecimos</p>
-        <p>Y alabamos tu nombre para siempre, por eternidad de eternidades.</p>
-        <p>Dígnate, Señor, en este día guardarnos del pecado.</p>
-        <p>Ten piedad de nosotros, Señor, ten piedad de nosotros.</p>
-        <p>Que tu misericordia, Señor, venga sobre nosotros como lo esperamos de ti.</p>
-        <p>En ti, Señor, confié: no me veré defraudado para siempre.</p>
-      </div>
 
       {/* Segunda Lectura */}
       <h2 className="section-title">La Segunda Lectura</h2>
       <p className="rubric">¶ Enseguida se leerá la Segunda Lección del Nuevo Testamento.</p>
 
-      {/* Canticle Selector: Benedictus / Jubilate */}
+      {/* Cántico después de la Segunda Lectura: Benedictus / Jubilate Deo */}
       <CanticleSelector period="morning" position="second" />
-
-      {/* Benedictus */}
-      <h2 className="section-title">Benedictus</h2>
-      <p className="rubric italic text-sm text-center text-gray-500 mb-4">El Cántico de Zacarías — Lucas 1:68-79</p>
-      <div className="my-4 space-y-3">
-        <p className="psalm-verse">Bendito sea el Señor, Dios de Israel, *<br/>porque ha visitado y redimido a su pueblo</p>
-        <p className="psalm-verse">Suscitándonos una fuerza de salvación *<br/>en la casa de David, su siervo,</p>
-        <p className="psalm-verse">Según lo había predicho desde antiguo *<br/>por boca de sus santos profetas.</p>
-        <p className="psalm-verse">Es la salvación que nos libra de nuestros enemigos *<br/>y de la mano de todos los que nos odian</p>
-        <p className="psalm-verse">Realizando la misericordia que tuvo con nuestros padres, *<br/>recordando su santa alianza</p>
-        <p className="psalm-verse">Y el juramento que juró a nuestro padre Abrahán *<br/>para concedernos</p>
-        <p className="psalm-verse">Que, libres de temor, arrancados de la mano de los enemigos, *<br/>le sirvamos.</p>
-        <p className="psalm-verse">Con santidad y justicia, en su presencia, *<br/>todos nuestros días.</p>
-        <p className="psalm-verse">Y a ti, niño, te llamarán profeta del Altísimo, *<br/>porque irás delante del Señor a preparar sus caminos,</p>
-        <p className="psalm-verse">Anunciando a su pueblo la salvación *<br/>por el perdón de sus pecados.</p>
-        <p className="psalm-verse">Por la entrañable misericordia de nuestro Dios, *<br/>nos visitará el sol que nace de lo alto</p>
-        <p className="psalm-verse">Para iluminar a los que viven en tinieblas y en sombra de muerte, *<br/>para guiar nuestros pasos por el camino de la paz.</p>
-      </div>
-      <p className="gloria">Gloria al Padre, y al Hijo, y al Espíritu Santo.<br/>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
 
       {/* Credo */}
       <h2 className="section-title" id="credo">El Credo de los Apóstoles</h2>

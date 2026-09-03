@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { DailyReadings } from "@/components/DailyReadings";
 import { CanticleSelector } from "@/components/CanticleSelector";
-import { OccasionalPrayers } from "@/components/OccasionalPrayers";
 
 export const metadata: Metadata = {
   title: "Oración Vespertina – LOC 1928",
@@ -128,38 +127,15 @@ export default function OracionVespertina() {
       <h2 className="section-title" id="lecturas">La Primera Lectura</h2>
       <p className="rubric">¶ Entonces se leerá la primera lección, conforme a la tabla o calendario establecido.</p>
 
-      {/* Magnificat */}
+      {/* Cántico después de la Primera Lectura: Magnificat / Cantate Domino / Bonum est */}
       <CanticleSelector period="evening" position="first" />
-      <h2 className="section-title">Magnificat</h2>
-      <p className="text-center text-sm text-gray-500 italic mb-4">El Cántico de la Bienaventurada Virgen María — Lucas 1:46-55</p>
-      <div className="my-4 space-y-3">
-        <p className="psalm-verse">Proclama mi alma la grandeza del Señor, *<br/>se alegra mi espíritu en Dios mi Salvador.</p>
-        <p className="psalm-verse">Porque ha mirado *<br/>la humillación de su esclava.</p>
-        <p className="psalm-verse">Desde ahora me felicitarán *<br/>todas las generaciones.</p>
-        <p className="psalm-verse">Porque el Poderoso ha hecho obras grandes por mí. *<br/>Su nombre es Santo.</p>
-        <p className="psalm-verse">Y su misericordia llega a sus fieles, *<br/>de generación en generación.</p>
-        <p className="psalm-verse">Él hace proezas con su brazo; *<br/>dispersa a los soberbios de corazón.</p>
-        <p className="psalm-verse">Derriba del trono a los poderosos, *<br/>y enaltece a los humildes.</p>
-        <p className="psalm-verse">A los hambrientos los colma de bienes, *<br/>y a los ricos despide vacíos.</p>
-        <p className="psalm-verse">Auxilia a Israel su siervo, acordándose de su Misericordia, *<br/>como lo había prometido a nuestros padres en favor de Abrahán y su descendencia por siempre.</p>
-      </div>
-      <p className="gloria">Gloria al Padre, y al Hijo, y al Espíritu Santo.<br/>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
 
       {/* Segunda Lectura */}
       <h2 className="section-title">La Segunda Lectura</h2>
       <p className="rubric">¶ Después se leerá la segunda lección, tomada del Nuevo Testamento.</p>
 
-      {/* Nunc Dimittis */}
+      {/* Cántico después de la Segunda Lectura: Nunc Dimittis / Deus Misereatur */}
       <CanticleSelector period="evening" position="second" />
-      <h2 className="section-title">Nunc Dimittis</h2>
-      <p className="text-center text-sm text-gray-500 italic mb-4">El Cántico de Simeón — Lucas 2:29-32</p>
-      <div className="my-4 space-y-3">
-        <p className="psalm-verse">Ahora, Señor, según tu promesa, *<br/>puedes dejar a tu siervo irse en paz.</p>
-        <p className="psalm-verse">Porque mis ojos han visto *<br/>tu Salvador,</p>
-        <p className="psalm-verse">A quien has presentado *<br/>ante todos los pueblos:</p>
-        <p className="psalm-verse">Luz para alumbrar a las naciones *<br/>y gloria de tu pueblo Israel.</p>
-      </div>
-      <p className="gloria">Gloria al Padre, y al Hijo, y al Espíritu Santo.<br/>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.</p>
 
       {/* Credo */}
       <h2 className="section-title" id="credo">El Credo de los Apóstoles</h2>

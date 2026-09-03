@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { getChurchDay, formatDateSpanish, toDateParam, type Season } from "@/lib/calendar";
+import { useState, useEffect, Suspense } from "react";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { getChurchDay, formatDateSpanish, toDateParam, fromDateParam, type Season } from "@/lib/calendar";
 import { getFeastForDate } from "@/data/feasts";
 
 const navLinks = [
@@ -28,18 +28,21 @@ const seasons: { id: Season; label: string }[] = [
   { id: "trinidad", label: "Trinidad" },
 ];
 
-export function SiteHeader() {
+// Rutas del oficio diario donde la fecha controla las lecturas mostradas en la misma página.
+const OFFICE_PATHS = ["/oficio/oracion-matutina", "/oficio/oracion-vespertina"];
+
+function SiteHeaderContent() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
-  const [churchDay, setChurchDay] = useState<{ name: string; season: Season } | null>(null);
-  const [dateStr, setDateStr] = useState("");
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  useEffect(() => {
-    updateDate(currentDate);
-  }, [currentDate]);
+  // La fecha activa vive en la URL (?date=YYYY-MM-DD). Si no hay, es hoy.
+  const dateParam = searchParams.get("date");
+  const currentDate = dateParam ? fromDateParam(dateParam) : new Date();
 
   useEffect(() => {
     if (darkMode) {
@@ -49,19 +52,38 @@ export function SiteHeader() {
     }
   }, [darkMode]);
 
-  function updateDate(date: Date) {
-    const day = getChurchDay(date);
-    setChurchDay(day);
-    const abbr = date.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", "");
-    const num = date.getDate();
-    const month = date.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
-    setDateStr(`${abbr.charAt(0).toUpperCase() + abbr.slice(1)}, ${num} ${month.charAt(0).toUpperCase() + month.slice(1)}`);
+  const churchDay = getChurchDay(currentDate);
+
+  const abbr = currentDate.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", "");
+  const num = currentDate.getDate();
+  const month = currentDate.toLocaleDateString("es-ES", { month: "short" }).replace(".", "");
+  const dateStr = `${abbr.charAt(0).toUpperCase() + abbr.slice(1)}, ${num} ${month.charAt(0).toUpperCase() + month.slice(1)}`;
+
+  const isToday = toDateParam(currentDate) === toDateParam(new Date());
+  const onOfficePage = OFFICE_PATHS.some((p) => pathname.startsWith(p));
+
+  // Navega a una fecha manteniendo la página actual si es del oficio; si no, va al leccionario.
+  function navigateToDate(date: Date) {
+    const param = toDateParam(date);
+    if (onOfficePage) {
+      router.push(`${pathname}?date=${param}`);
+    } else {
+      router.push(`/leccionario?date=${param}`);
+    }
   }
 
   function goDay(offset: number) {
     const d = new Date(currentDate);
     d.setDate(d.getDate() + offset);
-    setCurrentDate(d);
+    navigateToDate(d);
+  }
+
+  function goToday() {
+    if (onOfficePage) {
+      router.push(pathname);
+    } else {
+      router.push("/leccionario");
+    }
   }
 
   function isActive(link: typeof navLinks[0]) {
@@ -115,7 +137,7 @@ export function SiteHeader() {
             {dateStr}
           </span>
           <button onClick={() => goDay(1)} className="text-white/70 text-lg hover:text-white transition-colors" aria-label="Día siguiente">→</button>
-          
+
           {/* Calendar date picker */}
           <div className="relative">
             <button
@@ -134,16 +156,14 @@ export function SiteHeader() {
                     if (e.target.value) {
                       const [y, m, d] = e.target.value.split("-").map(Number);
                       const newDate = new Date(y, m - 1, d);
-                      setCurrentDate(newDate);
                       setShowDatePicker(false);
-                      // Navigate to lectionary for selected date
-                      window.location.href = `/leccionario?date=${toDateParam(newDate)}`;
+                      navigateToDate(newDate);
                     }
                   }}
                   className="w-full p-2 border border-gray-300 rounded text-sm text-gray-800"
                 />
                 <button
-                  onClick={() => { setCurrentDate(new Date()); setShowDatePicker(false); }}
+                  onClick={() => { setShowDatePicker(false); goToday(); }}
                   className="w-full mt-2 text-xs text-[var(--color-primary)] hover:underline"
                 >
                   Ir a hoy
@@ -184,6 +204,9 @@ export function SiteHeader() {
             <p className="text-[var(--color-gold)] text-sm italic" style={{ fontFamily: "var(--font-heading)" }}>
               {churchDay.name}
             </p>
+            {!isToday && (
+              <p className="text-white/50 text-[11px] italic mt-0.5">{formatDateSpanish(currentDate)}</p>
+            )}
             {(() => {
               const feast = getFeastForDate(currentDate);
               if (feast && feast.name !== churchDay.name) {
@@ -205,5 +228,13 @@ export function SiteHeader() {
         )}
       </div>
     </header>
+  );
+}
+
+export function SiteHeader() {
+  return (
+    <Suspense fallback={<header className="bg-[var(--color-primary-dark)] border-b-4 border-[var(--color-gold)] h-40" />}>
+      <SiteHeaderContent />
+    </Suspense>
   );
 }

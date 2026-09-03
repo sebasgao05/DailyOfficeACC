@@ -1,28 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import { getCanticles, type Period, type Position } from "@/data/canticles";
 
 interface Props {
-  period: "morning" | "evening";
-  position?: "first" | "second"; // first = after 1st lesson, second = after 2nd lesson
+  period: Period;
+  position?: Position; // first = después de la 1ª lectura, second = después de la 2ª lectura
 }
 
 export function CanticleSelector({ period, position = "first" }: Props) {
-  const options = getOptions(period, position);
-  const [selected, setSelected] = useState(options[0].id);
+  const options = getCanticles(period, position);
+  const [selectedId, setSelectedId] = useState(options[0].id);
+  const selected = options.find((c) => c.id === selectedId) ?? options[0];
 
   return (
     <div className="my-6">
       <p className="text-center text-xs text-gray-500 italic mb-2">
-        {position === "first" ? "¶ Cántico después de la Primera Lectura:" : "¶ Cántico después de la Segunda Lectura:"}
+        {position === "first"
+          ? "¶ Cántico después de la Primera Lectura:"
+          : "¶ Cántico después de la Segunda Lectura:"}
       </p>
+
+      {/* Botones de selección */}
       <div className="flex flex-wrap justify-center gap-2 mb-4">
         {options.map((c) => (
           <button
             key={c.id}
-            onClick={() => setSelected(c.id)}
+            onClick={() => setSelectedId(c.id)}
             className={`px-4 py-2 text-xs border rounded transition-all ${
-              selected === c.id
+              selectedId === c.id
                 ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary-dark)] font-semibold"
                 : "border-[var(--color-border)] text-[var(--color-text-light)] hover:border-[var(--color-gold)] hover:text-[var(--color-primary)]"
             }`}
@@ -32,34 +38,43 @@ export function CanticleSelector({ period, position = "first" }: Props) {
           </button>
         ))}
       </div>
+
+      {/* Contenido del cántico seleccionado */}
+      <h2
+        className="text-2xl text-[var(--color-primary-dark)] text-center mb-1"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        {selected.title}
+      </h2>
+      {selected.subtitle && (
+        <p className="text-center text-sm text-gray-500 italic mb-4">{selected.subtitle}</p>
+      )}
+
+      <div className="my-4 space-y-3">
+        {selected.verses.map((verse, i) => {
+          const [first, second] = verse.split("*");
+          return (
+            <p key={i} className="psalm-verse">
+              {first.trim()}
+              {second !== undefined && (
+                <>
+                  {" *"}
+                  <br />
+                  {second.trim()}
+                </>
+              )}
+            </p>
+          );
+        })}
+      </div>
+
+      {selected.gloria && (
+        <p className="gloria">
+          Gloria al Padre, y al Hijo, y al Espíritu Santo.
+          <br />
+          Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.
+        </p>
+      )}
     </div>
   );
-}
-
-function getOptions(period: "morning" | "evening", position: "first" | "second") {
-  if (period === "morning" && position === "first") {
-    return [
-      { id: "tedeum", label: "Te Deum" },
-      { id: "benedictus-es", label: "Benedictus es, Domine" },
-      { id: "benedicite", label: "Benedicite, omnia opera" },
-    ];
-  }
-  if (period === "morning" && position === "second") {
-    return [
-      { id: "benedictus", label: "Benedictus" },
-      { id: "jubilate", label: "Jubilate Deo" },
-    ];
-  }
-  if (period === "evening" && position === "first") {
-    return [
-      { id: "magnificat", label: "Magnificat" },
-      { id: "cantate", label: "Cantate Domino" },
-      { id: "bonum-est", label: "Bonum est confiteri" },
-    ];
-  }
-  // evening second
-  return [
-    { id: "nunc-dimittis", label: "Nunc Dimittis" },
-    { id: "deus-misereatur", label: "Deus Misereatur" },
-  ];
 }

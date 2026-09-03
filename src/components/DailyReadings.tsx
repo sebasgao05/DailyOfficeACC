@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
+import { fromDateParam } from "@/lib/calendar";
 import { psalms } from "@/data/psalms";
 import Link from "next/link";
 
@@ -9,19 +11,24 @@ interface Props {
   period: "morning" | "evening";
 }
 
-export function DailyReadings({ period }: Props) {
+function DailyReadingsContent({ period }: Props) {
+  const searchParams = useSearchParams();
+  const dateParam = searchParams.get("date");
   const [readings, setReadings] = useState<LectionaryDay | null>(null);
   const [showPsalmText, setShowPsalmText] = useState(true); // Show by default
 
   useEffect(() => {
-    const today = new Date();
-    setReadings(getLectionary(today));
-  }, []);
+    const date = dateParam ? fromDateParam(dateParam) : new Date();
+    setReadings(getLectionary(date));
+  }, [dateParam]);
 
   if (!readings) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
 
   const current = period === "morning" ? readings.morning : readings.evening;
   const psalmNumbers = current.psalms.match(/\d+/g)?.map(Number).filter(n => n <= 150) || [];
+
+  // Preservar la fecha seleccionada al enlazar a los salmos
+  const dateQuery = dateParam ? `?date=${dateParam}` : "";
 
   return (
     <div className="my-8">
@@ -36,7 +43,7 @@ export function DailyReadings({ period }: Props) {
             {psalmNumbers.slice(0, 8).map((num) => (
               <Link
                 key={num}
-                href={`/salterio/${num}`}
+                href={`/salterio/${num}${dateQuery}`}
                 className="px-3 py-1.5 text-sm border border-[var(--color-primary)] text-[var(--color-primary)] rounded hover:bg-[var(--color-primary)] hover:text-white transition-colors"
               >
                 Salmo {num}
@@ -93,5 +100,13 @@ export function DailyReadings({ period }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+export function DailyReadings({ period }: Props) {
+  return (
+    <Suspense fallback={<p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>}>
+      <DailyReadingsContent period={period} />
+    </Suspense>
   );
 }
