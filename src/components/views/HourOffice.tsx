@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { fromDateParam, formatDateSpanish } from "@/lib/calendar";
-import { resolveHour, COLECTA_ILUMINA, type HourId, type ResolvedHour } from "@/lib/hours";
+import { resolveHour, COLECTA_ILUMINA, type HourId } from "@/lib/hours";
+import { useMounted } from "@/lib/useMounted";
 import { psalms, getPsalmPortion } from "@/data/psalms";
 
 interface Props {
@@ -13,16 +14,17 @@ interface Props {
 function HourOfficeContent({ hour }: Props) {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
-  const [resolved, setResolved] = useState<ResolvedHour | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    const d = dateParam ? fromDateParam(dateParam) : new Date();
-    setDate(d);
-    setResolved(resolveHour(hour, d));
-  }, [dateParam, hour]);
+  // Sin fecha en la URL dependemos de `new Date()` (solo cliente).
+  if (!dateParam && !mounted) {
+    return <p className="text-center italic text-gray-400 py-4">Cargando la hora…</p>;
+  }
 
-  if (!resolved || !date) {
+  const date = dateParam ? fromDateParam(dateParam) : new Date();
+  const resolved = resolveHour(hour, date);
+
+  if (!resolved) {
     return <p className="text-center italic text-gray-400 py-4">Cargando la hora…</p>;
   }
 

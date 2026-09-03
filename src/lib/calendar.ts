@@ -372,11 +372,6 @@ function getAdventStart(year: number): Date {
   return new Date(year, 11, 25 - daysBack);
 }
 
-function getWeekdayName(date: Date): string {
-  const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-  return days[date.getDay()];
-}
-
 function getOrdinal(n: number): string {
   const ordinals = [
     "", "Primera", "Segunda", "Tercera", "Cuarta", "Quinta", "Sexta",
