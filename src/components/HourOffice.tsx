@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { fromDateParam, formatDateSpanish } from "@/lib/calendar";
 import { resolveHour, COLECTA_ILUMINA, type HourId, type ResolvedHour } from "@/lib/hours";
-import { psalms } from "@/data/psalms";
+import { psalms, getPsalmPortion } from "@/data/psalms";
 
 interface Props {
   hour: HourId;
@@ -77,13 +77,19 @@ function HourOfficeContent({ hour }: Props) {
           if (!psalm) {
             return <p key={num} className="text-sm italic text-gray-400">Salmo {num}</p>;
           }
-          // Tercia/Sexta/Nona usan porciones de Sal 119; mostramos las primeras estrofas.
-          const verses = num === 119 ? psalm.verses.slice(0, 16) : psalm.verses;
+          // El Salmo 119 es muy extenso: en Prima se divide por día. Mostramos
+          // la primera división (Álef y Bet, vv. 1-16) con nota de la división.
+          const is119 = num === 119;
+          const portion = is119 ? getPsalmPortion({ number: 119, from: 1, to: 16 }) : null;
+          const verses = portion ? portion.verses : psalm.verses;
           return (
             <div key={num} className="border-l-2 border-[var(--color-gold)] pl-4">
               <h4 className="text-sm font-semibold text-[var(--color-primary-dark)] mb-2">
-                Salmo {psalm.number} — <span className="italic font-normal">{psalm.latinTitle}</span>
+                Salmo {psalm.number}{is119 ? " (vv. 1-16 · Álef y Bet)" : ""} — <span className="italic font-normal">{psalm.latinTitle}</span>
               </h4>
+              {is119 && (
+                <p className="rubric text-[0.8rem]">¶ El Salmo 119 se divide por los días de la semana en sus estrofas (I–VI). Se recita la porción del día.</p>
+              )}
               <div className="text-sm space-y-1">
                 {verses.map((v, i) => (
                   <p key={i} className="psalm-verse leading-relaxed">{v.replace(/\*/g, " · ")}</p>

@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
 import { fromDateParam } from "@/lib/calendar";
-import { psalms } from "@/data/psalms";
+import { psalms, parsePsalmRefs, getPsalmPortion } from "@/data/psalms";
 import { getPassage, BIBLE_VERSION } from "@/data/bible";
 import Link from "next/link";
 
@@ -26,7 +26,7 @@ function DailyReadingsContent({ period }: Props) {
   if (!readings) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
 
   const current = period === "morning" ? readings.morning : readings.evening;
-  const psalmNumbers = current.psalms.match(/\d+/g)?.map(Number).filter(n => n <= 150) || [];
+  const psalmRefs = parsePsalmRefs(current.psalms);
 
   // Preservar la fecha seleccionada al enlazar a los salmos
   const dateQuery = dateParam ? `?date=${dateParam}` : "";
@@ -38,16 +38,16 @@ function DailyReadingsContent({ period }: Props) {
         <span className="text-[var(--color-primary)] font-medium">Salmos:</span> {current.psalms}
       </p>
 
-      {psalmNumbers.length > 0 && (
+      {psalmRefs.length > 0 && (
         <>
           <div className="flex flex-wrap justify-center gap-2 mb-4">
-            {psalmNumbers.slice(0, 8).map((num) => (
+            {psalmRefs.slice(0, 8).map((ref, i) => (
               <Link
-                key={num}
-                href={`/salterio/${num}${dateQuery}`}
+                key={`${ref.number}-${i}`}
+                href={`/salterio/${ref.number}${dateQuery}`}
                 className="px-3 py-1.5 text-sm border border-[var(--color-primary)] text-[var(--color-primary)] rounded hover:bg-[var(--color-primary)] hover:text-white transition-colors"
               >
-                Salmo {num}
+                Salmo {ref.number}{ref.from ? `:${ref.from}${ref.to && ref.to !== ref.from ? "-" + ref.to : ""}` : ""}
               </Link>
             ))}
           </div>
@@ -62,16 +62,18 @@ function DailyReadingsContent({ period }: Props) {
 
           {showPsalmText && (
             <div className="space-y-6 mb-6">
-              {psalmNumbers.slice(0, 6).map((num) => {
-                const psalm = psalms.find((p) => p.number === num);
-                if (!psalm || psalm.verses.length === 0) return null;
+              {psalmRefs.slice(0, 6).map((ref, idx) => {
+                const portion = getPsalmPortion(ref);
+                if (!portion || portion.verses.length === 0) return null;
+                const { psalm, verses } = portion;
+                const rangeLabel = ref.from ? ` (vv. ${ref.from}${ref.to && ref.to !== ref.from ? "–" + ref.to : ""})` : "";
                 return (
-                  <div key={num} className="border-l-2 border-[var(--color-gold)] pl-4">
+                  <div key={`${ref.number}-${idx}`} className="border-l-2 border-[var(--color-gold)] pl-4">
                     <h4 className="text-sm font-semibold text-[var(--color-primary-dark)] mb-2">
-                      Salmo {psalm.number} — <span className="italic font-normal">{psalm.latinTitle}</span>
+                      Salmo {psalm.number}{rangeLabel} — <span className="italic font-normal">{psalm.latinTitle}</span>
                     </h4>
                     <div className="text-sm space-y-1">
-                      {psalm.verses.map((v, i) => (
+                      {verses.map((v, i) => (
                         <p key={i} className="leading-relaxed">{v.replace(/\*/g, " · ")}</p>
                       ))}
                     </div>

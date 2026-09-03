@@ -4178,3 +4178,67 @@ export const psalms: Psalm[] = [
   },
 ];
 
+
+
+/** Una porción de salmo pedida: número + rango de versos opcional. */
+export interface PsalmRef {
+  number: number;
+  from?: number;
+  to?: number;
+}
+
+/**
+ * Parsea la cadena de salmos del leccionario a porciones respetando rangos.
+ * "119:33-48" -> [{number:119, from:33, to:48}]
+ * "48, 126"   -> [{number:48}, {number:126}]
+ * "22:23, 99" -> [{number:22, from:23}, {number:99}]
+ * "119:113-128" -> [{number:119, from:113, to:128}]
+ */
+export function parsePsalmRefs(spec: string): PsalmRef[] {
+  const refs: PsalmRef[] = [];
+  // Trozos separados por coma, pero un rango "33-48" pertenece al salmo previo.
+  // Estrategia: buscar patrones "N(:a-b | :a)?" y comas sueltas que continúan un salmo.
+  const tokens = spec.split(",").map((t) => t.trim()).filter(Boolean);
+  let lastNumber: number | null = null;
+  for (const tok of tokens) {
+    const m = tok.match(/^(\d+)(?::(\d+)(?:-(\d+))?)?$/);
+    if (m) {
+      const number = parseInt(m[1], 10);
+      if (number > 150) continue;
+      const from = m[2] ? parseInt(m[2], 10) : undefined;
+      const to = m[3] ? parseInt(m[3], 10) : m[2] ? parseInt(m[2], 10) : undefined;
+      refs.push({ number, from, to });
+      lastNumber = number;
+    } else {
+      // Continuación de rango del salmo anterior: "a-b" o "a"
+      const r = tok.match(/^(\d+)(?:-(\d+))?$/);
+      if (r && lastNumber !== null) {
+        const from = parseInt(r[1], 10);
+        const to = r[2] ? parseInt(r[2], 10) : from;
+        refs.push({ number: lastNumber, from, to });
+      }
+    }
+  }
+  return refs;
+}
+
+/**
+ * Devuelve los versos de un salmo, recortados al rango pedido (si lo hay).
+ * Los versos van numerados al inicio ("33 (He) ..."), así que el corte se
+ * hace por el número de verso real, no por posición del array.
+ */
+export function getPsalmPortion(ref: PsalmRef): { psalm: Psalm; verses: string[] } | null {
+  const psalm = psalms.find((p) => p.number === ref.number);
+  if (!psalm) return null;
+  if (ref.from === undefined) {
+    return { psalm, verses: psalm.verses };
+  }
+  const to = ref.to ?? ref.from;
+  const verses = psalm.verses.filter((v) => {
+    const m = v.match(/^(\d+)/);
+    if (!m) return false;
+    const n = parseInt(m[1], 10);
+    return n >= (ref.from as number) && n <= to;
+  });
+  return { psalm, verses };
+}
