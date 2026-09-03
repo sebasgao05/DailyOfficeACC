@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { DailyReadings } from "@/components/DailyReadings";
+import { DailyLesson } from "@/components/DailyLesson";
 import { CanticleSelector } from "@/components/CanticleSelector";
 
 export const metadata: Metadata = {
@@ -139,10 +140,11 @@ export default function OracionMatutina() {
       {/* Salmos y Primera Lectura */}
       <h2 className="section-title" id="salmos">Los Salmos</h2>
       <p className="rubric">¶ Entonces seguirá una porción de los Salmos, según el Uso de la Iglesia.</p>
-      <DailyReadings period="morning" />
+      <DailyReadings period="morning" psalmsOnly />
 
       <h2 className="section-title" id="lecturas">La Primera Lectura</h2>
       <p className="rubric">¶ Enseguida se leerá la Primera Lección, según la Tabla de Lecciones o el Calendario.</p>
+      <DailyLesson period="morning" which="first" />
 
       {/* Cántico después de la Primera Lectura: Te Deum / Benedictus es / Benedicite */}
       <CanticleSelector period="morning" position="first" />
@@ -150,6 +152,7 @@ export default function OracionMatutina() {
       {/* Segunda Lectura */}
       <h2 className="section-title">La Segunda Lectura</h2>
       <p className="rubric">¶ Enseguida se leerá la Segunda Lección del Nuevo Testamento.</p>
+      <DailyLesson period="morning" which="second" />
 
       {/* Cántico después de la Segunda Lectura: Benedictus / Jubilate Deo */}
       <CanticleSelector period="morning" position="second" />

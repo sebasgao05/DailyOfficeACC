@@ -14,9 +14,11 @@ import Link from "next/link";
 
 interface Props {
   period: "morning" | "evening";
+  /** Si true, muestra SOLO la sección de salmos (para páginas de oficio que colocan las lecturas aparte). */
+  psalmsOnly?: boolean;
 }
 
-function DailyReadingsContent({ period }: Props) {
+function DailyReadingsContent({ period, psalmsOnly }: Props) {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
   const [readings, setReadings] = useState<LectionaryDay | null>(null);
@@ -126,6 +128,11 @@ function DailyReadingsContent({ period }: Props) {
         </>
       )}
 
+      {psalmsOnly && (
+        <p className="text-[10px] italic text-gray-400 text-center mt-2">Las lecciones del día se leen en sus secciones a continuación.</p>
+      )}
+      {psalmsOnly ? null : (
+      <>
       {/* Propios del Día (Colecta, Epístola, Evangelio) — domingos y fiestas con propios en el LOC */}
       {proper && (
         <div className="my-6 border border-[var(--color-gold)] rounded-lg p-4 bg-[var(--color-bg-alt)]">
@@ -225,14 +232,16 @@ function DailyReadingsContent({ period }: Props) {
           Texto bíblico: {BIBLE_VERSION}
         </p>
       </div>
+      </>
+      )}
     </div>
   );
 }
 
-export function DailyReadings({ period }: Props) {
+export function DailyReadings({ period, psalmsOnly }: Props) {
   return (
     <Suspense fallback={<p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>}>
-      <DailyReadingsContent period={period} />
+      <DailyReadingsContent period={period} psalmsOnly={psalmsOnly} />
     </Suspense>
   );
 }
