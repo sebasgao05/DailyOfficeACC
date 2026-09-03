@@ -89,7 +89,7 @@ export function getChurchDay(date: Date): ChurchDay {
     const isGaudete = weekNum === 3 && date.getDay() === 0;
     const domingo = `${getOrdinalM(weekNum)} Domingo de Adviento`;
     if (date.getDay() === 0) {
-      return { name: domingo, season: "adviento", color: isGaudete ? "rosa" : "morado", date, weekName: domingo };
+      return { name: domingo, season: "adviento", color: isGaudete ? "rosa" : "morado", color2: isGaudete ? "morado" : undefined, date, weekName: domingo };
     }
     return { name: "Feria de Adviento", season: "adviento", color: "morado", date, weekName: `Semana del ${domingo}` };
   }
@@ -173,7 +173,7 @@ export function getChurchDay(date: Date): ChurchDay {
         ? "Cuarto Domingo de Cuaresma (Laetare)"
         : `${getOrdinalM(lentWeek)} Domingo de Cuaresma`;
     if (date.getDay() === 0) {
-      return { name: domingo, season: "cuaresma", color: isLaetare ? "rosa" : "morado", date, weekName: domingo };
+      return { name: domingo, season: "cuaresma", color: isLaetare ? "rosa" : "morado", color2: isLaetare ? "morado" : undefined, date, weekName: domingo };
     }
     const feriaName = isPassion ? "Feria de Pasión" : "Feria de Cuaresma";
     return { name: feriaName, season: "cuaresma", color: "morado", date, weekName: `Semana del ${domingo}` };
