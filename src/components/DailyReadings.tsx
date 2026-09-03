@@ -19,12 +19,15 @@ function DailyReadingsContent({ period }: Props) {
   const dateParam = searchParams.get("date");
   const [readings, setReadings] = useState<LectionaryDay | null>(null);
   const [proper, setProper] = useState<ResolvedProper | null>(null);
+  const [ordoLine, setOrdoLine] = useState<string>("");
   const [showPsalmText, setShowPsalmText] = useState(true); // Show by default
 
   useEffect(() => {
     const date = dateParam ? fromDateParam(dateParam) : new Date();
     setReadings(getLectionary(date));
-    setProper(getProperForDay(getOrdoEntry(date)));
+    const ordo = getOrdoEntry(date);
+    setProper(getProperForDay(ordo));
+    setOrdoLine(ordo.ordoLine);
   }, [dateParam]);
 
   if (!readings) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
@@ -98,6 +101,9 @@ function DailyReadingsContent({ period }: Props) {
           <p className="text-[10px] uppercase tracking-widest text-[var(--color-gold)] text-center mb-2">
             ✚ Propios del Día — {proper.title}
           </p>
+          {ordoLine && (
+            <p className="text-center text-xs font-mono text-[var(--color-primary)] mb-3" title="Notación del ORDO Kalendar">{ordoLine}</p>
+          )}
           {proper.entry ? (
             <div className="space-y-3">
               <div>

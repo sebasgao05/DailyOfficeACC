@@ -229,6 +229,9 @@ export function KalendarView() {
           {selected.propers.length > 0 && (
             <p className="text-sm mt-2"><span className="text-gray-500">Propios:</span> {selected.propers.join(" · ")}</p>
           )}
+          {selected.ordoLine && (
+            <p className="text-xs mt-1 font-mono text-[var(--color-gold)]" title="Notación del ORDO Kalendar">{selected.ordoLine}</p>
+          )}
           {selected.commemorations.length > 0 && (
             <p className="text-sm mt-1"><span className="text-gray-500">Conmemoraciones:</span> {selected.commemorations.join("; ")}</p>
           )}

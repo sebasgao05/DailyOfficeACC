@@ -45,6 +45,8 @@ export interface OrdoEntry {
   commemorations: string[];
   /** Cadena de propios estilo Ordo, p.ej. "Gloria · Credo · Prefacio de Apóstoles". */
   propers: string[];
+  /** Notación ORDO abreviada de los propios, p.ej. "Glo. Cr. Prf. Trinidad". */
+  ordoLine: string;
   /** Fiesta trasladada A este día desde otra fecha, si aplica. */
   transferredIn: Feast | null;
   /** Ayuno / abstinencia del día. */
@@ -99,14 +101,50 @@ function addDays(date: Date, n: number): Date {
 function buildPropers(feast: Feast | null, churchDay: ChurchDay): string[] {
   const out: string[] = [];
   const p = feast?.propers;
-  if (p?.gloria) out.push("Gloria");
-  if (p?.creed) out.push("Credo");
-  if (p?.preface) out.push(`Prefacio de ${p.preface}`);
-  // Los domingos rezan el Credo aunque no lo declare el santoral.
-  if (!feast && isSunday(churchDay.date) && !out.includes("Credo")) {
-    out.push("Credo");
-  }
+  const isSun = isSunday(churchDay.date);
+
+  // Una feria ORDINARIA sin fiesta no lleva línea de propios propia.
+  const isFeria = !feast && !isSun && (churchDay.name === "Feria" || churchDay.name.startsWith("Feria "));
+  if (isFeria) return out;
+
+  // Pre-Cuaresma (Septuagésima…): vive en season 'epifania' con color morado, pero es penitencial.
+  const preLent = churchDay.season === "epifania" && churchDay.color === "morado";
+  const penitential = preLent || churchDay.season === "adviento" || churchDay.season === "cuaresma" || churchDay.season === "semana-santa";
+  const gloria = p?.gloria ?? (isSun && !penitential);
+  const creed = p?.creed ?? isSun;
+  const preface = p?.preface ?? (preLent ? "Trinidad" : prefaceForSeason(churchDay));
+
+  if (gloria) out.push("Gloria");
+  if (creed) out.push("Credo");
+  if (preface && (feast || isSun)) out.push(`Prefacio de ${preface}`);
   return out;
+}
+
+/** Notación ORDO abreviada de los propios, p.ej. "Glo. Cr. Prf. Trinidad". */
+function buildOrdoLine(propers: string[]): string {
+  return propers
+    .map((x) => {
+      if (x === "Gloria") return "Glo.";
+      if (x === "Credo") return "Cr.";
+      if (x.startsWith("Prefacio de ")) return `Prf. ${x.slice("Prefacio de ".length)}`;
+      return x;
+    })
+    .join(" ");
+}
+
+/** Prefacio propio de la temporada litúrgica (como el ORDO lo asigna al temporal). */
+function prefaceForSeason(churchDay: ChurchDay): string | undefined {
+  switch (churchDay.season) {
+    case "adviento": return "Trinidad";
+    case "navidad": return "Navidad";
+    case "epifania": return "Epifanía";
+    case "cuaresma": return "Cuaresma";
+    case "semana-santa": return "Cruz";
+    case "pascua": return "Pascua";
+    case "pentecostes": return "Pentecostés";
+    case "trinidad": return "Trinidad";
+    default: return undefined;
+  }
 }
 
 /**
@@ -337,12 +375,14 @@ function finalize(base: {
   // El degradado (color2) solo aplica cuando el día lo rige el ciclo temporal
   // (vigilias/días de dos colores del ORDO); un santo que rige impone su color único.
   const color2 = base.feast ? undefined : base.churchDay.color2;
+  const propers = buildPropers(base.feast, base.churchDay);
   return {
     ...base,
     color,
     color2,
     note,
-    propers: buildPropers(base.feast, base.churchDay),
+    propers,
+    ordoLine: buildOrdoLine(propers),
     fast: resolveFast(base.feast, base.churchDay),
   };
 }
