@@ -143,6 +143,7 @@ export const fixedFeasts: Feast[] = [
   { month: 6, day: 14, name: "San Basilio, Obispo, Confesor y Doctor", rank: "conmemoración", color: "blanco", },
   { month: 6, day: 17, name: "San Botolph, Abad", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Sagrado Corazón" }, },
   { month: 6, day: 18, name: "San Efrén de Siria, Diácono, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Sagrado Corazón" }, },
+  { month: 6, day: 18, name: "Beato Bernard Mizeki, Mártir", rank: "conmemoración", color: "rojo", optional: true, },
   { month: 6, day: 20, name: "Traslación de San Eduardo, Rey y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 6, day: 22, name: "San Alban, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 6, day: 23, name: "Vigilia de San Juan Bautista", rank: "menor", color: "morado", },
@@ -167,7 +168,6 @@ export const fixedFeasts: Feast[] = [
   { month: 7, day: 16, name: "Nuestra Señora del Monte Carmelo", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
   { month: 7, day: 16, name: "Traslación de San Osmund, Obispo y Confesor", rank: "conmemoración", color: "blanco", },
   { month: 7, day: 17, name: "San Alexio, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
-  { month: 7, day: 18, name: "San Bernard Mizeki, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 7, day: 19, name: "San Vicente de Paúl, Confesor", rank: "conmemoración", color: "verde", },
   { month: 7, day: 20, name: "Santa Margarita de Antioquía, Virgen y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 7, day: 22, name: "Santa María Magdalena", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
@@ -176,6 +176,7 @@ export const fixedFeasts: Feast[] = [
   { month: 7, day: 25, name: "Santiago, Apóstol y Mártir", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
   { month: 7, day: 26, name: "Santa Ana, Madre de la B.V.M.", rank: "conmemoración", color: "verde", },
   { month: 7, day: 29, name: "Santa Marta, Virgen", rank: "menor", color: "blanco", propers: { gloria: true }, },
+  { month: 7, day: 29, name: "Beato William Wilberforce, Confesor", rank: "conmemoración", color: "blanco", optional: true, },
   { month: 7, day: 31, name: "San Ignacio de Loyola, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   // ===== Agosto =====
   { month: 8, day: 1, name: "Cadenas de San Pedro (Lammas Day)", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Apóstoles" }, },
