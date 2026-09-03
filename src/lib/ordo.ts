@@ -131,12 +131,13 @@ function findTransferredInto(date: Date): Feast | null {
   return null;
 }
 
-/** Ayuno/abstinencia por temporada (Cuaresma) o fiesta. */
+/** Ayuno/abstinencia por temporada (Cuaresma) o vigilia. */
 function resolveFast(
   feast: Feast | null,
   churchDay: ChurchDay
 ): OrdoEntry["fast"] {
-  if (feast?.fast) return feast.fast;
+  // Las vigilias del santoral se rotulan con abstinencia.
+  if (feast && feast.name.startsWith("Vigilia")) return "abstinencia";
   if (churchDay.season === "cuaresma" || churchDay.season === "semana-santa") {
     // Los viernes de Cuaresma: ayuno y abstinencia; resto: abstinencia.
     return churchDay.date.getDay() === 5 ? "ayuno-y-abstinencia" : "abstinencia";
@@ -189,15 +190,33 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       });
     }
 
-    // La fiesta rige. Si desplaza a un domingo NO privilegiado, lo conmemora.
+    // Precedencia en domingo: una fiesta que NO supera al domingo (p.ej. menor)
+    // no rige; rige el domingo y la fiesta se conmemora.
+    if (isSunday(date) && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["domingo"]) {
+      commemorations.push(localFeast.name);
+      for (const f of getAllFeastsForDate(date)) {
+        if (f.name === localFeast.name) continue;
+        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+      }
+      return finalize({
+        date,
+        churchDay,
+        feast: null,
+        title: churchDay.name,
+        rank: "domingo",
+        transferredIn: null,
+        commemorations,
+      });
+    }
+
+    // La fiesta rige. Si desplaza a un domingo (rango >= domingo), lo conmemora.
     if (isSunday(date) && RANK_WEIGHT[localFeast.rank] >= RANK_WEIGHT["domingo"]) {
       commemorations.push(churchDay.name);
     }
-    // Conmemoraciones propias de la fiesta (octavas, etc.).
-    if (localFeast.commemorations) commemorations.push(...localFeast.commemorations);
-    // Beati opcionales del día como conmemoración.
+    // Conmemoraciones del día: entradas rank 'conmemoración' + beati opcionales.
     for (const f of getAllFeastsForDate(date)) {
-      if (f.optional) commemorations.push(f.name);
+      if (f.name === localFeast.name) continue;
+      if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
     }
     return finalize({
       date,

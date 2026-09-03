@@ -11,14 +11,14 @@ const MONTHS_ES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-// Fondo de la celda según el color litúrgico (los 6 colores del Ordo)
+// Fondo de la celda según el color litúrgico (los 6 colores del Ordo, saturación legible)
 const colorBg: Record<LiturgicalColor, string> = {
-  rojo: "bg-red-50/70 border-red-200",
-  morado: "bg-purple-50/70 border-purple-200",
-  blanco: "bg-amber-50/50 border-amber-100",
-  verde: "bg-green-50/70 border-green-200",
-  negro: "bg-neutral-200/70 border-neutral-400",
-  rosa: "bg-pink-50/70 border-pink-200",
+  rojo: "bg-red-100 border-red-300",
+  morado: "bg-purple-100 border-purple-300",
+  blanco: "bg-amber-50 border-amber-200",
+  verde: "bg-green-100 border-green-300",
+  negro: "bg-neutral-300 border-neutral-500",
+  rosa: "bg-pink-100 border-pink-300",
 };
 
 const colorDot: Record<LiturgicalColor, string> = {

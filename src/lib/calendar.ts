@@ -7,6 +7,8 @@ export interface ChurchDay {
   season: Season;
   color: LiturgicalColor;
   date: Date;
+  /** Semana litúrgica que rige el día (para ferias: contexto del domingo previo). */
+  weekName?: string;
 }
 
 export type Season =
@@ -34,14 +36,12 @@ export function getChurchDay(date: Date): ChurchDay {
   // Adviento
   if (date >= adventStart && date < christmas) {
     const weekNum = Math.floor((date.getTime() - adventStart.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
-    // Domingo de Adviento III = Gaudete (rosa); su domingo únicamente
     const isGaudete = weekNum === 3 && date.getDay() === 0;
-    return {
-      name: `${getWeekdayName(date)} de la ${getOrdinal(weekNum)} Semana de Adviento`,
-      season: "adviento",
-      color: isGaudete ? "rosa" : "morado",
-      date,
-    };
+    const domingo = `${getOrdinalM(weekNum)} Domingo de Adviento`;
+    if (date.getDay() === 0) {
+      return { name: domingo, season: "adviento", color: isGaudete ? "rosa" : "morado", date, weekName: domingo };
+    }
+    return { name: "Feria de Adviento", season: "adviento", color: "morado", date, weekName: `Semana del ${domingo}` };
   }
 
   // Navidad (25 dic - 5 enero)
@@ -57,14 +57,12 @@ export function getChurchDay(date: Date): ChurchDay {
   // Cuaresma (46 días antes de Pascua hasta Domingo de Ramos)
   if (diff >= -46 && diff < -7) {
     const lentWeek = Math.floor((diff + 46) / 7) + 1;
-    // Domingo de Cuaresma IV = Laetare (rosa); su domingo únicamente
     const isLaetare = lentWeek === 4 && date.getDay() === 0;
-    return {
-      name: `${getWeekdayName(date)} de la ${getOrdinal(lentWeek)} Semana de Cuaresma`,
-      season: "cuaresma",
-      color: isLaetare ? "rosa" : "morado",
-      date,
-    };
+    const domingo = `${getOrdinalM(lentWeek)} Domingo de Cuaresma`;
+    if (date.getDay() === 0) {
+      return { name: domingo, season: "cuaresma", color: isLaetare ? "rosa" : "morado", date, weekName: domingo };
+    }
+    return { name: "Feria de Cuaresma", season: "cuaresma", color: "morado", date, weekName: `Semana del ${domingo}` };
   }
 
   // Semana Santa
@@ -88,12 +86,11 @@ export function getChurchDay(date: Date): ChurchDay {
   if (diff > 0 && diff < 49) {
     if (diff === 39) return { name: "Día de la Ascensión", season: "pascua", color: "blanco", date };
     const easterWeek = Math.floor(diff / 7) + 1;
-    return {
-      name: `${getWeekdayName(date)} de la ${getOrdinal(easterWeek)} Semana de Pascua`,
-      season: "pascua",
-      color: "blanco",
-      date,
-    };
+    const domingo = `${getOrdinalM(easterWeek)} Domingo de Pascua`;
+    if (date.getDay() === 0) {
+      return { name: domingo, season: "pascua", color: "blanco", date, weekName: domingo };
+    }
+    return { name: "Feria de Pascua", season: "pascua", color: "blanco", date, weekName: `Semana del ${domingo}` };
   }
 
   // Pentecostés
@@ -110,38 +107,19 @@ export function getChurchDay(date: Date): ChurchDay {
   if (diff > 49) {
     const trinityWeek = Math.floor((diff - 56) / 7);
     if (trinityWeek > 0) {
-      // Days within a Sunday's week: use the Sunday number
       const isSunday = date.getDay() === 0;
+      const domingo = `${getOrdinalM(trinityWeek)} Domingo después de la Trinidad`;
       if (isSunday) {
-        return {
-          name: `${getOrdinal(trinityWeek)} Domingo después de la Trinidad`,
-          season: "trinidad",
-          color: "verde",
-          date,
-        };
+        return { name: domingo, season: "trinidad", color: "verde", date, weekName: domingo };
       }
-      return {
-        name: `${getWeekdayName(date)} después del ${getOrdinal(trinityWeek)} Domingo después de la Trinidad`,
-        season: "trinidad",
-        color: "verde",
-        date,
-      };
+      // Días entre semana: "Feria" (como el ORDO), con la semana como contexto.
+      return { name: "Feria", season: "trinidad", color: "verde", date, weekName: `Semana del ${domingo}` };
     }
-    // Week between Pentecost and Trinity / Trinity week itself
+    // Semana entre Pentecostés y Trinidad / semana de Trinidad
     if (diff > 56) {
-      return {
-        name: `${getWeekdayName(date)} después de la Trinidad`,
-        season: "trinidad",
-        color: "verde",
-        date,
-      };
+      return { name: "Feria", season: "trinidad", color: "verde", date, weekName: "Semana de la Trinidad" };
     }
-    return {
-      name: `${getWeekdayName(date)} después de Pentecostés`,
-      season: "pentecostes",
-      color: "rojo",
-      date,
-    };
+    return { name: "Feria", season: "pentecostes", color: "rojo", date, weekName: "Semana de Pentecostés" };
   }
 
   // Tiempo después de Epifanía (default)
@@ -197,6 +175,18 @@ function getOrdinal(n: number): string {
     "Vigésimocuarta", "Vigésimoquinta",
   ];
   return ordinals[n] || `${n}ª`;
+}
+
+function getOrdinalM(n: number): string {
+  const ordinals = [
+    "", "Primer", "Segundo", "Tercer", "Cuarto", "Quinto", "Sexto",
+    "Séptimo", "Octavo", "Noveno", "Décimo", "Undécimo", "Duodécimo",
+    "Decimotercer", "Decimocuarto", "Decimoquinto", "Decimosexto",
+    "Decimoséptimo", "Decimoctavo", "Decimonoveno", "Vigésimo",
+    "Vigesimoprimer", "Vigesimosegundo", "Vigesimotercer",
+    "Vigesimocuarto", "Vigesimoquinto", "Vigesimosexto", "Vigesimoséptimo",
+  ];
+  return ordinals[n] || `${n}º`;
 }
 
 export function formatDateSpanish(date: Date): string {
