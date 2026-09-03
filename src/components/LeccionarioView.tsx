@@ -4,6 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { getChurchDay, formatDateSpanish, fromDateParam, toDateParam } from "@/lib/calendar";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
+import { getOrdoEntry } from "@/lib/ordo";
+import { getProperForDay } from "@/lib/propers";
 import Link from "next/link";
 
 function LeccionarioContent() {
@@ -23,6 +25,8 @@ function LeccionarioContent() {
 
   const churchDay = getChurchDay(currentDate);
   const readings = getLectionary(currentDate);
+  const ordo = getOrdoEntry(currentDate);
+  const proper = getProperForDay(ordo);
   const prevDate = new Date(currentDate);
   prevDate.setDate(prevDate.getDate() - 1);
   const nextDate = new Date(currentDate);
@@ -49,6 +53,45 @@ function LeccionarioContent() {
           Siguiente →
         </Link>
       </div>
+
+      {/* Propios del Día — Colecta, Epístola y Evangelio (domingos y fiestas con propios en el LOC) */}
+      {proper && (
+        <div className="mb-6 bg-white border border-[var(--color-gold)] rounded-lg overflow-hidden">
+          <h2 className="bg-[var(--color-gold)] text-[var(--color-primary-dark)] px-4 py-2 text-sm font-semibold tracking-wide" style={{ fontFamily: "var(--font-heading)" }}>
+            ✚ Propios del Día — {proper.title}
+          </h2>
+          <div className="p-4">
+            {ordo.ordoLine && (
+              <p className="text-xs font-mono text-[var(--color-primary)] mb-3">{ordo.ordoLine}</p>
+            )}
+            {proper.entry ? (
+              <div className="space-y-3">
+                <div>
+                  <span className="text-xs uppercase text-[var(--color-primary)] font-semibold tracking-wider">La Colecta</span>
+                  <p className="text-sm leading-relaxed mt-1">{proper.entry.collect}</p>
+                </div>
+                {(proper.entry.epistleText || proper.entry.epistleRef) && (
+                  <div className="border-t border-[var(--color-bg-alt)] pt-3">
+                    <span className="text-xs uppercase text-[var(--color-primary)] font-semibold tracking-wider">La Epístola{proper.entry.epistleRef ? ` — ${proper.entry.epistleRef}` : ""}</span>
+                    {proper.entry.epistleText && <p className="text-sm leading-relaxed mt-1">{proper.entry.epistleText}</p>}
+                  </div>
+                )}
+                {(proper.entry.gospelText || proper.entry.gospelRef) && (
+                  <div className="border-t border-[var(--color-bg-alt)] pt-3">
+                    <span className="text-xs uppercase text-[var(--color-primary)] font-semibold tracking-wider">El Evangelio{proper.entry.gospelRef ? ` — ${proper.entry.gospelRef}` : ""}</span>
+                    {proper.entry.gospelText && <p className="text-sm leading-relaxed mt-1">{proper.entry.gospelText}</p>}
+                  </div>
+                )}
+                <p className="text-[10px] italic text-gray-400 pt-2 border-t border-[var(--color-bg-alt)]">Propios del Libro de Oración Común (LOC) 1928</p>
+              </div>
+            ) : (
+              <p className="text-sm italic text-gray-500 py-1">
+                Este día tiene propios asignados. Consúltense la Colecta, la Epístola y el Evangelio en el Misal Anglicano.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Readings */}
       <div className="space-y-4">

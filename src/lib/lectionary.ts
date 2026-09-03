@@ -64,6 +64,19 @@ const christmas: Record<string, LectionaryDay> = {
   "inocentes": { morning: { psalms: "8, 26", firstLesson: "Jer. 31:1-6, 15-16", secondLesson: "Mat. 18:1-14" }, evening: { psalms: "19, 126", firstLesson: "Isa. 54:1-13", secondLesson: "Marc. 10:13-16, 23-31" } },
 };
 
+// ===== TEMPORADA DE NAVIDAD: días fijos entre la octava y la Epifanía =====
+const christmasSeason: Record<string, LectionaryDay> = {
+  "dic29": { morning: { psalms: "27", firstLesson: "Isa. 56:1-8", secondLesson: "1 Juan 1" }, evening: { psalms: "20, 21:1-6", firstLesson: "Isa. 57:13", secondLesson: "Heb. 1" } },
+  "dic30": { morning: { psalms: "33", firstLesson: "Isa. 59:1-3, 15b-21", secondLesson: "1 Juan 2:1-17" }, evening: { psalms: "111, 112", firstLesson: "Isa. 60:13", secondLesson: "Heb. 2" } },
+  "dic31": { morning: { psalms: "147", firstLesson: "Isa. 62", secondLesson: "1 Juan 2:18" }, evening: { psalms: "90, 150", firstLesson: "Deut. 10:12-11:1", secondLesson: "Heb. 3" } },
+  "circuncision": { morning: { psalms: "103", firstLesson: "Deut. 30:1-10", secondLesson: "Efes. 2:11" }, evening: { psalms: "148", firstLesson: "Deut. 30:11", secondLesson: "Rev. 19:11-16" } },
+  "ene2": { morning: { psalms: "37:26", firstLesson: "Isa. 63:7-14", secondLesson: "1 Juan 3:1-11" }, evening: { psalms: "2, 110", firstLesson: "Isa. 63:15-64:1", secondLesson: "Heb. 4:1-13" } },
+  "ene3": { morning: { psalms: "66", firstLesson: "Isa. 64:4", secondLesson: "1 Juan 3:13" }, evening: { psalms: "34", firstLesson: "Isa. 65:8-16", secondLesson: "Heb. 4:14-5:14" } },
+  "ene4": { morning: { psalms: "92", firstLesson: "Isa. 65:17", secondLesson: "1 Juan 4" }, evening: { psalms: "91", firstLesson: "Isa. 66:1-2, 5-13", secondLesson: "Heb. 6:1-12" } },
+  "ene5": { morning: { psalms: "144", firstLesson: "Isa. 66:18-23", secondLesson: "1 Juan 5" }, evening: { psalms: "29, 98", firstLesson: "Isa. 49:1-7", secondLesson: "Luc. 3:15-22" } },
+  "epifania": { morning: { psalms: "46, 100", firstLesson: "Isa. 60:1-9", secondLesson: "2 Cor. 4:1-6" }, evening: { psalms: "72", firstLesson: "Isa. 61", secondLesson: "Rom. 15:8-21" } },
+};
+
 // ===== EPIFANÍA =====
 const epiphany: Record<string, Record<string, LectionaryDay>> = {
   "1": {
@@ -151,6 +164,11 @@ const preLent: Record<string, Record<string, LectionaryDay>> = {
 
 // ===== CUARESMA =====
 const lent: Record<string, Record<string, LectionaryDay>> = {
+  "0": {
+    "4": { morning: { psalms: "27", firstLesson: "Gen. 19:1-3, 12-17, 24-28", secondLesson: "1 Cor. 1:1-17" }, evening: { psalms: "29, 30", firstLesson: "Jer. 1:4-10, 13-19", secondLesson: "Juan 8:1-11" } },
+    "5": { morning: { psalms: "95, 40:1-13", firstLesson: "Gen. 21:9-21", secondLesson: "1 Cor. 1:18" }, evening: { psalms: "31", firstLesson: "Jer. 2:1-9, 13", secondLesson: "Juan 8:12-20, 31-36" } },
+    "6": { morning: { psalms: "28", firstLesson: "Gen. 22:1-14, 19", secondLesson: "1 Cor. 2" }, evening: { psalms: "34", firstLesson: "Jer. 3:11-18", secondLesson: "Juan 8:45" } },
+  },
   "1": {
     "0": { morning: { psalms: "50", firstLesson: "Isa. 58", secondLesson: "Mat. 6:1-18" }, evening: { psalms: "15, 92", firstLesson: "Jer. 17:5-14", secondLesson: "1 Cor. 10:1-13" } },
     "1": { morning: { psalms: "36", firstLesson: "Gen. 24:1-27", secondLesson: "1 Cor. 3:1-17" }, evening: { psalms: "42, 43", firstLesson: "Jer. 3:19", secondLesson: "Juan 9:1-23" } },
@@ -258,7 +276,32 @@ const easter: Record<string, Record<string, LectionaryDay>> = {
   },
   "5": {
     "0": { morning: { psalms: "65, 67", firstLesson: "Eze. 34:25", secondLesson: "Luc. 11:1-13" }, evening: { psalms: "147", firstLesson: "Isa. 48:12-21", secondLesson: "Rev. 5" } },
+    "1": { morning: { psalms: "104", firstLesson: "Deut. 8:1-11, 17-20", secondLesson: "Mat. 6:5-15" }, evening: { psalms: "34", firstLesson: "Deut. 18:1-14", secondLesson: "Stgo. 1:1-17" } },
+    "2": { morning: { psalms: "80", firstLesson: "Deut. 11:10-17", secondLesson: "Mat. 6:24" }, evening: { psalms: "65, 67", firstLesson: "1 Rey. 8:22-30", secondLesson: "Stgo. 4:8" } },
+    "3": { morning: { psalms: "144", firstLesson: "Jer. 14:1-9", secondLesson: "1 Juan 5:5-15" }, evening: { psalms: "93, 99", firstLesson: "Tres Mancebos 29-37", secondLesson: "Luc. 24:44" } },
+    "4": { morning: { psalms: "96", firstLesson: "Dan. 7:9-10, 13-14", secondLesson: "Efes. 4:1-16" }, evening: { psalms: "24, 47", firstLesson: "Isa. 33:5-6, 17, 20-22", secondLesson: "Heb. 4:14-5:10" } },
+    "5": { morning: { psalms: "15, 108:1-5", firstLesson: "Miqu. 4:1-7", secondLesson: "Rom. 8:31" }, evening: { psalms: "20, 29", firstLesson: "Isa. 12", secondLesson: "Hech. 1:12" } },
+    "6": { morning: { psalms: "45", firstLesson: "Gen. 49:1-2, 8-10", secondLesson: "2 Tes. 2:13" }, evening: { psalms: "8, 98", firstLesson: "Jer. 23:5-8", secondLesson: "Hech. 2:1-21" } },
   },
+  "6": {
+    "0": { morning: { psalms: "21:1-6, 24", firstLesson: "Isa. 33:5-6, 17, 20-22", secondLesson: "Juan 17" }, evening: { psalms: "93, 96", firstLesson: "Sabid. 9", secondLesson: "Efes. 1" } },
+    "1": { morning: { psalms: "2", firstLesson: "1 Sam. 2:1b-10", secondLesson: "Rev. 5" }, evening: { psalms: "147", firstLesson: "Isa. 66:1-2, 10-13", secondLesson: "Hech. 2:22-36" } },
+    "2": { morning: { psalms: "92", firstLesson: "2 Sam. 7:18", secondLesson: "Rev. 11:15" }, evening: { psalms: "57, 138", firstLesson: "Isa. 26:1-7", secondLesson: "Hech. 2:37" } },
+    "3": { morning: { psalms: "21:1-6, 23", firstLesson: "Isa. 4:2", secondLesson: "Rev. 19:11-16" }, evening: { psalms: "33", firstLesson: "Isa. 25:1-9", secondLesson: "Hech. 3:1-10" } },
+    "4": { morning: { psalms: "66", firstLesson: "2 Rey. 2:1-15", secondLesson: "Rev. 21:1-8" }, evening: { psalms: "72", firstLesson: "Isa. 9:2-7", secondLesson: "Hech. 3:11" } },
+    "5": { morning: { psalms: "115", firstLesson: "Isa. 35", secondLesson: "Rev. 21:9" }, evening: { psalms: "116, 117", firstLesson: "2 Sam. 22:32-34, 44-51", secondLesson: "Hech. 4:1-12" } },
+    "6": { morning: { psalms: "81", firstLesson: "Zac. 8:1-8, 20-23", secondLesson: "Rev. 22:1-17" }, evening: { psalms: "46, 133", firstLesson: "Deut. 16:9-12", secondLesson: "Rom. 8:12-18" } },
+  },
+};
+
+const pentecostWeek: Record<string, LectionaryDay> = {
+    "0": { morning: { psalms: "68 o 18:1-19", firstLesson: "Sabid. 1:1-7", secondLesson: "Juan 4:19-26" }, evening: { psalms: "104", firstLesson: "Sabid. 7:22-8:1", secondLesson: "Rom. 8:12-18" } },
+    "1": { morning: { psalms: "139", firstLesson: "Sabid. 9:1-6", secondLesson: "1 Cor. 3:9-17" }, evening: { psalms: "103", firstLesson: "Jer. 31:31-34", secondLesson: "Hech. 4:13-22" } },
+    "2": { morning: { psalms: "148", firstLesson: "Eze. 36:22-28", secondLesson: "1 Cor. 12:1-12" }, evening: { psalms: "145", firstLesson: "Num. 11:16-17, 24-30", secondLesson: "Hech. 4:23" } },
+    "3": { morning: { psalms: "132", firstLesson: "Eclco. 39:1-8", secondLesson: "1 Cor. 2" }, evening: { psalms: "84", firstLesson: "Sabid. 9:9-11, 17-18", secondLesson: "Hech. 5:12-28" } },
+    "4": { morning: { psalms: "48", firstLesson: "Isa. 44:1-8, 21-23", secondLesson: "Gal. 5:16-25" }, evening: { psalms: "18:1-19", firstLesson: "Sabid. 11:21-12:2", secondLesson: "Hech. 5:29" } },
+    "5": { morning: { psalms: "122, 125", firstLesson: "Isa. 61:1-9", secondLesson: "2 Cor. 3" }, evening: { psalms: "43, 134", firstLesson: "Isa. 52:1-10", secondLesson: "Hech. 6" } },
+    "6": { morning: { psalms: "19", firstLesson: "Miqu. 3:5-8", secondLesson: "2 Tim. 1:1-14" }, evening: { psalms: "111, 113", firstLesson: "Num. 6:22", secondLesson: "2 Cor. 13:5" } },
 };
 
 // ===== ASCENSIÓN Y PENTECOSTÉS =====
@@ -270,6 +313,14 @@ const ascensionPentecost: Record<string, LectionaryDay> = {
 
 // ===== TRINIDAD (semanas después de la Trinidad) =====
 const trinity: Record<string, Record<string, LectionaryDay>> = {
+  "0": {
+    "1": { morning: { psalms: "2, 3", firstLesson: "Num. 16:1-14", secondLesson: "Luc. 1:1-25" }, evening: { psalms: "4, 8", firstLesson: "Esdras 1:1-18", secondLesson: "Hech. 7:1-16" } },
+    "2": { morning: { psalms: "5", firstLesson: "Num. 16:15-35", secondLesson: "Luc. 1:26-38" }, evening: { psalms: "16, 20", firstLesson: "Esdras4:7, 11-24", secondLesson: "Hech. 7:17-34" } },
+    "3": { morning: { psalms: "7", firstLesson: "Num. 17:1-11", secondLesson: "Luc. 1:39-56" }, evening: { psalms: "25", firstLesson: "Hag. 1:1-8, 12-15", secondLesson: "Hech. 7:35-53" } },
+    "4": { morning: { psalms: "9", firstLesson: "Num. 20:1-13", secondLesson: "Luc. 1:57-66" }, evening: { psalms: "27", firstLesson: "Hag. 2:1-9", secondLesson: "Hech. 7:54-8:4" } },
+    "5": { morning: { psalms: "10", firstLesson: "Num. 20:14", secondLesson: "Luc. 1:67" }, evening: { psalms: "6, 26", firstLesson: "Zac. 1:7-17", secondLesson: "Hech. 8:5-25" } },
+    "6": { morning: { psalms: "13, 14", firstLesson: "Num. 21:4-9", secondLesson: "Luc. 2:1-20" }, evening: { psalms: "29, 30", firstLesson: "Zac. 2", secondLesson: "Hech. 8:26" } },
+  },
   "1": {
     "0": { morning: { psalms: "73", firstLesson: "Jer. 23:23-32", secondLesson: "Mat. 7:13-14, 21-29" }, evening: { psalms: "119:33-48", firstLesson: "Deut. 30:11", secondLesson: "Juan 13:1-17, 34-35" } },
     "1": { morning: { psalms: "28", firstLesson: "Núm. 22:2-14", secondLesson: "Luc. 2:21-40" }, evening: { psalms: "31", firstLesson: "Esdras 5:1-2, 6-17", secondLesson: "Hech. 9:1-19" } },
@@ -369,6 +420,141 @@ const trinity: Record<string, Record<string, LectionaryDay>> = {
     "5": { morning: { psalms: "94", firstLesson: "2 Sam. 5:1-10", secondLesson: "Luc. 22:47-62" }, evening: { psalms: "96, 97", firstLesson: "1 Rey. 10:1-13", secondLesson: "Rom. 10:1-13" } },
     "6": { morning: { psalms: "96", firstLesson: "2 Sam. 6:1-11", secondLesson: "Luc. 22:63-23:12" }, evening: { psalms: "98, 99", firstLesson: "1 Rey. 10:14-25", secondLesson: "Rom. 10:14" } },
   },
+  "12": {
+    "0": { morning: { psalms: "139", firstLesson: "Eclco. 15:11", secondLesson: "Filip. 2:12-18" }, evening: { psalms: "27", firstLesson: "Tob. 13:1b-5, 7-11", secondLesson: "Rom. 15:14-21" } },
+    "1": { morning: { psalms: "107:1-16", firstLesson: "2 Sam. 6:12:-15, 17-19", secondLesson: "Luc. 23:13-25" }, evening: { psalms: "111, 114", firstLesson: "Sof. 1:2-3, 7, 14-18", secondLesson: "Rom. 12" } },
+    "2": { morning: { psalms: "115", firstLesson: "2 Sam. 7:1-11, 16-17", secondLesson: "Luc. 23:26-38" }, evening: { psalms: "116", firstLesson: "Sof. 3:1-8", secondLesson: "Rom. 13" } },
+    "3": { morning: { psalms: "125, 127, 130", firstLesson: "2 Sam. 7:18", secondLesson: "Luc. 23:39-49" }, evening: { psalms: "121, 123, 124", firstLesson: "Sof. 3:9", secondLesson: "Rom. 14:1-12" } },
+    "4": { morning: { psalms: "137:1-6, 138", firstLesson: "2 Sam. 9:1-9, 13", secondLesson: "Luc. 23:50-14:12" }, evening: { psalms: "144", firstLesson: "Eclco. 1:1-10", secondLesson: "Rom. 14:13" } },
+    "5": { morning: { psalms: "142, 143", firstLesson: "2 Sam. 11:1-13", secondLesson: "Luc. 24:13-35" }, evening: { psalms: "145", firstLesson: "Eclco. 1:11-20, 26-27", secondLesson: "Rom. 15:1-16" } },
+    "6": { morning: { psalms: "147", firstLesson: "2 Sam. 11:14", secondLesson: "Luc. 24:36" }, evening: { psalms: "148, 150", firstLesson: "Eclco. 2", secondLesson: "Rom. 15:17" } },
+  },
+  "13": {
+    "0": { morning: { psalms: "104", firstLesson: "Eclco. 17:1-15", secondLesson: "Marc. 3:20-21, 31-35" }, evening: { psalms: "11, 12", firstLesson: "Deut. 15:7-15", secondLesson: "Mat.26:6-13" } },
+    "1": { morning: { psalms: "7", firstLesson: "2 Sam. 12:1-10. 13-15ª", secondLesson: "2 Cor. 1" }, evening: { psalms: "4, 8", firstLesson: "Eclco. 3:17", secondLesson: "Mat. 1:18" } },
+    "2": { morning: { psalms: "16", firstLesson: "2 Sam. 12:15b-23", secondLesson: "2 Cor. 2" }, evening: { psalms: "13, 14", firstLesson: "Eclco. 4:1-18", secondLesson: "Mat. 2:1-12" } },
+    "3": { morning: { psalms: "17", firstLesson: "2 Sam. 15:1-12", secondLesson: "2 Cor. 3" }, evening: { psalms: "18:1-19", firstLesson: "Eclco. 4:20-5:7", secondLesson: "Mat. 2:13" } },
+    "4": { morning: { psalms: "25", firstLesson: "2 Sam. 15:13-29", secondLesson: "2 Cor. 4" }, evening: { psalms: "27", firstLesson: "Eclco.15:11", secondLesson: "Mat. 3" } },
+    "5": { morning: { psalms: "32", firstLesson: "2 Sam. 15:30-16:4", secondLesson: "2 Cor. 5:1-10" }, evening: { psalms: "22", firstLesson: "Eclco. 16:17", secondLesson: "Mat. 4:1-11" } },
+    "6": { morning: { psalms: "31", firstLesson: "2 Sam. 16:4-19", secondLesson: "2 Cor. 5:11" }, evening: { psalms: "29, 30", firstLesson: "Eclco. 19:4-18", secondLesson: "Mat. 4:12" } },
+  },
+  "14": {
+    "0": { morning: { psalms: "19, 24", firstLesson: "Miqu. 6:1-8", secondLesson: "Filip. 4:4-13" }, evening: { psalms: "50", firstLesson: "Jer. 7:1-11", secondLesson: "Luc. 13:18-30" } },
+    "1": { morning: { psalms: "39", firstLesson: "2 Sam. 16:23-17:14", secondLesson: "2 Cor. 6:1-10" }, evening: { psalms: "33", firstLesson: "Eclco. 19:20", secondLesson: "Mat. 5:1-16" } },
+    "2": { morning: { psalms: "40:1-13", firstLesson: "2 Sam. 17:15-23", secondLesson: "2 Cor. 6:11-7:1" }, evening: { psalms: "36:5, 47", firstLesson: "Eclco. 20:9-20", secondLesson: "Mat. 5:17-26" } },
+    "3": { morning: { psalms: "45", firstLesson: "2 Sam. 18:1-17", secondLesson: "2 Cor. 7:2" }, evening: { psalms: "62, 63", firstLesson: "Eclco. 24:1-9, 18-22", secondLesson: "Mat. 5:27- 37" } },
+    "4": { morning: { psalms: "56", firstLesson: "2 Sam. 18:19", secondLesson: "2 Cor. 8:1-15" }, evening: { psalms: "66", firstLesson: "Eclco. 28:13", secondLesson: "Mat. 5:38" } },
+    "5": { morning: { psalms: "69:1-21, 29-36", firstLesson: "2 Sam. 19:1-10", secondLesson: "2 Cor. 8:16" }, evening: { psalms: "51", firstLesson: "Eclco. 31:12-18. 25, 32:2", secondLesson: "Mat. 6:1-18" } },
+    "6": { morning: { psalms: "68:1-19", firstLesson: "2 Sam. 19:11-23", secondLesson: "2 Cor. 9" }, evening: { psalms: "67, 93", firstLesson: "Eclco. 34:1-8", secondLesson: "Mat. 6:19" } },
+  },
+  "15": {
+    "0": { morning: { psalms: "49", firstLesson: "Eclco.5:1-10", secondLesson: "Luc. 12:13-21" }, evening: { psalms: "26, 128", firstLesson: "Eclés. 5:8", secondLesson: "1 Tim. 6:1-10" } },
+    "1": { morning: { psalms: "75", firstLesson: "2 Sam. 19:24-39", secondLesson: "2 Cor. 10" }, evening: { psalms: "71", firstLesson: "Eclco. 34:18-35:3", secondLesson: "Mat. 7:1-12" } },
+    "2": { morning: { psalms: "76", firstLesson: "2 Sam. 23:8-17", secondLesson: "2 Cor.11:1-15" }, evening: { psalms: "72", firstLesson: "Eclco. 36:1-17", secondLesson: "Mat. 7:13" } },
+    "3": { morning: { psalms: "77", firstLesson: "2 Sam. 24:1, 10-25", secondLesson: "2 Cor. 11:16" }, evening: { psalms: "73", firstLesson: "Eclco. 37:6-15", secondLesson: "Mat. 8:1-13" } },
+    "4": { morning: { psalms: "81", firstLesson: "1 Rey. 2:1-4, 10-12", secondLesson: "2 Cor. 12:1-13" }, evening: { psalms: "80", firstLesson: "Eclco. 38:24", secondLesson: "Mat. 8:14-27" } },
+    "5": { morning: { psalms: "85", firstLesson: "1 Rey. 3:4-15", secondLesson: "2 Cor. 12:14" }, evening: { psalms: "89:1-18", firstLesson: "Eclco. 42:15-21", secondLesson: "Mat. 8:28-9:8" } },
+    "6": { morning: { psalms: "92", firstLesson: "1 Rey. 3:16", secondLesson: "2 Cor. 13" }, evening: { psalms: "46, 96", firstLesson: "Eclco. 43:1-12", secondLesson: "Mat. 9:9-17" } },
+  },
+  "16": {
+    "0": { morning: { psalms: "116", firstLesson: "Isa. 12", secondLesson: "Juan 11:21-44" }, evening: { psalms: "90", firstLesson: "Eze. 33:1-9", secondLesson: "Mat. 24:37" } },
+    "1": { morning: { psalms: "103", firstLesson: "1 Rey. 8:1-11", secondLesson: "1 Tes. 1" }, evening: { psalms: "104", firstLesson: "Eclco. 43:13-19", secondLesson: "Mat. 9:18-35" } },
+    "2": { morning: { psalms: "118", firstLesson: "1 Rey. 8:12-21", secondLesson: "1 Tes. 2:1-13" }, evening: { psalms: "111, 113", firstLesson: "Eclco. 43:20", secondLesson: "Mat. 9:36-10:15" } },
+    "3": { morning: { psalms: "119:113-128", firstLesson: "1 Rey. 8:22-30", secondLesson: "1 Tes. 2:17-3:13" }, evening: { psalms: "119:129-144, 117", firstLesson: "Eclco. 44:1-15", secondLesson: "Mat. 10:16-31" } },
+    "4": { morning: { psalms: "126, 128", firstLesson: "1 Rey. 8:54-63", secondLesson: "1 Tes. 4:1-12" }, evening: { psalms: "121, 122, 138", firstLesson: "Job 1:1-12", secondLesson: "Mat. 10:32-11:1" } },
+    "5": { morning: { psalms: "102", firstLesson: "1 Rey. 9:1-9", secondLesson: "1 Tes. 4:13" }, evening: { psalms: "139", firstLesson: "Job 1:13", secondLesson: "Mat. 11:2-19" } },
+    "6": { morning: { psalms: "143, 149", firstLesson: "1 Rey. 11:26-31, 34-37", secondLesson: "1 Tes. 5:1-11" }, evening: { psalms: "97, 98", firstLesson: "Job 2", secondLesson: "Mat. 11:20" } },
+  },
+  "17": {
+    "0": { morning: { psalms: "25", firstLesson: "Jer. 13:15-21", secondLesson: "Marc. 10:35-45" }, evening: { psalms: "36:5, 130", firstLesson: "Mal. 2:1-1", secondLesson: "Luc. 13:10-17" } },
+    "1": { morning: { psalms: "18:1-19", firstLesson: "1 Rey. 12:1-11", secondLesson: "1 Tes. 5:12" }, evening: { psalms: "7", firstLesson: "Job 3:1-10, 13-20", secondLesson: "Mat. 12:1-13" } },
+    "2": { morning: { psalms: "20, 23", firstLesson: "1 Rey. 12:12-20", secondLesson: "2 Tes. 1" }, evening: { psalms: "11, 12", firstLesson: "Job 4:12", secondLesson: "Mat. 12:14-30" } },
+    "3": { morning: { psalms: "21:1-6, 28", firstLesson: "1 Rey. 12:25", secondLesson: "2 Tes. 2:1-12" }, evening: { psalms: "29, 30", firstLesson: "Job 5:8-18", secondLesson: "Mat. 12:31" } },
+    "4": { morning: { psalms: "27", firstLesson: "1 Rey. 16:29", secondLesson: "2 Tes. 2:13-3:5" }, evening: { psalms: "31", firstLesson: "Job 10:1-9, 12-18", secondLesson: "Mat. 13:1-23" } },
+    "5": { morning: { psalms: "37:1-24", firstLesson: "1 Rey. 17:1-16", secondLesson: "2 Tes. 3:6" }, evening: { psalms: "22", firstLesson: "Job 11:7", secondLesson: "Mat. 13:34-30, 36:43" } },
+    "6": { morning: { psalms: "37:26", firstLesson: "1 Rey. 17:17", secondLesson: "Stgo. 1:1-11" }, evening: { psalms: "145", firstLesson: "Job 12:1-10", secondLesson: "Mat. 13:31-35, 44:52" } },
+  },
+  "18": {
+    "0": { morning: { psalms: "48, 112", firstLesson: "Prov. 2:1-9", secondLesson: "1 Tim. 3:14-4:16" }, evening: { psalms: "147", firstLesson: "Deut. 11:18-21, 26-28, 32", secondLesson: "Gal. 1:1-12" } },
+    "1": { morning: { psalms: "41", firstLesson: "1 Rey. 18:1-15", secondLesson: "Stgo. 1:12-21" }, evening: { psalms: "33", firstLesson: "Job 12:13-22", secondLesson: "Mat. 13:53-14:12" } },
+    "2": { morning: { psalms: "42, 43", firstLesson: "1 Rey. 18:16-24", secondLesson: "Stgo. 1:22" }, evening: { psalms: "39", firstLesson: "Job 14:1-14", secondLesson: "Mat. 14:13-21" } },
+    "3": { morning: { psalms: "44", firstLesson: "1 Rey. 18:25-30, 36-46", secondLesson: "Stgo. 2:1-13" }, evening: { psalms: "50", firstLesson: "Job 18:5-7, 14-21", secondLesson: "Mat. 14:22" } },
+    "4": { morning: { psalms: "49", firstLesson: "1 Rey. 19:1-8", secondLesson: "Stgo. 2:14" }, evening: { psalms: "73", firstLesson: "Job 21:7-20, 29-33", secondLesson: "Mat. 15:1-20" } },
+    "5": { morning: { psalms: "51", firstLesson: "1 Rey. 19:9", secondLesson: "Stgo. 3" }, evening: { psalms: "85, 86", firstLesson: "Job 24:1-4, 12-20", secondLesson: "Mat. 15:21" } },
+    "6": { morning: { psalms: "71", firstLesson: "1 Rey. 21:1-10", secondLesson: "Stgo. 4:1-12" }, evening: { psalms: "93, 98", firstLesson: "Job 25:2-6, y 26:6-14", secondLesson: "Mat. 16:1-12" } },
+  },
+  "19": {
+    "0": { morning: { psalms: "72", firstLesson: "Job 24:1-17", secondLesson: "Tito 2" }, evening: { psalms: "80", firstLesson: "Jer. 5:7-19", secondLesson: "2 Cor. 13" } },
+    "1": { morning: { psalms: "89:1-18", firstLesson: "1 Rey. 21:11-22", secondLesson: "Stgo. 4:13-5:11" }, evening: { psalms: "92", firstLesson: "Job 28:12", secondLesson: "Mat. 16:13" } },
+    "2": { morning: { psalms: "90", firstLesson: "1 Rey. 22:1-12", secondLesson: "Stgo. 5:12" }, evening: { psalms: "103", firstLesson: "Job 38:1-11, 16-18", secondLesson: "Mat. 17:1-13" } },
+    "3": { morning: { psalms: "94", firstLesson: "1 Rey. 22:13-28", secondLesson: "1 Tim. 1:1-11" }, evening: { psalms: "113, 114", firstLesson: "Job 38:19-30", secondLesson: "Mat. 17:14" } },
+    "4": { morning: { psalms: "100, 110", firstLesson: "1 Rey. 22:29-40", secondLesson: "1 Tim. 1:12" }, evening: { psalms: "116", firstLesson: "Job 39:31-38", secondLesson: "Mat. 18:1-14" } },
+    "5": { morning: { psalms: "119:145-160", firstLesson: "2 Rey. 1:2-8, 17ª", secondLesson: "1 Tim. 2:1-10" }, evening: { psalms: "119:161-176, 117", firstLesson: "Job39:19", secondLesson: "Mat. 18:15" } },
+    "6": { morning: { psalms: "120, 122, 123", firstLesson: "2 Rey. 2:1-15", secondLesson: "1 Tim. 3:1-13" }, evening: { psalms: "144", firstLesson: "Job 42:1-9", secondLesson: "Mat. 19:1-15" } },
+  },
+  "20": {
+    "0": { morning: { psalms: "11, 12", firstLesson: "Mal. 2:14", secondLesson: "Mat. 19:3-9a, 13-15" }, evening: { psalms: "145", firstLesson: "Jer. 31:31-37", secondLesson: "Juan 13:31-35" } },
+    "1": { morning: { psalms: "124, 128", firstLesson: "2 Rey. 4:8-17", secondLesson: "1 Tim. 3:14-4:5" }, evening: { psalms: "131, 133, 134", firstLesson: "Eclés. 1:2-11", secondLesson: "Mat. 19:16" } },
+    "2": { morning: { psalms: "125, 126", firstLesson: "2 Rey. 4:18-25a", secondLesson: "1 Tim. 4:6" }, evening: { psalms: "132", firstLesson: "Eclés. 2:1-11", secondLesson: "Mat. 20:1-16" } },
+    "3": { morning: { psalms: "127, 130", firstLesson: "2 Rey. 4:15b-37", secondLesson: "1 Tim. 5:1-16" }, evening: { psalms: "135", firstLesson: "Eclés. 2:18", secondLesson: "Mat. 20:17" } },
+    "4": { morning: { psalms: "141:1-4, 142", firstLesson: "2 Rey. 5:1-8", secondLesson: "1 Tim. 5:17" }, evening: { psalms: "137:1-6, 138", firstLesson: "Eclés. 3:1-2, 9:15", secondLesson: "Mat. 21:1-16" } },
+    "5": { morning: { psalms: "143", firstLesson: "2 Rey. 5:9-19", secondLesson: "1 Tim. 6:1-11" }, evening: { psalms: "139", firstLesson: "Eclés. 3:16", secondLesson: "Mat. 21:17-32" } },
+    "6": { morning: { psalms: "149", firstLesson: "2 Rey. 5:20", secondLesson: "1 Tim. 6:12" }, evening: { psalms: "19, 46", firstLesson: "Eclés. 5:1-7", secondLesson: "Mat. 21:33" } },
+  },
+  "21": {
+    "0": { morning: { psalms: "76, 121", firstLesson: "Isa. 59:15b", secondLesson: "2 Cor. 10:1-7, 17-18" }, evening: { psalms: "25", firstLesson: "Gen. 15:1-6", secondLesson: "Rom. 4:1-8" } },
+    "1": { morning: { psalms: "2, 3", firstLesson: "2 Rey. 6:8-14", secondLesson: "2 Tim. 1:1-14" }, evening: { psalms: "4, 8", firstLesson: "Eclés. 5:8", secondLesson: "Mat. 22:15-33" } },
+    "2": { morning: { psalms: "5", firstLesson: "2 Rey. 6:15-23", secondLesson: "2 Tim. 1:15-2:13" }, evening: { psalms: "11, 12", firstLesson: "Eclés. 6:1-2, 7-12", secondLesson: "Mat. 22:34" } },
+    "3": { morning: { psalms: "9", firstLesson: "2 Rey. 9:1-6, 10b-16", secondLesson: "2 Tim. 2:14" }, evening: { psalms: "13, 14", firstLesson: "Eclés. 8:12-9:1", secondLesson: "Mat. 23:1-12" } },
+    "4": { morning: { psalms: "10", firstLesson: "2 Rey. 9:17-28", secondLesson: "2 Tim. 3" }, evening: { psalms: "16, 17", firstLesson: "Eclés. 9:11", secondLesson: "Mat. 23:13-23" } },
+    "5": { morning: { psalms: "22", firstLesson: "2 Rey. 9:30", secondLesson: "2 Tim. 4:1-8" }, evening: { psalms: "6, 26", firstLesson: "Eclés. 11", secondLesson: "Mat. 23:25" } },
+    "6": { morning: { psalms: "21:1-6, 23", firstLesson: "2 Rey. 11:1-4, 9-16", secondLesson: "2 Tim. 4:9" }, evening: { psalms: "18:1-19", firstLesson: "Eclés. 12", secondLesson: "Mat. 24:2-14" } },
+  },
+  "22": {
+    "0": { morning: { psalms: "32, 43", firstLesson: "Eclco. 28:30-28:7", secondLesson: "Mat. 18:7-20" }, evening: { psalms: "51", firstLesson: "1 Rey. 8:46-53", secondLesson: "Luc. 7:36" } },
+    "1": { morning: { psalms: "18:20-34", firstLesson: "2 Rey. 17:6-8, 12-18", secondLesson: "Tito 1" }, evening: { psalms: "20, 24", firstLesson: "Deut. 4:1-9", secondLesson: "Mat. 24:15-28" } },
+    "2": { morning: { psalms: "25", firstLesson: "2 Rey. 21:1-3, 10-18", secondLesson: "Tito 2" }, evening: { psalms: "29, 36:5", firstLesson: "Deut. 4:15-24", secondLesson: "Mat. 24:29-41" } },
+    "3": { morning: { psalms: "28", firstLesson: "2 Rey. 22:3-13", secondLesson: "Tito 3" }, evening: { psalms: "34", firstLesson: "Deut. 4:25-31", secondLesson: "Mat. 24:42" } },
+    "4": { morning: { psalms: "30", firstLesson: "2 Rey. 22:14", secondLesson: "Film." }, evening: { psalms: "37:1-24", firstLesson: "Deut. 4:32-40", secondLesson: "Mat. 25:1-13" } },
+    "5": { morning: { psalms: "40:1-13", firstLesson: "2 Rey. 23:1-4, 11-14, 21-23", secondLesson: "2 Juan" }, evening: { psalms: "37:26", firstLesson: "Deut. 5:1-21", secondLesson: "Mat. 25:14-30" } },
+    "6": { morning: { psalms: "31", firstLesson: "2 Rey. 23:24-30", secondLesson: "3 Juan" }, evening: { psalms: "27", firstLesson: "Deut. 5:22", secondLesson: "Mat. 25:31" } },
+  },
+  "23": {
+    "0": { morning: { psalms: "33", firstLesson: "Jer. 29:1, 4-14", secondLesson: "Tito 3:1-8" }, evening: { psalms: "19, 67", firstLesson: "Eze. 33:30", secondLesson: "1 Cor. 4:8-16" } },
+    "1": { morning: { psalms: "41", firstLesson: "Jer. 35:1-11", secondLesson: "Col. 1:1-17" }, evening: { psalms: "42, 43", firstLesson: "Deut. 6:1-9", secondLesson: "Mat. 26:1-16" } },
+    "2": { morning: { psalms: "44", firstLesson: "Jer. 35:12", secondLesson: "Col. 1:18-2:5" }, evening: { psalms: "46, 85", firstLesson: "Deut. 6:10-16, 20-25", secondLesson: "Mat. 26:17-30" } },
+    "3": { morning: { psalms: "50", firstLesson: "Jer. 36:1-8", secondLesson: "Col. 2:6-19" }, evening: { psalms: "47, 48", firstLesson: "Deut. 7:6-13", secondLesson: "Mat. 26:31-46" } },
+    "4": { morning: { psalms: "52, 53", firstLesson: "Jer. 36:11-19", secondLesson: "Col. 2:20-3:11" }, evening: { psalms: "49", firstLesson: "Deut. 8:1-10", secondLesson: "Mat. 26:47-56" } },
+    "5": { morning: { psalms: "54, 61", firstLesson: "Jer. 36:20-26", secondLesson: "Col. 3:12-17" }, evening: { psalms: "51", firstLesson: "Deut. 8:11", secondLesson: "Mat. 26:57" } },
+    "6": { morning: { psalms: "55", firstLesson: "2 Rey. 25:8-11, 22, 25-26", secondLesson: "Col. 3:18-4:6" }, evening: { psalms: "93, 98", firstLesson: "Deut. 9:7-17, 25-29", secondLesson: "Mat. 27:1-10" } },
+  },
+  "24": {
+    "0": { morning: { psalms: "66", firstLesson: "Mal.3:13-4:3", secondLesson: "Luc. 10:17-24" }, evening: { psalms: "139", firstLesson: "Deut. 33:1-3, 26-29", secondLesson: "Judas 1-4, 17-25" } },
+    "1": { morning: { psalms: "63, 64", firstLesson: "Lev. 19:1-2, 9-18", secondLesson: "Filip. 1:1-11" }, evening: { psalms: "56, 57", firstLesson: "Deut. 10:12", secondLesson: "Mat. 17:11-26" } },
+    "2": { morning: { psalms: "68:1-19", firstLesson: "Lev. 19:26", secondLesson: "Filip. 1:12-26" }, evening: { psalms: "67, 84", firstLesson: "Deut. 13:1-11", secondLesson: "Mat. 27:27-44" } },
+    "3": { morning: { psalms: "71", firstLesson: "Lev. 20:1-8", secondLesson: "Filip. 1:27-2:18" }, evening: { psalms: "72", firstLesson: "Deut. 15:7-15", secondLesson: "Mat. 27:45-56" } },
+    "4": { morning: { psalms: "74", firstLesson: "Lev. 25:23-31", secondLesson: "Filip. 2:19" }, evening: { psalms: "77", firstLesson: "Deut. 17:14", secondLesson: "Mat. 27:57" } },
+    "5": { morning: { psalms: "69:1-21, 29-36", firstLesson: "Lev. 26:1-13", secondLesson: "Filip. 3" }, evening: { psalms: "80", firstLesson: "Deut. 18:15", secondLesson: "Mat. 28:1-10" } },
+    "6": { morning: { psalms: "79", firstLesson: "Lev. 26:27-42", secondLesson: "Filip. 4" }, evening: { psalms: "65", firstLesson: "Deut. 19:11", secondLesson: "Mat. 28:11" } },
+  },
+  "25": {
+    "0": { morning: { psalms: "15, 85", firstLesson: "Rut. 1:1-17", secondLesson: "Col. 3:5-11" }, evening: { psalms: "21, 22:23", firstLesson: "Joel 3:9-17", secondLesson: "Mat. 13:36-52" } },
+    "1": { morning: { psalms: "81", firstLesson: "Abd. 1-9", secondLesson: "1 Ped. 1:1-12" }, evening: { psalms: "90", firstLesson: "Deut. 24:10-18", secondLesson: "1 Tes. 1" } },
+    "2": { morning: { psalms: "81, 101", firstLesson: "Abd. 10", secondLesson: "1 Ped. 1:13" }, evening: { psalms: "91", firstLesson: "Deut. 25:1-3, 13-16", secondLesson: "1 Tes. 2:1-16" } },
+    "3": { morning: { psalms: "86", firstLesson: "Mal. 1:6-11", secondLesson: "1 Ped. 2:1-10" }, evening: { psalms: "92", firstLesson: "Deut. 26:1-11", secondLesson: "1 Tes. 2:17-3:13" } },
+    "4": { morning: { psalms: "94", firstLesson: "Mal. 2:1-10", secondLesson: "1 Ped. 2:11-17" }, evening: { psalms: "103", firstLesson: "Deut. 28:1-14", secondLesson: "1 Tes. 4:1-12" } },
+    "5": { morning: { psalms: "88", firstLesson: "Mal. 3:1-15", secondLesson: "1 Ped. 2:18" }, evening: { psalms: "102", firstLesson: "Deut. 29:1, 9-21", secondLesson: "1 Tes. 4:13" } },
+    "6": { morning: { psalms: "104", firstLesson: "Mal. 3:16-4:6", secondLesson: "1 Ped. 3:1-12" }, evening: { psalms: "145", firstLesson: "Deut. 30:11", secondLesson: "1 Tes. 5:1-11" } },
+  },
+  "26": {
+    "0": { morning: { psalms: "75, 138", firstLesson: "Isa. 2:6-19", secondLesson: "Mat. 25:14-29" }, evening: { psalms: "9", firstLesson: "Gen. 19:1-3, 12-17, 24-28", secondLesson: "Luc. 17:20" } },
+    "1": { morning: { psalms: "105", firstLesson: "Lam. 1:1-6", secondLesson: "1 Ped. 3:13" }, evening: { psalms: "107", firstLesson: "Sabid. 1:1-7", secondLesson: "1 Tes. 5:12" } },
+    "2": { morning: { psalms: "106", firstLesson: "Lam. 1:15", secondLesson: "1 Ped. 4:1-6" }, evening: { psalms: "111, 112", firstLesson: "Sabid. 6:1-11", secondLesson: "2 Tes. 1" } },
+    "3": { morning: { psalms: "113, 114", firstLesson: "Lam. 2:1-10", secondLesson: "1 Ped. 4:7-11" }, evening: { psalms: "118", firstLesson: "Sabid. 6:12-21", secondLesson: "2 Tes. 2:1-12" } },
+    "4": { morning: { psalms: "115", firstLesson: "Lam. 4:1-6, 9", secondLesson: "1 Ped. 4:12" }, evening: { psalms: "121, 122", firstLesson: "Sabid. 7:7-14", secondLesson: "2 Tes. 2:13-3:5" } },
+    "5": { morning: { psalms: "116, 117", firstLesson: "Lam. 4:11-20", secondLesson: "1 Ped. 5:1-7" }, evening: { psalms: "125, 126, 127", firstLesson: "Sabid. 7:15-22a", secondLesson: "2 Tes. 3:6" } },
+    "6": { morning: { psalms: "120, 123", firstLesson: "Lam. 5", secondLesson: "1 Ped. 5:8" }, evening: { psalms: "99, 100", firstLesson: "Sabid. 7:22-8:1", secondLesson: "Judas" } },
+  },
 };
 
 // 30-day psalm cycle from LOC 1928
@@ -435,6 +621,17 @@ export function getLectionary(date: Date): LectionaryDay {
   if (date.getMonth() === 11 && date.getDate() === 27) return christmas["juan"];
   if (date.getMonth() === 11 && date.getDate() === 28) return christmas["inocentes"];
 
+  // ===== TEMPORADA DE NAVIDAD: días fijos Dic 29-31 y Ene 1-6 =====
+  if (date.getMonth() === 11 && date.getDate() === 29) return christmasSeason["dic29"];
+  if (date.getMonth() === 11 && date.getDate() === 30) return christmasSeason["dic30"];
+  if (date.getMonth() === 11 && date.getDate() === 31) return christmasSeason["dic31"];
+  if (date.getMonth() === 0 && date.getDate() === 1) return christmasSeason["circuncision"];
+  if (date.getMonth() === 0 && date.getDate() === 2) return christmasSeason["ene2"];
+  if (date.getMonth() === 0 && date.getDate() === 3) return christmasSeason["ene3"];
+  if (date.getMonth() === 0 && date.getDate() === 4) return christmasSeason["ene4"];
+  if (date.getMonth() === 0 && date.getDate() === 5) return christmasSeason["ene5"];
+  if (date.getMonth() === 0 && date.getDate() === 6) return christmasSeason["epifania"];
+
   // ===== EPIFANÍA (semanas después de Epifanía) =====
   const epiphanyDate = new Date(year, 0, 6);
   if (date.getMonth() === 0 && date.getDate() >= 7) {
@@ -489,6 +686,11 @@ export function getLectionary(date: Date): LectionaryDay {
         evening: { psalms: "102, 130", firstLesson: "Jonás 3 y 4", secondLesson: "Luc. 15:10" },
       };
     }
+    // Días entre Miércoles de Ceniza y la 1ª Dominica de Cuaresma (Jue/Vie/Sáb)
+    if (daysDiff >= -45 && daysDiff <= -43) {
+      const dowAsh = date.getDay().toString();
+      if (lent["0"] && lent["0"][dowAsh]) return lent["0"][dowAsh];
+    }
     // Calculate Lent week (1-5)
     const daysIntoLent = daysDiff + 46; // 0 = Ash Wed
     const lentWeek = Math.floor((daysIntoLent + 3) / 7); // Week 1 starts at first Sunday
@@ -512,41 +714,55 @@ export function getLectionary(date: Date): LectionaryDay {
     return easter["0"]["0"];
   }
 
-  // ===== TIEMPO PASCUAL (1-49 days after Easter) =====
-  if (daysDiff > 0 && daysDiff < 50) {
+  // ===== TIEMPO PASCUAL (1-48 days after Easter) =====
+  if (daysDiff > 0 && daysDiff < 49) {
+    const dayOfWeek = date.getDay().toString();
     // Easter week (days 1-6)
     if (daysDiff <= 6) {
-      const dayOfWeek = date.getDay().toString();
       if (easter["0"][dayOfWeek]) return easter["0"][dayOfWeek];
     }
-    // Easter weeks 1-4
-    const easterWeek = Math.floor((daysDiff - 1) / 7) + 1;
-    const dayOfWeek = date.getDay().toString();
-    if (easterWeek <= 4) {
+    // Easter weeks 1-4 (Sunday + weekdays), diffEaster 7-34.
+    // The Nth Sunday after Easter falls at diffEaster 7*N; its weekdays follow it.
+    const easterWeek = Math.floor(daysDiff / 7);
+    if (easterWeek >= 1 && easterWeek <= 4) {
       const weekData = easter[easterWeek.toString()];
       if (weekData && weekData[dayOfWeek]) {
         return weekData[dayOfWeek];
       }
     }
-    // Week 5 (Rogation/Ascension area)
-    if (easter["5"] && easter["5"][dayOfWeek]) {
-      return easter["5"][dayOfWeek];
+    // Week 5: Rogation Sunday through Ember Saturday incl. Ascension (diffEaster 35-41)
+    if (daysDiff >= 35 && daysDiff <= 41) {
+      if (easter["5"] && easter["5"][dayOfWeek]) return easter["5"][dayOfWeek];
     }
-    // Ascension Day (39 days after Easter)
+    // Week 6: Sunday after the Ascension and its weekdays (diffEaster 42-48)
+    if (daysDiff >= 42 && daysDiff <= 48) {
+      if (easter["6"] && easter["6"][dayOfWeek]) return easter["6"][dayOfWeek];
+    }
+    // Ascension Day (39 days after Easter) — fallback if data missing
     if (daysDiff === 39) return ascensionPentecost["ascension"];
   }
 
-  // ===== PENTECOSTÉS (49 days after Easter) =====
-  if (daysDiff === 49) return ascensionPentecost["pentecostes"];
+  // ===== PENTECOSTÉS y su octava (49-55 days after Easter) =====
+  if (daysDiff >= 49 && daysDiff <= 55) {
+    const dayOfWeek = date.getDay().toString();
+    if (pentecostWeek[dayOfWeek]) return pentecostWeek[dayOfWeek];
+    if (daysDiff === 49) return ascensionPentecost["pentecostes"];
+  }
 
   // ===== DOMINGO DE LA TRINIDAD (56 days after Easter) =====
   if (daysDiff === 56) return ascensionPentecost["trinidad"];
+
+  // ===== Días entre Domingo de la Trinidad y la 1ª Dominica (diffEaster 57-62) =====
+  if (daysDiff >= 57 && daysDiff <= 62) {
+    const dayOfWeek = date.getDay().toString();
+    if (trinity["0"] && trinity["0"][dayOfWeek]) return trinity["0"][dayOfWeek];
+  }
 
   // ===== TRINIDAD (after Trinity Sunday) =====
   if (daysDiff > 56) {
     const trinityWeek = Math.floor((daysDiff - 56) / 7);
     const dayOfWeek = date.getDay().toString();
-    if (trinityWeek >= 1 && trinityWeek <= 11) {
+    if (trinityWeek >= 1 && trinityWeek <= 26) {
       const weekData = trinity[trinityWeek.toString()];
       if (weekData && weekData[dayOfWeek]) {
         return weekData[dayOfWeek];
