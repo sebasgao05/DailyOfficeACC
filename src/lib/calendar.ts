@@ -180,7 +180,7 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff === -2) {
       return { name: "Viernes Santo", season: "semana-santa", color: "negro", date, weekName: "Semana Santa" };
     }
-    if (diff === -1) return { name: "Sábado Santo", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
+    if (diff === -1) return { name: "Sábado Santo", season: "semana-santa", color: "morado", color2: "blanco", date, weekName: "Semana Santa" };
     return { name: "Semana Santa", season: "semana-santa", color: "morado", date };
   }
 
@@ -275,7 +275,8 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff > 56) {
       return { name: "Feria", season: "trinidad", color: "verde", date, weekName: "Semana de la Trinidad" };
     }
-    return { name: "Feria", season: "pentecostes", color: "rojo", date, weekName: "Semana de Pentecostés" };
+    // Octava de Pentecostés (diff 50-55): los días entre Pentecostés y Trinidad, rojo.
+    return { name: "De la Octava de Pentecostés", season: "pentecostes", color: "rojo", date, weekName: "Octava de Pentecostés" };
   }
 
   // Tiempo después de Epifanía (default)

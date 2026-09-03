@@ -127,7 +127,7 @@ export const fixedFeasts: Feast[] = [
   { month: 5, day: 7, name: "Beata Marian Rebecca Hughes, Virgen", rank: "menor", color: "blanco", optional: true, },
   { month: 5, day: 9, name: "San Gregorio Nacianceno, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Pascua" }, },
   { month: 5, day: 10, name: "San Paschal Baylon, Confesor", rank: "conmemoración", color: "blanco", },
-  { month: 5, day: 11, name: "Santos Nereo, Aquileo, Domitila y Pancracio, Mártires", rank: "conmemoración", color: "morado", },
+  { month: 5, day: 12, name: "Santos Nereo, Aquileo, Domitila y Pancracio, Mártires", rank: "conmemoración", color: "rojo", },
   { month: 5, day: 19, name: "San Dunstano, Obispo y Confesor", rank: "menor", color: "morado", propers: { gloria: true, creed: true, preface: "Ascensión" }, },
   { month: 5, day: 20, name: "San Bernardino de Siena, Confesor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Ascensión" }, },
   { month: 5, day: 13, name: "Mártires de Uganda, Mártires", rank: "menor", color: "rojo", optional: true, },
