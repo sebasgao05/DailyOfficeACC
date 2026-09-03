@@ -54,8 +54,31 @@ export function getChurchDay(date: Date): ChurchDay {
     return { name: "La Epifanía", season: "epifania", color: "blanco", date };
   }
 
+  // Pre-Cuaresma: Septuagésima (−63), Sexagésima (−56), Quincuagésima (−49)
+  // más sus ferias (morado, Credo, sin Aleluya). Va ANTES del bloque Cuaresma.
+  if (diff >= -63 && diff <= -47) {
+    const preLent: Record<number, string> = {
+      [-63]: "Domingo de Septuagésima",
+      [-56]: "Domingo de Sexagésima",
+      [-49]: "Domingo de Quincuagésima",
+    };
+    // Domingo pre-cuaresmal
+    if (date.getDay() === 0 && preLent[diff]) {
+      return { name: preLent[diff], season: "epifania", color: "morado", date, weekName: preLent[diff] };
+    }
+    // Ferias de la pre-Cuaresma: cuelgan del domingo previo
+    const prevSundayDiff = diff >= -55 ? -56 : -63; // aproximación por bloque
+    const domingo = diff <= -50 ? "Domingo de Septuagésima" : diff <= -49 ? "Domingo de Sexagésima" : "Domingo de Quincuagésima";
+    void prevSundayDiff;
+    return { name: "Feria de Pre-Cuaresma", season: "epifania", color: "morado", date, weekName: `Semana de ${domingo}` };
+  }
+
   // Cuaresma (46 días antes de Pascua hasta Domingo de Ramos)
   if (diff >= -46 && diff < -7) {
+    // Miércoles de Ceniza (−46): inicio de la Cuaresma, ayuno y abstinencia.
+    if (diff === -46) {
+      return { name: "Miércoles de Ceniza", season: "cuaresma", color: "morado", date, weekName: "Miércoles de Ceniza" };
+    }
     const lentWeek = Math.floor((diff + 46) / 7) + 1;
     const isLaetare = lentWeek === 4 && date.getDay() === 0;
     const domingo = `${getOrdinalM(lentWeek)} Domingo de Cuaresma`;
@@ -85,6 +108,10 @@ export function getChurchDay(date: Date): ChurchDay {
   // Tiempo Pascual (hasta Pentecostés)
   if (diff > 0 && diff < 49) {
     if (diff === 39) return { name: "Día de la Ascensión", season: "pascua", color: "blanco", date };
+    // Rogativas: lunes, martes y miércoles antes de la Ascensión (diff 36-38).
+    if (diff === 36) return { name: "Lunes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
+    if (diff === 37) return { name: "Martes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
+    if (diff === 38) return { name: "Vigilia de la Ascensión (Miércoles de Rogativas)", season: "pascua", color: "morado", date, weekName: "Rogativas" };
     const easterWeek = Math.floor(diff / 7) + 1;
     const domingo = `${getOrdinalM(easterWeek)} Domingo de Pascua`;
     if (date.getDay() === 0) {
@@ -105,6 +132,14 @@ export function getChurchDay(date: Date): ChurchDay {
 
   // Tiempo después de Pentecostés (Trinidad)
   if (diff > 49) {
+    // Corpus Christi: jueves tras la Trinidad (diff 60), blanco, con octava.
+    if (diff === 60) {
+      return { name: "Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Corpus Christi" };
+    }
+    // Sagrado Corazón de Jesús: viernes tras la octava de Corpus (diff 68), blanco.
+    if (diff === 68) {
+      return { name: "El Sagrado Corazón de Jesús", season: "trinidad", color: "blanco", date, weekName: "Sagrado Corazón" };
+    }
     const trinityWeek = Math.floor((diff - 56) / 7);
     if (trinityWeek > 0) {
       const isSunday = date.getDay() === 0;

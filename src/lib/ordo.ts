@@ -60,17 +60,27 @@ const RANK_WEIGHT: Record<string, number> = {
   conmemoración: 0,
 };
 
-/** Domingos que NO ceden ante una fiesta transferible: Adviento y Cuaresma. */
+/** Domingos que NO ceden ante una fiesta transferible. */
 function isPrivilegedSunday(churchDay: ChurchDay): boolean {
   if (churchDay.date.getDay() !== 0) return false;
-  return (
+  // Adviento, pre-Cuaresma, Cuaresma, Pasión/Ramos: siempre privilegiados.
+  if (
     churchDay.season === "adviento" ||
     churchDay.season === "cuaresma" ||
-    churchDay.season === "semana-santa" ||
-    churchDay.season === "pascua" || // Domingo de Pascua y su octava
-    churchDay.name.includes("Pentecostés") ||
-    churchDay.name.includes("Trinidad")
-  );
+    churchDay.season === "semana-santa"
+  ) {
+    return true;
+  }
+  // Domingos pre-cuaresmales (viven en season 'epifania' con color morado).
+  if (churchDay.season === "epifania" && churchDay.color === "morado") return true;
+  // Solo los DÍAS mayores del ciclo, no todos sus domingos ordinarios:
+  // Domingo de Pascua, Domingo de Pentecostés, Domingo de la Trinidad.
+  if (churchDay.name === "Domingo de Pascua de Resurrección") return true;
+  if (churchDay.name === "Domingo de Pentecostés") return true;
+  if (churchDay.name === "Domingo de la Trinidad") return true;
+  // Un domingo ORDINARIO después de la Trinidad NO es privilegiado: una fiesta
+  // mayor rige y lo conmemora (no se traslada).
+  return false;
 }
 
 function isSunday(date: Date): boolean {
@@ -138,6 +148,8 @@ function resolveFast(
 ): OrdoEntry["fast"] {
   // Las vigilias del santoral se rotulan con abstinencia.
   if (feast && feast.name.startsWith("Vigilia")) return "abstinencia";
+  // Miércoles de Ceniza: ayuno y abstinencia.
+  if (churchDay.name === "Miércoles de Ceniza") return "ayuno-y-abstinencia";
   if (churchDay.season === "cuaresma" || churchDay.season === "semana-santa") {
     // Los viernes de Cuaresma: ayuno y abstinencia; resto: abstinencia.
     return churchDay.date.getDay() === 5 ? "ayuno-y-abstinencia" : "abstinencia";
@@ -175,6 +187,35 @@ export function getOrdoEntry(date: Date): OrdoEntry {
 
   // 2) Fiesta local que cae hoy.
   if (localFeast) {
+    // 2a) Días temporales PRIVILEGIADOS no-dominicales que una fiesta menor NO
+    // puede desplazar (rige el día, la fiesta pasa a conmemoración): Miércoles
+    // de Ceniza, Semana Santa, Viernes Santo, Ascensión, Rogativas, Corpus,
+    // Sagrado Corazón, Pentecostés.
+    const privilegedTemporal =
+      churchDay.name === "Miércoles de Ceniza" ||
+      churchDay.season === "semana-santa" ||
+      churchDay.name.startsWith("Día de la Ascensión") ||
+      churchDay.name.includes("Rogativas") ||
+      churchDay.name === "Corpus Christi" ||
+      churchDay.name === "El Sagrado Corazón de Jesús" ||
+      churchDay.name === "Domingo de Pentecostés";
+    if (privilegedTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["principal"]) {
+      commemorations.push(localFeast.name);
+      for (const f of getAllFeastsForDate(date)) {
+        if (f.name === localFeast.name) continue;
+        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+      }
+      return finalize({
+        date,
+        churchDay,
+        feast: null,
+        title: churchDay.name,
+        rank: isSunday(date) ? "domingo" : "feria",
+        transferredIn: null,
+        commemorations,
+      });
+    }
+
     const blocked = localFeast.transferable && isPrivilegedSunday(churchDay);
     if (blocked) {
       // La fiesta se traslada: hoy rige el domingo, la fiesta se conmemora.
