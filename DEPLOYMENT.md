@@ -168,6 +168,36 @@ Pon las llaves resultantes en los GitHub Secrets `AWS_ACCESS_KEY_ID` y
 
 ---
 
+## CloudFront Function: URLs "bonitas" → index.html
+
+Como el sitio es un export estático con `trailingSlash: true`, cada ruta vive en
+`ruta/index.html`. S3 + CloudFront con OAC solo resuelven `index.html` de forma
+automática en la raíz, **no** en subcarpetas. Sin un rewrite, abrir
+`/oficio/oracion-matutina` (p. ej. al pegar el enlace en un chat, que suele
+quitar la barra final) devolvía **404**.
+
+Solución: una **CloudFront Function** (viewer-request) llamada
+`dailyofficeacc-rewrite` asociada a la distribución, que reescribe:
+
+```
+/oficio/oracion-matutina   -> /oficio/oracion-matutina/index.html
+/oficio/oracion-matutina/  -> /oficio/oracion-matutina/index.html
+/icon.png                  -> (sin cambios; tiene extensión)
+```
+
+El código versionado está en `.github/cloudfront-rewrite.js`. Para recrearla:
+
+```bash
+aws cloudfront create-function --name dailyofficeacc-rewrite \
+  --function-config "Comment=Rewrite pretty URLs to index.html,Runtime=cloudfront-js-2.0" \
+  --function-code fileb://.github/cloudfront-rewrite.js
+# probar con: aws cloudfront test-function ...
+# publicar:   aws cloudfront publish-function --name dailyofficeacc-rewrite --if-match <ETag>
+# y asociarla al DefaultCacheBehavior como event-type viewer-request.
+```
+
+---
+
 ## Notas
 
 - **Fuentes de Google**: la app usa `next/font/google` (Cinzel, EB Garamond).
