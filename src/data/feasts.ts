@@ -75,10 +75,12 @@ export const fixedFeasts: Feast[] = [
   { month: 2, day: 12, name: "San Benito Biscop, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 2, day: 13, name: "San Kentigern, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 2, day: 14, name: "San Valentín, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
+  { month: 2, day: 15, name: "Santos Mártires de Japón", rank: "conmemoración", color: "rojo", },
   { month: 2, day: 21, name: "San Pedro Damián, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Cuaresma" }, },
   { month: 2, day: 24, name: "San Matías, Apóstol y Mártir", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
   { month: 2, day: 18, name: "San Simeón, Obispo y Mártir", rank: "conmemoración", color: "morado", },
   { month: 2, day: 23, name: "San José de Arimatea, Confesor", rank: "conmemoración", color: "blanco", },
+  { month: 2, day: 23, name: "Vigilia de San Matías, Apóstol y Mártir", rank: "conmemoración", color: "morado", },
   { month: 2, day: 27, name: "Beato George Herbert, Confesor", rank: "conmemoración", color: "morado", optional: true, },
   // ===== Marzo =====
   { month: 3, day: 1, name: "San David, Obispo y Confesor", rank: "conmemoración", color: "morado", },

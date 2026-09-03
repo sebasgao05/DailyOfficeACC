@@ -129,6 +129,10 @@ export function getChurchDay(date: Date): ChurchDay {
     const prevSundayDiff = diff >= -55 ? -56 : -63; // aproximación por bloque
     const domingo = diff <= -50 ? "Domingo de Septuagésima" : diff <= -49 ? "Domingo de Sexagésima" : "Domingo de Quincuagésima";
     void prevSundayDiff;
+    // Shrove Tuesday (Martes de Carnaval): el último día antes de la Cuaresma.
+    if (diff === -47) {
+      return { name: "Martes de Carnaval (Shrove Tuesday)", season: "epifania", color: "morado", date, weekName: `Semana de ${domingo}` };
+    }
     return { name: "Feria de Pre-Cuaresma", season: "epifania", color: "morado", date, weekName: `Semana de ${domingo}` };
   }
 
@@ -150,11 +154,17 @@ export function getChurchDay(date: Date): ChurchDay {
     }
     const lentWeek = Math.floor((diff + 46) / 7) + 1;
     const isLaetare = lentWeek === 4 && date.getDay() === 0;
-    const domingo = `${getOrdinalM(lentWeek)} Domingo de Cuaresma`;
+    const isPassion = lentWeek === 5;
+    const domingo = isPassion
+      ? "Domingo de Pasión"
+      : isLaetare
+        ? "Cuarto Domingo de Cuaresma (Laetare)"
+        : `${getOrdinalM(lentWeek)} Domingo de Cuaresma`;
     if (date.getDay() === 0) {
       return { name: domingo, season: "cuaresma", color: isLaetare ? "rosa" : "morado", date, weekName: domingo };
     }
-    return { name: "Feria de Cuaresma", season: "cuaresma", color: "morado", date, weekName: `Semana del ${domingo}` };
+    const feriaName = isPassion ? "Feria de Pasión" : "Feria de Cuaresma";
+    return { name: feriaName, season: "cuaresma", color: "morado", date, weekName: `Semana del ${domingo}` };
   }
 
   // Semana Santa
