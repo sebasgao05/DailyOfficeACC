@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { getChurchDay, type Season } from "@/lib/calendar";
+import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
 const seasons: { id: Season; label: string; href: string }[] = [
@@ -16,12 +16,12 @@ const seasons: { id: Season; label: string; href: string }[] = [
 ];
 
 export function SeasonIndicator() {
-  const [currentSeason, setCurrentSeason] = useState<Season | null>(null);
-
-  useEffect(() => {
-    const churchDay = getChurchDay(new Date());
-    setCurrentSeason(churchDay.season);
-  }, []);
+  const mounted = useMounted();
+  // Solo resaltamos la temporada actual una vez en el cliente (depende de la
+  // fecha local). En el servidor no hay temporada activa: ningún resaltado.
+  const currentSeason: Season | null = mounted
+    ? getChurchDay(new Date()).season
+    : null;
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm py-3">

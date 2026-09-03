@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { LeccionarioView } from "@/components/LeccionarioView";
+import { LeccionarioView } from "@/components/views/LeccionarioView";
 
 export const metadata: Metadata = {
   title: "Leccionario – LOC 1928",

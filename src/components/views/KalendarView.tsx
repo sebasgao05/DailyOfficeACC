@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { type LiturgicalColor } from "@/lib/calendar";
 import { getOrdoEntry, getOrdoMonth, type OrdoEntry } from "@/lib/ordo";
+import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -70,17 +71,22 @@ const colorBgHex: Record<LiturgicalColor, string> = {
 };
 
 export function KalendarView() {
-  const [current, setCurrent] = useState<{ year: number; month: number } | null>(null);
+  const mounted = useMounted();
+  // `current` puede cambiar con la navegación de meses, así que sigue siendo
+  // estado. Se inicializa (lazy) con el mes actual del navegador; en el
+  // servidor no se renderiza el calendario hasta montar (evita mismatch).
+  const [current, setCurrent] = useState<{ year: number; month: number } | null>(
+    null
+  );
   const [selected, setSelected] = useState<OrdoEntry | null>(null);
 
-  useEffect(() => {
-    const now = new Date();
-    setCurrent({ year: now.getFullYear(), month: now.getMonth() });
-  }, []);
+  if (!mounted) return null;
 
-  if (!current) return null;
-
-  const { year, month } = current;
+  const now0 = new Date();
+  const { year, month } = current ?? {
+    year: now0.getFullYear(),
+    month: now0.getMonth(),
+  };
   const today = new Date();
 
   const firstDay = new Date(year, month, 1);

@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { getChurchDay } from "@/lib/calendar";
+import { useMounted } from "@/lib/useMounted";
 
 export function ChurchDayBanner() {
-  const [dayName, setDayName] = useState("");
+  const mounted = useMounted();
 
-  useEffect(() => {
-    const churchDay = getChurchDay(new Date());
-    setDayName(churchDay.name);
-  }, []);
+  // Antes de montar en el cliente no conocemos la fecha local, así que no
+  // renderizamos nada (coincide con el HTML estático).
+  if (!mounted) return null;
 
+  const dayName = getChurchDay(new Date()).name;
   if (!dayName) return null;
 
   return (

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
+import { getLectionary } from "@/lib/lectionary";
 import { fromDateParam } from "@/lib/calendar";
 import { getOrdoEntry } from "@/lib/ordo";
 import { getProperForDay, type ResolvedProper } from "@/lib/propers";
-import { psalms, parsePsalmRefs, getPsalmPortion } from "@/data/psalms";
+import { useMounted } from "@/lib/useMounted";
+import { parsePsalmRefs, getPsalmPortion } from "@/data/psalms";
 import { getMonthlyPsalms } from "@/data/monthlyPsalter";
 import { APOSTLES_CREED, NICENE_CREED } from "@/data/creeds";
 import { getPassage, BIBLE_VERSION } from "@/data/bible";
@@ -21,24 +22,24 @@ interface Props {
 function DailyReadingsContent({ period, psalmsOnly }: Props) {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
-  const [readings, setReadings] = useState<LectionaryDay | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
-  const [proper, setProper] = useState<ResolvedProper | null>(null);
-  const [ordoLine, setOrdoLine] = useState<string>("");
+  const mounted = useMounted();
+  // Estado de UI puro (no depende de la fecha).
   const [showPsalmText, setShowPsalmText] = useState(true); // Show by default
   const [psalterMode, setPsalterMode] = useState<"lectionary" | "monthly">("lectionary");
   const [creed, setCreed] = useState<"apostles" | "nicene">("apostles");
 
-  useEffect(() => {
-    const d = dateParam ? fromDateParam(dateParam) : new Date();
-    setDate(d);
-    setReadings(getLectionary(d));
-    const ordo = getOrdoEntry(d);
-    setProper(getProperForDay(ordo));
-    setOrdoLine(ordo.ordoLine);
-  }, [dateParam]);
+  // Sin fecha en la URL dependemos de `new Date()` (solo cliente). Hasta
+  // montar mostramos el placeholder para que coincida con el HTML estático.
+  if (!dateParam && !mounted) {
+    return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
+  }
 
-  if (!readings || !date) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
+  // Todo lo que depende de la fecha se deriva durante el render (determinista).
+  const date = dateParam ? fromDateParam(dateParam) : new Date();
+  const readings = getLectionary(date);
+  const ordo = getOrdoEntry(date);
+  const proper: ResolvedProper | null = getProperForDay(ordo);
+  const ordoLine = ordo.ordoLine;
 
   const current = period === "morning" ? readings.morning : readings.evening;
   // El Salterio: "Lectionary" usa la tabla del leccionario del día; "Monthly" usa el

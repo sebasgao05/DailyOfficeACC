@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { PsalterView } from "@/components/PsalterView";
+import { PsalterView } from "@/components/views/PsalterView";
 
 export const metadata: Metadata = { title: "El Salterio – LOC 1928" };
 

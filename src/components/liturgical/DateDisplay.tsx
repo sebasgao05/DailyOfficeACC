@@ -1,18 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { getChurchDay, formatDateSpanish, toDateParam } from "@/lib/calendar";
+import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
 export function DateDisplay() {
-  const [today, setToday] = useState<Date | null>(null);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    setToday(new Date());
-  }, []);
+  if (!mounted) return <p className="text-gray-400 italic">Cargando fecha...</p>;
 
-  if (!today) return <p className="text-gray-400 italic">Cargando fecha...</p>;
-
+  const today = new Date();
   const churchDay = getChurchDay(today);
   const dateStr = formatDateSpanish(today);
   const dateParam = toDateParam(today);

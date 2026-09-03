@@ -115,6 +115,17 @@ function SiteHeaderContent() {
           <p className="text-white/50 text-[10px] uppercase tracking-[0.2em] mt-0.5">
             Presentado por la Iglesia Anglicana Católica
           </p>
+          <p className="text-white/50 text-[10px] mt-1">
+            Creado por{" "}
+            <a
+              href="https://david-barrera.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/70 underline decoration-dotted hover:text-[var(--color-gold)] transition-colors"
+            >
+              David Sebastián Barrera Gaona
+            </a>
+          </p>
         </div>
 
         {/* Navigation Buttons */}

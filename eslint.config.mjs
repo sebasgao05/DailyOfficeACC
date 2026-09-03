@@ -15,14 +15,6 @@ const eslintConfig = defineConfig([
     // Scripts de utilidad Node (no forman parte de la app; usan require()).
     "scripts/**",
   ]),
-  {
-    // Relaja reglas nuevas y estrictas de eslint-config-next 16 para que no
-    // bloqueen el CI. Se mantienen como aviso para revisarlas con calma.
-    rules: {
-      "react-hooks/set-state-in-effect": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
-    },
-  },
 ]);
 
 export default eslintConfig;

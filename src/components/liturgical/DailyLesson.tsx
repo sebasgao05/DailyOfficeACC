@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getLectionary } from "@/lib/lectionary";
 import { fromDateParam } from "@/lib/calendar";
+import { useMounted } from "@/lib/useMounted";
 import { getPassage, BIBLE_VERSION } from "@/data/bible";
 
 interface Props {
@@ -20,14 +21,18 @@ interface Props {
 function DailyLessonContent({ period, which }: Props) {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
-  const [ref, setRef] = useState<string | null>(null);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    const d = dateParam ? fromDateParam(dateParam) : new Date();
-    const r = getLectionary(d);
-    const office = period === "morning" ? r.morning : r.evening;
-    setRef(which === "first" ? office.firstLesson : office.secondLesson);
-  }, [dateParam, period, which]);
+  // Sin fecha en la URL, dependemos de `new Date()` (solo en cliente). Hasta
+  // montar mostramos el placeholder para que coincida con el HTML estático.
+  if (!dateParam && !mounted) {
+    return <p className="text-xs italic text-gray-400">Cargando la lección…</p>;
+  }
+
+  const d = dateParam ? fromDateParam(dateParam) : new Date();
+  const r = getLectionary(d);
+  const office = period === "morning" ? r.morning : r.evening;
+  const ref = which === "first" ? office.firstLesson : office.secondLesson;
 
   if (!ref) return <p className="text-xs italic text-gray-400">Cargando la lección…</p>;
 
