@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
 import { fromDateParam } from "@/lib/calendar";
 import { psalms } from "@/data/psalms";
+import { getPassage, BIBLE_VERSION } from "@/data/bible";
 import Link from "next/link";
 
 interface Props {
@@ -86,18 +87,38 @@ function DailyReadingsContent({ period }: Props) {
       )}
 
       {/* Lessons */}
-      <div className="readings-box bg-white border border-[var(--color-border)] rounded-lg p-4 space-y-3">
+      <div className="readings-box bg-white border border-[var(--color-border)] rounded-lg p-4 space-y-4">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 text-center mb-2">
           {period === "morning" ? "☀ Oración Matutina" : "☽ Oración Vespertina"}
         </p>
-        <div>
-          <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider">Primera Lectura: </span>
-          <span className="text-sm font-medium">{current.firstLesson}</span>
-        </div>
-        <div>
-          <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider">Segunda Lectura: </span>
-          <span className="text-sm font-medium">{current.secondLesson}</span>
-        </div>
+        {([["Primera Lectura", current.firstLesson], ["Segunda Lectura", current.secondLesson]] as const).map(
+          ([label, ref]) => {
+            const passage = getPassage(ref);
+            return (
+              <div key={label}>
+                <div className="mb-1">
+                  <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider">{label}: </span>
+                  <span className="text-sm font-medium">{ref}</span>
+                </div>
+                {passage ? (
+                  <div className="text-sm space-y-1 pl-3 border-l-2 border-[var(--color-gold)]">
+                    {passage.verses.map((v, i) => (
+                      <p key={i} className="leading-relaxed">
+                        {v.replace(/^(\d+(?::\d+)?)\s/, "")}
+                        <sup className="text-[9px] text-gray-400 ml-0.5">{(v.match(/^(\d+(?::\d+)?)/) || [])[1]}</sup>
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs italic text-gray-400 pl-3">Texto no disponible — consultar la Biblia en {ref}.</p>
+                )}
+              </div>
+            );
+          }
+        )}
+        <p className="text-[10px] italic text-gray-400 text-center pt-2 border-t border-[var(--color-border)]">
+          Texto bíblico: {BIBLE_VERSION}
+        </p>
       </div>
     </div>
   );
