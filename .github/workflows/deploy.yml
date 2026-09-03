@@ -1,0 +1,111 @@
+name: CI & Deploy
+
+# Ejecuta CI en cada push y PR; despliega solo en push a main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancela ejecuciones anteriores de la misma rama si llega una nueva.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "11.9.0"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # CI: lint, typecheck y build. Corre en push y en PRs.
+  # ---------------------------------------------------------------------------
+  ci:
+    name: Lint, Typecheck & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build (static export)
+        run: pnpm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: out/
+          retention-days: 1
+
+  # ---------------------------------------------------------------------------
+  # Deploy: solo en push a main. Reusa el artefacto del job de CI.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to S3 + CloudFront
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # Permisos para OIDC (id-token) y lectura del repo.
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: production
+      url: ${{ vars.SITE_URL }}
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-site
+          path: out
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync assets with long cache (hashed files)
+        # Los archivos bajo /_next tienen hash en el nombre: cache agresivo.
+        run: |
+          aws s3 sync out/ "s3://${{ vars.S3_BUCKET }}/" \
+            --delete \
+            --exclude "*.html" \
+            --exclude "*.txt" \
+            --cache-control "public,max-age=31536000,immutable"
+
+      - name: Sync HTML with no-cache (always revalidate)
+        # HTML y .txt no llevan hash: siempre revalidar para reflejar cambios.
+        run: |
+          aws s3 sync out/ "s3://${{ vars.S3_BUCKET }}/" \
+            --delete \
+            --exclude "*" \
+            --include "*.html" \
+            --include "*.txt" \
+            --cache-control "public,max-age=0,must-revalidate"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

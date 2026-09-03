@@ -17,9 +17,32 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "Oración Común en Línea – LOC 1928",
+  // Base para resolver rutas absolutas de imágenes OG/Twitter.
+  // Ajusta la URL a tu dominio de producción (CloudFront o dominio propio).
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://main.d3lfevf2rk1ee7.amplifyapp.com"
+  ),
+  title: {
+    default: "Oración Común en Línea – LOC 1928",
+    template: "%s · Oración Común en Línea",
+  },
   description:
     "El Oficio Diario del Libro de Oración Común de 1928 en español para la Iglesia Anglicana Católica.",
+  applicationName: "Oración Común en Línea",
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    siteName: "Oración Común en Línea",
+    title: "Oración Común en Línea – LOC 1928",
+    description:
+      "El Oficio Diario del Libro de Oración Común de 1928 en español para la Iglesia Anglicana Católica.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Oración Común en Línea – LOC 1928",
+    description:
+      "El Oficio Diario del Libro de Oración Común de 1928 en español para la Iglesia Anglicana Católica.",
+  },
 };
 
 export default function RootLayout({
