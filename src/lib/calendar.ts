@@ -267,16 +267,16 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff === 60) {
       return { name: "Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Corpus Christi" };
     }
-    // Octava de Corpus Christi (diff 61-67), blanco.
-    if (diff >= 61 && diff <= 67) {
+    // Octava de Corpus Christi (diff 61-67), blanco. Un domingo dentro rige como Domingo de Trinidad.
+    if (diff >= 61 && diff <= 67 && date.getDay() !== 0) {
       return { name: "De la Octava de Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Octava de Corpus Christi" };
     }
     // Sagrado Corazón de Jesús: viernes tras la octava de Corpus (diff 68), blanco.
     if (diff === 68) {
       return { name: "El Sagrado Corazón de Jesús", season: "trinidad", color: "blanco", date, weekName: "Sagrado Corazón" };
     }
-    // Octava del Sagrado Corazón (diff 69-75), blanco. El día octavo es diff 75.
-    if (diff >= 69 && diff <= 75) {
+    // Octava del Sagrado Corazón (diff 69-75), blanco. Un domingo dentro rige como Domingo de Trinidad.
+    if (diff >= 69 && diff <= 75 && date.getDay() !== 0) {
       return { name: "De la Octava del Sagrado Corazón", season: "trinidad", color: "blanco", date, weekName: "Octava del Sagrado Corazón" };
     }
     const trinityWeek = Math.floor((diff - 56) / 7);
