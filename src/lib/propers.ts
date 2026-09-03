@@ -36,6 +36,8 @@ function normalize(s: string): string {
     .replace(/\bvi\b|sexta|sexto|6a/g, "6")
     .replace(/despues|tras/g, "despues")
     .replace(/\bde la\b|\bde\b|\bdel\b/g, "de")
+    .replace(/\bsanto\b/g, "san")
+    .replace(/natividad de san juan/g, "san juan bautista")
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 }
@@ -66,6 +68,21 @@ export function getProperForDay(ordo: OrdoEntry): ResolvedProper | null {
     const hit = collectIndex.get(normalize(cand));
     if (hit) {
       return { title: hit.title, entry: hit, needsMissal: false };
+    }
+  }
+
+  // Segundo intento: casar por el NÚCLEO del nombre (las primeras palabras
+  // significativas), para fiestas cuyo título difiere solo en sufijos
+  // ('San Andrés, Apóstol y Mártir' vs 'San Andrés, Apóstol'; 'Anunciación de
+  // la B.V.M.' vs 'Anunciación de la Bendita Virgen María').
+  const core = (s: string) => normalize(s).split(" ").slice(0, 3).join(" ");
+  for (const cand of candidates) {
+    const candCore = core(cand);
+    if (candCore.length < 6) continue; // evita falsos positivos con núcleos muy cortos
+    for (const [key, entry] of collectIndex) {
+      if (key.startsWith(candCore) || candCore.startsWith(key.split(" ").slice(0, 3).join(" "))) {
+        return { title: entry.title, entry, needsMissal: false };
+      }
     }
   }
 
