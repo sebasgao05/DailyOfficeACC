@@ -19,7 +19,7 @@ export type Season =
   | "pentecostes"
   | "trinidad";
 
-export type LiturgicalColor = "morado" | "blanco" | "rojo" | "verde";
+export type LiturgicalColor = "morado" | "blanco" | "rojo" | "verde" | "negro" | "rosa";
 
 export function getChurchDay(date: Date): ChurchDay {
   const easter = calculateEaster(date.getFullYear());
@@ -34,10 +34,12 @@ export function getChurchDay(date: Date): ChurchDay {
   // Adviento
   if (date >= adventStart && date < christmas) {
     const weekNum = Math.floor((date.getTime() - adventStart.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    // Domingo de Adviento III = Gaudete (rosa); su domingo únicamente
+    const isGaudete = weekNum === 3 && date.getDay() === 0;
     return {
       name: `${getWeekdayName(date)} de la ${getOrdinal(weekNum)} Semana de Adviento`,
       season: "adviento",
-      color: "morado",
+      color: isGaudete ? "rosa" : "morado",
       date,
     };
   }
@@ -55,16 +57,25 @@ export function getChurchDay(date: Date): ChurchDay {
   // Cuaresma (46 días antes de Pascua hasta Domingo de Ramos)
   if (diff >= -46 && diff < -7) {
     const lentWeek = Math.floor((diff + 46) / 7) + 1;
+    // Domingo de Cuaresma IV = Laetare (rosa); su domingo únicamente
+    const isLaetare = lentWeek === 4 && date.getDay() === 0;
     return {
       name: `${getWeekdayName(date)} de la ${getOrdinal(lentWeek)} Semana de Cuaresma`,
       season: "cuaresma",
-      color: "morado",
+      color: isLaetare ? "rosa" : "morado",
       date,
     };
   }
 
   // Semana Santa
   if (diff >= -7 && diff < 0) {
+    // Viernes Santo = negro
+    if (diff === -2) {
+      return { name: "Viernes Santo", season: "semana-santa", color: "negro", date };
+    }
+    if (diff === -7) {
+      return { name: "Domingo de Ramos", season: "semana-santa", color: "rojo", date };
+    }
     return { name: "Semana Santa", season: "semana-santa", color: "morado", date };
   }
 

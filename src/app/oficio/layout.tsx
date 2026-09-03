@@ -33,11 +33,23 @@ export default function OficioLayout({ children }: { children: React.ReactNode }
             <Link href="/oficio/oracion-matutina" className={`block text-sm ${isMorning ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
               Oración Matutina
             </Link>
-            <Link href="/oficio/oracion-vespertina" className={`block text-sm ${isEvening ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
-              Oración Vespertina
+            <Link href="/oficio/prima" className={`block text-sm ${pathname.includes("prima") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
+              Prima
+            </Link>
+            <Link href="/oficio/tercia" className={`block text-sm ${pathname.includes("tercia") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
+              Tercia
+            </Link>
+            <Link href="/oficio/sexta" className={`block text-sm ${pathname.includes("sexta") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
+              Sexta
             </Link>
             <Link href="/oficio/mediodia" className={`block text-sm ${pathname.includes("mediodia") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
               Mediodía
+            </Link>
+            <Link href="/oficio/nona" className={`block text-sm ${pathname.includes("nona") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
+              Nona
+            </Link>
+            <Link href="/oficio/oracion-vespertina" className={`block text-sm ${isEvening ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
+              Oración Vespertina
             </Link>
             <Link href="/oficio/completas" className={`block text-sm ${pathname.includes("completas") ? "text-[var(--color-primary)] font-medium" : "text-gray-600 hover:text-[var(--color-primary)]"}`}>
               Completas

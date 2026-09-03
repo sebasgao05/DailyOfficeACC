@@ -17,10 +17,10 @@ const times = [
 const offices = [
   { href: "/oficio/oracion-matutina", label: "MAITINES" },
   { href: "/oficio/oracion-matutina", label: "LAUDES" },
-  { href: "/oficio/oracion-matutina", label: "PRIMA" },
-  { href: "/oficio/mediodia", label: "TERCIA" },
-  { href: "/oficio/mediodia", label: "SEXTA" },
-  { href: "/oficio/mediodia", label: "NONA" },
+  { href: "/oficio/prima", label: "PRIMA" },
+  { href: "/oficio/tercia", label: "TERCIA" },
+  { href: "/oficio/sexta", label: "SEXTA" },
+  { href: "/oficio/nona", label: "NONA" },
   { href: "/oficio/oracion-vespertina", label: "VÍSPERAS" },
   { href: "/oficio/completas", label: "COMPLETAS" },
 ];

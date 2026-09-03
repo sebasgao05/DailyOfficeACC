@@ -1,21 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getChurchDay, type LiturgicalColor } from "@/lib/calendar";
-import { getFeastForDate, type Feast } from "@/data/feasts";
+import { type LiturgicalColor } from "@/lib/calendar";
+import { getOrdoEntry, getOrdoMonth, type OrdoEntry } from "@/lib/ordo";
 import Link from "next/link";
 
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS_ES = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
+// Fondo de la celda según el color litúrgico (los 6 colores del Ordo)
 const colorBg: Record<LiturgicalColor, string> = {
   rojo: "bg-red-50/70 border-red-200",
   morado: "bg-purple-50/70 border-purple-200",
   blanco: "bg-amber-50/50 border-amber-100",
   verde: "bg-green-50/70 border-green-200",
+  negro: "bg-neutral-200/70 border-neutral-400",
+  rosa: "bg-pink-50/70 border-pink-200",
 };
 
 const colorDot: Record<LiturgicalColor, string> = {
@@ -23,34 +26,50 @@ const colorDot: Record<LiturgicalColor, string> = {
   morado: "bg-purple-600",
   blanco: "bg-amber-300 border border-gray-300",
   verde: "bg-green-600",
+  negro: "bg-neutral-800",
+  rosa: "bg-pink-400",
 };
 
-// Color for the day NUMBER in the calendar cell (like the Ordo PDF)
+// Color del NÚMERO del día en la celda (como en el Ordo PDF)
 const colorNumber: Record<LiturgicalColor, string> = {
   rojo: "text-red-700",
   morado: "text-purple-700",
   blanco: "text-gray-700",
   verde: "text-green-800",
+  negro: "text-neutral-800",
+  rosa: "text-pink-600",
 };
 
-const feastColorText: Record<Feast["color"], string> = {
-  rojo: "text-red-700",
-  blanco: "text-[var(--color-primary-dark)]",
-  morado: "text-purple-700",
-  verde: "text-green-700",
+const colorStripe: Record<LiturgicalColor, string> = {
+  rojo: "border-l-red-600",
+  morado: "border-l-purple-600",
+  blanco: "border-l-yellow-400",
+  verde: "border-l-green-600",
+  negro: "border-l-neutral-800",
+  rosa: "border-l-pink-400",
+};
+
+const COLOR_LABEL: Record<LiturgicalColor, string> = {
+  rojo: "Rojo",
+  morado: "Morado",
+  blanco: "Blanco",
+  verde: "Verde",
+  negro: "Negro",
+  rosa: "Rosa",
 };
 
 export function KalendarView() {
-  const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
+  const [current, setCurrent] = useState<{ year: number; month: number } | null>(null);
+  const [selected, setSelected] = useState<OrdoEntry | null>(null);
 
   useEffect(() => {
-    setCurrentMonth(new Date());
+    const now = new Date();
+    setCurrent({ year: now.getFullYear(), month: now.getMonth() });
   }, []);
 
-  if (!currentMonth) return null;
+  if (!current) return null;
 
-  const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth();
+  const { year, month } = current;
   const today = new Date();
 
   const firstDay = new Date(year, month, 1);
@@ -58,9 +77,24 @@ export function KalendarView() {
   const startOffset = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
 
-  function prevMonth() { setCurrentMonth(new Date(year, month - 1, 1)); }
-  function nextMonth() { setCurrentMonth(new Date(year, month + 1, 1)); }
-  function goToday() { setCurrentMonth(new Date()); }
+  function shiftMonth(delta: number) {
+    const base = new Date(year, month + delta, 1);
+    setCurrent({ year: base.getFullYear(), month: base.getMonth() });
+    setSelected(null);
+  }
+  function goToday() {
+    const now = new Date();
+    setCurrent({ year: now.getFullYear(), month: now.getMonth() });
+    setSelected(null);
+  }
+  function setYear(y: number) {
+    if (!Number.isNaN(y) && y >= 1583 && y <= 4099) {
+      setCurrent({ year: y, month });
+      setSelected(null);
+    }
+  }
+
+  const monthEntries = getOrdoMonth(year, month);
 
   const cells: (null | Date)[] = [];
   for (let i = 0; i < startOffset; i++) cells.push(null);
@@ -69,27 +103,47 @@ export function KalendarView() {
 
   return (
     <div className="bg-white border border-[var(--color-border)] rounded-lg p-4 md:p-6">
-      {/* Month Header */}
+      {/* Cabecera del mes + selector de año */}
       <div className="text-center mb-4">
         <h2 className="text-2xl italic text-[var(--color-primary-dark)] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
           {MONTHS_ES[month]} {year}
         </h2>
-        <div className="flex items-center justify-center gap-2">
-          <button onClick={prevMonth} className="px-3 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">← Anterior</button>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <button onClick={() => shiftMonth(-1)} className="px-3 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">← Mes</button>
           <button onClick={goToday} className="px-3 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">Hoy</button>
-          <button onClick={nextMonth} className="px-3 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">Siguiente →</button>
+          <button onClick={() => shiftMonth(1)} className="px-3 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">Mes →</button>
+          <span className="mx-2 h-5 w-px bg-[var(--color-border)]" />
+          <label className="flex items-center gap-1 text-sm text-gray-500">
+            Año:
+            <input
+              type="number"
+              value={year}
+              min={1583}
+              max={4099}
+              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              className="w-20 px-2 py-1 border border-[var(--color-border)] rounded text-sm text-center bg-white dark:bg-[#2a2520]"
+              aria-label="Buscar año"
+            />
+          </label>
+          <button onClick={() => setYear(year - 1)} className="px-2 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">−</button>
+          <button onClick={() => setYear(year + 1)} className="px-2 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">+</button>
         </div>
+        <p className="text-[11px] text-gray-400 mt-2 italic">
+          El ORDO se calcula año a año (fecha de Pascua, Adviento, precedencia y transferencia de fiestas).
+        </p>
       </div>
 
-      {/* Color Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-[10px] mb-4 pb-3 border-b border-[var(--color-border)]">
-        <span className="flex items-center gap-1"><span className={`w-2.5 h-2.5 rounded-full ${colorDot.rojo}`}></span>Rojo (Mártires, Pentecostés)</span>
-        <span className="flex items-center gap-1"><span className={`w-2.5 h-2.5 rounded-full ${colorDot.morado}`}></span>Morado (Adviento, Cuaresma)</span>
-        <span className="flex items-center gap-1"><span className={`w-2.5 h-2.5 rounded-full ${colorDot.blanco}`}></span>Blanco (Navidad, Pascua, Fiestas)</span>
-        <span className="flex items-center gap-1"><span className={`w-2.5 h-2.5 rounded-full ${colorDot.verde}`}></span>Verde (Epifanía, Trinidad)</span>
+      {/* Leyenda de colores */}
+      <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] mb-4 pb-3 border-b border-[var(--color-border)]">
+        {(Object.keys(colorDot) as LiturgicalColor[]).map((c) => (
+          <span key={c} className="flex items-center gap-1">
+            <span className={`w-2.5 h-2.5 rounded-full ${colorDot[c]}`}></span>
+            {COLOR_LABEL[c]}
+          </span>
+        ))}
       </div>
 
-      {/* Day Headers */}
+      {/* Encabezados de días */}
       <div className="grid grid-cols-7 gap-px mb-1">
         {DAYS_ES.map((day) => (
           <div key={day} className="text-center text-[10px] font-semibold text-[var(--color-primary-dark)] py-2" style={{ fontFamily: "var(--font-heading)" }}>
@@ -98,103 +152,120 @@ export function KalendarView() {
         ))}
       </div>
 
-      {/* Calendar Grid */}
+      {/* Rejilla del calendario */}
       <div className="grid grid-cols-7 gap-1">
         {cells.map((date, i) => {
           if (!date) {
             return <div key={`empty-${i}`} className="min-h-[90px] bg-gray-50/50 rounded"></div>;
           }
-
-          const churchDay = getChurchDay(date);
-          const feast = getFeastForDate(date);
-          const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+          const ordo = getOrdoEntry(date);
+          const isToday =
+            date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear();
           const isSunday = date.getDay() === 0;
-          // Ordo rule: If there's a feast, the color is the FEAST color (for the Mass)
-          // If no feast, use the seasonal color (green for Trinity ferials, etc.)
-          const massColor = feast ? feast.color : churchDay.color;
-          const displayColor = colorBg[massColor];
+          const isHighRank = ordo.rank === "principal" || ordo.rank === "mayor";
 
           return (
-            <Link
+            <button
               key={date.toISOString()}
-              href={`/leccionario?date=${date.toISOString().split("T")[0]}`}
-              className={`min-h-[90px] p-1.5 rounded border transition-all hover:shadow-md ${displayColor} ${
+              onClick={() => setSelected(ordo)}
+              className={`text-left min-h-[90px] p-1.5 rounded border transition-all hover:shadow-md ${colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
-              }`}
+              } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >
-              {/* Day number in liturgical color (like Ordo PDF) */}
-              <div className={`text-lg font-bold ${colorNumber[massColor]} ${isSunday ? "text-xl" : ""}`}>
+              <div className={`text-lg font-bold ${colorNumber[ordo.color]} ${isSunday ? "text-xl" : ""}`}>
                 {date.getDate()}
               </div>
-              {/* Feast name (high rank) */}
-              {feast && (feast.rank === "principal" || feast.rank === "mayor") && (
-                <div className={`text-[9px] leading-tight mt-0.5 font-bold uppercase ${feastColorText[feast.color]}`}>
-                  {feast.name}
+              <div className={`text-[9px] leading-tight mt-0.5 ${isHighRank ? "font-bold uppercase" : isSunday ? "text-[var(--color-primary)] font-bold" : "text-gray-600"} ${colorNumber[ordo.color]}`}>
+                {ordo.title.length > 50 ? ordo.title.slice(0, 47) + "…" : ordo.title}
+              </div>
+              {ordo.fast && (
+                <div className="text-[7px] mt-0.5 italic text-gray-500">
+                  {ordo.fast === "ayuno-y-abstinencia" ? "Ayuno y Abst." : "Abst."}
                 </div>
               )}
-              {/* Church day name (for Sundays or if no feast) */}
-              {(!feast || feast.rank === "menor") && (
-                <div className={`text-[9px] leading-tight mt-0.5 ${isSunday ? "text-[var(--color-primary)] font-bold" : "text-gray-600"}`}>
-                  {churchDay.name.length > 50 ? churchDay.name.slice(0, 47) + "..." : churchDay.name}
-                </div>
-              )}
-              {/* Minor feast indicator */}
-              {feast && feast.rank === "menor" && (
-                <div className={`text-[8px] mt-0.5 italic ${feastColorText[feast.color]}`}>
-                  {feast.name}
-                </div>
-              )}
-            </Link>
+            </button>
           );
         })}
       </div>
 
-      {/* Note about propers */}
+      {/* Panel de detalle del día seleccionado */}
+      {selected && (
+        <div className="mt-5 p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)]">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wide">
+                {selected.date.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+              </p>
+              <h3 className="text-lg font-semibold text-[var(--color-primary-dark)]" style={{ fontFamily: "var(--font-heading)" }}>
+                {selected.title}
+              </h3>
+            </div>
+            <span className="flex items-center gap-1.5 text-xs shrink-0">
+              <span className={`w-3 h-3 rounded-full ${colorDot[selected.color]}`}></span>
+              {COLOR_LABEL[selected.color]}
+            </span>
+          </div>
+          {selected.propers.length > 0 && (
+            <p className="text-sm mt-2"><span className="text-gray-500">Propios:</span> {selected.propers.join(" · ")}</p>
+          )}
+          {selected.commemorations.length > 0 && (
+            <p className="text-sm mt-1"><span className="text-gray-500">Conmemoraciones:</span> {selected.commemorations.join("; ")}</p>
+          )}
+          {selected.fast && (
+            <p className="text-sm mt-1"><span className="text-gray-500">Ayuno:</span> {selected.fast === "ayuno-y-abstinencia" ? "Ayuno y Abstinencia" : "Abstinencia"}</p>
+          )}
+          {selected.note && (
+            <p className="text-sm mt-1 italic text-[var(--color-primary)]">Nota: {selected.note}</p>
+          )}
+          <Link
+            href={`/leccionario?date=${selected.date.toISOString().split("T")[0]}`}
+            className="inline-block mt-3 text-xs text-[var(--color-primary)] hover:text-[var(--color-gold)] underline"
+          >
+            Ver leccionario y propios del día →
+          </Link>
+        </div>
+      )}
+
+      {/* Nota sobre propios */}
       <div className="mt-4 text-center text-xs text-gray-500 italic">
-        <p>Las fiestas en <span className="font-bold text-[var(--color-primary)]">rojo</span> o <span className="font-bold">negrita</span> tienen propios (Colecta, Epístola y Evangelio).</p>
+        <p>Haz clic en cualquier día para ver su color, propios, conmemoraciones y ayuno.</p>
         <p>Para los propios de fiestas menores, consultar el Misal.</p>
       </div>
 
-      {/* Ordo-style list for the month */}
+      {/* Lista estilo ORDO del mes */}
       <div className="mt-6 border-t border-[var(--color-border)] pt-4">
         <h3 className="text-center text-sm font-semibold text-[var(--color-primary-dark)] mb-3" style={{ fontFamily: "var(--font-heading)" }}>
-          ORDO DEL MES
+          ORDO DEL MES — {MONTHS_ES[month]} {year}
         </h3>
-        <div className="space-y-1 max-w-[600px] mx-auto">
-          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((d) => {
-            const date = new Date(year, month, d);
-            const churchDay = getChurchDay(date);
-            const feast = getFeastForDate(date);
-            const dayName = date.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", "");
-            const isSunday = date.getDay() === 0;
-            const displayColor = feast ? feast.color : churchDay.color;
-            const colorStripe: Record<string, string> = {
-              rojo: "border-l-red-600",
-              morado: "border-l-purple-600",
-              blanco: "border-l-yellow-400",
-              verde: "border-l-green-600",
-            };
-
+        <div className="space-y-1 max-w-[680px] mx-auto">
+          {monthEntries.map((ordo) => {
+            const d = ordo.date.getDate();
+            const dayName = ordo.date.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", "");
+            const isSunday = ordo.date.getDay() === 0;
+            const isHighRank = ordo.rank === "principal" || ordo.rank === "mayor";
             return (
-              <div
+              <button
                 key={d}
-                className={`flex items-baseline gap-2 py-1 px-2 border-l-4 ${colorStripe[displayColor] || "border-l-green-600"} ${isSunday ? "bg-[var(--color-bg-alt)] rounded-r" : ""}`}
+                onClick={() => setSelected(ordo)}
+                className={`w-full text-left flex items-baseline gap-2 py-1 px-2 border-l-4 ${colorStripe[ordo.color]} ${isSunday ? "bg-[var(--color-bg-alt)] rounded-r" : ""} hover:bg-[var(--color-bg-alt)]`}
               >
                 <span className="text-xs text-gray-400 w-5 shrink-0">{d}</span>
                 <span className={`text-xs w-8 shrink-0 uppercase ${isSunday ? "font-bold text-[var(--color-primary)]" : "text-gray-500"}`}>
                   {dayName}
                 </span>
-                <span className={`text-xs flex-1 ${isSunday ? "font-semibold" : ""} ${feast && feast.rank !== "conmemoración" ? "font-medium" : ""}`}>
-                  {feast && (feast.rank === "principal" || feast.rank === "mayor")
-                    ? feast.name
-                    : churchDay.name.length > 60
-                    ? churchDay.name.slice(0, 57) + "..."
-                    : churchDay.name}
-                  {feast && feast.rank === "menor" && (
-                    <span className="italic text-gray-500 ml-1">— {feast.name}</span>
+                <span className={`text-xs flex-1 ${isSunday ? "font-semibold" : ""} ${isHighRank ? "font-medium uppercase" : ""}`}>
+                  {ordo.title}
+                  {ordo.propers.length > 0 && (
+                    <span className="text-gray-400 ml-1 normal-case">— {ordo.propers.join(" · ")}</span>
+                  )}
+                  {ordo.commemorations.length > 0 && (
+                    <span className="italic text-gray-500 ml-1 normal-case">({ordo.commemorations.map((c) => `Comm. ${c}`).join("; ")})</span>
                   )}
                 </span>
-              </div>
+                <span className="text-[10px] text-gray-400 shrink-0">{COLOR_LABEL[ordo.color]}</span>
+              </button>
             );
           })}
         </div>
