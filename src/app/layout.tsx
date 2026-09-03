@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { EB_Garamond, Cinzel } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/SiteHeader";
-import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { Footer } from "@/components/layout/Footer";
 
 const garamond = EB_Garamond({
   subsets: ["latin"],

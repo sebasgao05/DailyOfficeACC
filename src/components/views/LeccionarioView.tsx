@@ -1,27 +1,26 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { getChurchDay, formatDateSpanish, fromDateParam, toDateParam } from "@/lib/calendar";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
 import { getOrdoEntry } from "@/lib/ordo";
 import { getProperForDay } from "@/lib/propers";
+import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
 function LeccionarioContent() {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
-  const [currentDate, setCurrentDate] = useState<Date | null>(null);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    if (dateParam) {
-      setCurrentDate(fromDateParam(dateParam));
-    } else {
-      setCurrentDate(new Date());
-    }
-  }, [dateParam]);
+  // Sin fecha en la URL usamos la fecha local (solo cliente). Hasta montar,
+  // placeholder que coincide con el HTML estático.
+  if (!dateParam && !mounted) {
+    return <p className="text-center italic text-gray-400">Cargando...</p>;
+  }
 
-  if (!currentDate) return <p className="text-center italic text-gray-400">Cargando...</p>;
+  const currentDate = dateParam ? fromDateParam(dateParam) : new Date();
 
   const churchDay = getChurchDay(currentDate);
   const readings = getLectionary(currentDate);

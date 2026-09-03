@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { KalendarView } from "@/components/KalendarView";
+import { KalendarView } from "@/components/views/KalendarView";
 import Link from "next/link";
 
 export const metadata: Metadata = {

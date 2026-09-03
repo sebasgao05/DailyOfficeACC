@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { psalms } from "@/data/psalms";
+import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
 // 30-day psalm cycle from LOC 1928
@@ -25,15 +26,18 @@ const psalmCycle: { morning: number[][]; evening: number[][] } = {
 type Tab = "cycle" | "selections" | "topical";
 
 export function PsalterView() {
-  const [today, setToday] = useState<number>(1);
-  const [period, setPeriod] = useState<"morning" | "evening">("morning");
+  const mounted = useMounted();
   const [tab, setTab] = useState<Tab>("cycle");
+  // `null` = el usuario aún no ha elegido; se usa el valor por defecto derivado
+  // de la fecha/hora local del navegador. Al pulsar el grid o el toggle, pasan
+  // a un valor explícito.
+  const [pickedDay, setToday] = useState<number | null>(null);
+  const [pickedPeriod, setPeriod] = useState<"morning" | "evening" | null>(null);
 
-  useEffect(() => {
-    const now = new Date();
-    setToday(now.getDate());
-    setPeriod(now.getHours() < 14 ? "morning" : "evening");
-  }, []);
+  const now = mounted ? new Date() : null;
+  const today = pickedDay ?? (now ? now.getDate() : 1);
+  const period: "morning" | "evening" =
+    pickedPeriod ?? (now && now.getHours() >= 14 ? "evening" : "morning");
 
   const dayIndex = today - 1;
   const currentPsalms = psalmCycle[period][dayIndex] || [];
