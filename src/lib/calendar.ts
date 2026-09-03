@@ -206,12 +206,27 @@ export function getChurchDay(date: Date): ChurchDay {
       }
       return { name: "De la Octava de la Ascensión", season: "pascua", color: "blanco", date, weekName: "Octava de la Ascensión" };
     }
-    const easterWeek = Math.floor(diff / 7) + 1;
-    const domingo = `${getOrdinalM(easterWeek)} Domingo de Pascua`;
+    // Octava de Pascua (diff 1-6): días de la Semana de Pascua (de Resurrección), blanco.
+    if (diff >= 1 && diff <= 6) {
+      const diasSemana = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      const nombre = `${diasSemana[date.getDay()] || "Feria"} en la Semana de Pascua`;
+      return { name: nombre, season: "pascua", color: "blanco", date, weekName: "Semana de Pascua (Octava)" };
+    }
+    // Domingos y ferias de Pascua, numerados como el ORDO: el domingo tras la Octava
+    // (diff 7) es la "Primera Domínica DESPUÉS de Pascua", no "Segundo Domingo".
+    const weeksAfterEaster = Math.floor(diff / 7); // diff 7-13 → 1, 14-20 → 2, ...
+    const nombresDominica: Record<number, string> = {
+      1: "Primera Domínica después de Pascua (in Albis)",
+      2: "Segunda Domínica después de Pascua (del Buen Pastor)",
+      3: "Tercera Domínica después de Pascua",
+      4: "Cuarta Domínica después de Pascua",
+      5: "Quinta Domínica después de Pascua (de Rogación)",
+    };
+    const domingo = nombresDominica[weeksAfterEaster] ?? `${getOrdinal(weeksAfterEaster)} Domínica después de Pascua`;
     if (date.getDay() === 0) {
       return { name: domingo, season: "pascua", color: "blanco", date, weekName: domingo };
     }
-    return { name: "Feria de Pascua", season: "pascua", color: "blanco", date, weekName: `Semana del ${domingo}` };
+    return { name: "Feria de Pascua", season: "pascua", color: "blanco", date, weekName: `Semana de la ${domingo}` };
   }
 
   // Pentecostés
