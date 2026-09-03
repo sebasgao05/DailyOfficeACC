@@ -33,6 +33,26 @@ export function getChurchDay(date: Date): ChurchDay {
   const christmas = new Date(date.getFullYear(), 11, 25);
   const epiphany = new Date(date.getFullYear(), 0, 6);
 
+  // ── Octavas de fecha fija (tienen precedencia sobre el cálculo temporal genérico
+  //    del día, pero un santo local que caiga dentro sigue rigiendo vía getOrdoEntry;
+  //    y un DOMINGO dentro de la octava rige como domingo, no como día de octava). ──
+  const m0 = date.getMonth();
+  const dd = date.getDate();
+  const esDomingo = date.getDay() === 0;
+  // Octava de la Asunción (16-21 ago; el 22 es el día octavo). Blanco.
+  if (m0 === 7 && dd >= 16 && dd <= 21 && !esDomingo) {
+    return { name: "De la Octava de la Asunción", season: "trinidad", color: "blanco", date, weekName: "Octava de la Asunción" };
+  }
+  // Octava de Todos los Santos (2-7 nov; 1 = Todos los Santos, 8 = día octavo). Blanco.
+  if (m0 === 10 && dd >= 2 && dd <= 7 && !esDomingo) {
+    return { name: "De la Octava de Todos los Santos", season: "trinidad", color: "blanco", date, weekName: "Octava de Todos los Santos" };
+  }
+  // Octava de la Concepción (9-14 dic; 8 = Concepción, 15 = día octavo). Blanco.
+  // Va en Adviento pero la octava impone blanco sobre el morado en los días feriales.
+  if (m0 === 11 && dd >= 9 && dd <= 14 && !esDomingo) {
+    return { name: "De la Octava de la Concepción", season: "adviento", color: "blanco", date, weekName: "Octava de la Concepción" };
+  }
+
   // Adviento
   if (date >= adventStart && date < christmas) {
     const weekNum = Math.floor((date.getTime() - adventStart.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
@@ -52,6 +72,11 @@ export function getChurchDay(date: Date): ChurchDay {
   // Epifanía
   if (date.getMonth() === 0 && date.getDate() === 6) {
     return { name: "La Epifanía", season: "epifania", color: "blanco", date };
+  }
+
+  // Octava de la Epifanía (7-12 ene), blanco. El 13 es el día octavo (fiesta en feasts.ts).
+  if (date.getMonth() === 0 && date.getDate() >= 7 && date.getDate() <= 12) {
+    return { name: "De la Octava de la Epifanía", season: "epifania", color: "blanco", date, weekName: "Octava de la Epifanía" };
   }
 
   // Pre-Cuaresma: Septuagésima (−63), Sexagésima (−56), Quincuagésima (−49)
@@ -112,6 +137,13 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff === 36) return { name: "Lunes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
     if (diff === 37) return { name: "Martes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
     if (diff === 38) return { name: "Vigilia de la Ascensión (Miércoles de Rogativas)", season: "pascua", color: "morado", date, weekName: "Rogativas" };
+    // Octava de la Ascensión: los días tras la Ascensión hasta la Vigilia de Pentecostés (diff 40-47), blanco.
+    if (diff >= 40 && diff <= 47) {
+      if (date.getDay() === 0) {
+        return { name: "Domingo después de la Ascensión", season: "pascua", color: "blanco", date, weekName: "Octava de la Ascensión" };
+      }
+      return { name: "De la Octava de la Ascensión", season: "pascua", color: "blanco", date, weekName: "Octava de la Ascensión" };
+    }
     const easterWeek = Math.floor(diff / 7) + 1;
     const domingo = `${getOrdinalM(easterWeek)} Domingo de Pascua`;
     if (date.getDay() === 0) {
@@ -136,6 +168,10 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff === 60) {
       return { name: "Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Corpus Christi" };
     }
+    // Octava de Corpus Christi (diff 61-66), blanco.
+    if (diff >= 61 && diff <= 66) {
+      return { name: "De la Octava de Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Octava de Corpus Christi" };
+    }
     // Sagrado Corazón de Jesús: viernes tras la octava de Corpus (diff 68), blanco.
     if (diff === 68) {
       return { name: "El Sagrado Corazón de Jesús", season: "trinidad", color: "blanco", date, weekName: "Sagrado Corazón" };
@@ -143,6 +179,15 @@ export function getChurchDay(date: Date): ChurchDay {
     const trinityWeek = Math.floor((diff - 56) / 7);
     if (trinityWeek > 0) {
       const isSunday = date.getDay() === 0;
+      // Cristo Rey: el último domingo del año litúrgico (el domingo próximo antes de
+      // Adviento). Se detecta porque el domingo siguiente ya es Adviento I o posterior.
+      if (isSunday) {
+        const nextSunday = new Date(date);
+        nextSunday.setDate(date.getDate() + 7);
+        if (nextSunday >= adventStart) {
+          return { name: "Cristo Rey (Domingo próximo antes de Adviento)", season: "trinidad", color: "blanco", date, weekName: "Cristo Rey" };
+        }
+      }
       const domingo = `${getOrdinalM(trinityWeek)} Domingo después de la Trinidad`;
       if (isSunday) {
         return { name: domingo, season: "trinidad", color: "verde", date, weekName: domingo };
