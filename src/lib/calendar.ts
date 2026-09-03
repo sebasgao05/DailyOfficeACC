@@ -6,6 +6,8 @@ export interface ChurchDay {
   name: string;
   season: Season;
   color: LiturgicalColor;
+  /** Color secundario opcional para días que el ORDO marca con dos colores (degradado). */
+  color2?: LiturgicalColor;
   date: Date;
   /** Semana litúrgica que rige el día (para ferias: contexto del domingo previo). */
   weekName?: string;
@@ -39,8 +41,8 @@ export function getChurchDay(date: Date): ChurchDay {
   const m0 = date.getMonth();
   const dd = date.getDate();
   const esDomingo = date.getDay() === 0;
-  // Octava de la Asunción (16-21 ago; el 22 es el día octavo). Blanco.
-  if (m0 === 7 && dd >= 16 && dd <= 21 && !esDomingo) {
+  // Octava de la Asunción (16-22 ago; 15 = Asunción, 22 = día octavo). Blanco.
+  if (m0 === 7 && dd >= 16 && dd <= 22 && !esDomingo) {
     return { name: "De la Octava de la Asunción", season: "trinidad", color: "blanco", date, weekName: "Octava de la Asunción" };
   }
   // Octava de Todos los Santos (2-7 nov; 1 = Todos los Santos, 8 = día octavo). Blanco.
@@ -51,9 +53,9 @@ export function getChurchDay(date: Date): ChurchDay {
   if (m0 === 10 && date.getDay() === 4 && Math.ceil(dd / 7) === 4) {
     return { name: "Día de Acción de Gracias (Votiva Pro Patria)", season: "trinidad", color: "blanco", date, weekName: "Acción de Gracias" };
   }
-  // Octava de la Concepción (9-14 dic; 8 = Concepción, 15 = día octavo). Blanco.
+  // Octava de la Concepción (9-15 dic; 8 = Concepción, 15 = día octavo). Blanco.
   // Va en Adviento pero la octava impone blanco sobre el morado en los días feriales.
-  if (m0 === 11 && dd >= 9 && dd <= 14 && !esDomingo) {
+  if (m0 === 11 && dd >= 9 && dd <= 15 && !esDomingo) {
     return { name: "De la Octava de la Concepción", season: "adviento", color: "blanco", date, weekName: "Octava de la Concepción" };
   }
 
@@ -73,6 +75,12 @@ export function getChurchDay(date: Date): ChurchDay {
     if (emberAdv.wed === iso) return { name: "Témpora de Adviento (Miércoles)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
     if (emberAdv.fri === iso) return { name: "Témpora de Adviento (Viernes)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
     if (emberAdv.sat === iso) return { name: "Témpora de Adviento (Sábado)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
+  }
+
+  // Vigilia de la Natividad (24 dic): morado con degradado a blanco (Violet/White en el ORDO).
+  // Va ANTES del bloque de Adviento porque cae dentro de él (date < christmas).
+  if (date.getMonth() === 11 && date.getDate() === 24) {
+    return { name: "Vigilia de la Natividad", season: "adviento", color: "morado", color2: "blanco", date, weekName: "Vigilia de la Natividad" };
   }
 
   // Adviento
@@ -151,13 +159,18 @@ export function getChurchDay(date: Date): ChurchDay {
 
   // Semana Santa
   if (diff >= -7 && diff < 0) {
+    if (diff === -7) {
+      return { name: "Domingo de Ramos", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
+    }
+    if (diff === -6) return { name: "Lunes Santo", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
+    if (diff === -5) return { name: "Martes Santo", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
+    if (diff === -4) return { name: "Miércoles Santo", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
+    if (diff === -3) return { name: "Jueves Santo (in Cena Domini)", season: "semana-santa", color: "blanco", date, weekName: "Semana Santa" };
     // Viernes Santo = negro
     if (diff === -2) {
-      return { name: "Viernes Santo", season: "semana-santa", color: "negro", date };
+      return { name: "Viernes Santo", season: "semana-santa", color: "negro", date, weekName: "Semana Santa" };
     }
-    if (diff === -7) {
-      return { name: "Domingo de Ramos", season: "semana-santa", color: "rojo", date };
-    }
+    if (diff === -1) return { name: "Sábado Santo", season: "semana-santa", color: "morado", date, weekName: "Semana Santa" };
     return { name: "Semana Santa", season: "semana-santa", color: "morado", date };
   }
 
@@ -172,7 +185,10 @@ export function getChurchDay(date: Date): ChurchDay {
     // Rogativas: lunes, martes y miércoles antes de la Ascensión (diff 36-38).
     if (diff === 36) return { name: "Lunes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
     if (diff === 37) return { name: "Martes de Rogativas", season: "pascua", color: "morado", date, weekName: "Rogativas" };
-    if (diff === 38) return { name: "Vigilia de la Ascensión (Miércoles de Rogativas)", season: "pascua", color: "morado", date, weekName: "Rogativas" };
+    // Vigilia de la Ascensión (Miércoles de Rogativas): blanco (víspera de fiesta del Señor).
+    if (diff === 38) return { name: "Vigilia de la Ascensión (Miércoles de Rogativas)", season: "pascua", color: "blanco", date, weekName: "Rogativas" };
+    // Vigilia de Pentecostés (diff 48): morado con degradado a rojo (Violet/Red en el ORDO).
+    if (diff === 48) return { name: "Vigilia de Pentecostés", season: "pascua", color: "morado", color2: "rojo", date, weekName: "Vigilia de Pentecostés" };
     // Octava de la Ascensión: los días tras la Ascensión hasta la Vigilia de Pentecostés (diff 40-47), blanco.
     if (diff >= 40 && diff <= 47) {
       if (date.getDay() === 0) {
@@ -214,13 +230,17 @@ export function getChurchDay(date: Date): ChurchDay {
     if (diff === 60) {
       return { name: "Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Corpus Christi" };
     }
-    // Octava de Corpus Christi (diff 61-66), blanco.
-    if (diff >= 61 && diff <= 66) {
+    // Octava de Corpus Christi (diff 61-67), blanco.
+    if (diff >= 61 && diff <= 67) {
       return { name: "De la Octava de Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Octava de Corpus Christi" };
     }
     // Sagrado Corazón de Jesús: viernes tras la octava de Corpus (diff 68), blanco.
     if (diff === 68) {
       return { name: "El Sagrado Corazón de Jesús", season: "trinidad", color: "blanco", date, weekName: "Sagrado Corazón" };
+    }
+    // Octava del Sagrado Corazón (diff 69-75), blanco. El día octavo es diff 75.
+    if (diff >= 69 && diff <= 75) {
+      return { name: "De la Octava del Sagrado Corazón", season: "trinidad", color: "blanco", date, weekName: "Octava del Sagrado Corazón" };
     }
     const trinityWeek = Math.floor((diff - 56) / 7);
     if (trinityWeek > 0) {

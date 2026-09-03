@@ -58,6 +58,17 @@ const COLOR_LABEL: Record<LiturgicalColor, string> = {
   rosa: "Rosa",
 };
 
+// Tonos de fondo (hex) para construir el degradado de días con dos colores (ORDO).
+// Deben coincidir aproximadamente con los tonos de colorBg.
+const colorBgHex: Record<LiturgicalColor, string> = {
+  rojo: "#fee2e2",
+  morado: "#f3e8ff",
+  blanco: "#fffbeb",
+  verde: "#dcfce7",
+  negro: "#d4d4d4",
+  rosa: "#fce7f3",
+};
+
 export function KalendarView() {
   const [current, setCurrent] = useState<{ year: number; month: number } | null>(null);
   const [selected, setSelected] = useState<OrdoEntry | null>(null);
@@ -170,7 +181,8 @@ export function KalendarView() {
             <button
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
-              className={`text-left min-h-[90px] p-1.5 rounded border transition-all hover:shadow-md ${colorBg[ordo.color]} ${
+              style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
+              className={`text-left min-h-[90px] p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >
@@ -204,7 +216,14 @@ export function KalendarView() {
             </div>
             <span className="flex items-center gap-1.5 text-xs shrink-0">
               <span className={`w-3 h-3 rounded-full ${colorDot[selected.color]}`}></span>
-              {COLOR_LABEL[selected.color]}
+              {selected.color2 ? (
+                <>
+                  <span className={`w-3 h-3 rounded-full ${colorDot[selected.color2]}`}></span>
+                  {COLOR_LABEL[selected.color]} / {COLOR_LABEL[selected.color2]}
+                </>
+              ) : (
+                COLOR_LABEL[selected.color]
+              )}
             </span>
           </div>
           {selected.propers.length > 0 && (

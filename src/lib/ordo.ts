@@ -33,6 +33,8 @@ export interface OrdoEntry {
   title: string;
   /** Color litúrgico de la Misa del día (resuelto por precedencia). */
   color: LiturgicalColor;
+  /** Color secundario opcional (degradado) para días de dos colores del ORDO. */
+  color2?: LiturgicalColor;
   /** Rango del día. */
   rank: Feast["rank"] | "domingo" | "feria";
   /** El día eclesiástico del ciclo temporal subyacente. */
@@ -127,11 +129,16 @@ function findTransferredInto(date: Date): Feast | null {
     const src = addDays(date, -back);
     const blocked = feastIsBlockedOn(src);
     if (!blocked) continue;
-    // ¿Es `date` el primer día libre desde `src`?
+    // ¿Es `date` el primer día libre desde `src`? Un día con solo un santo MENOR o
+    // conmemoración no está "ocupado": la fiesta trasladada (mayor) rige y lo conmemora.
+    // Solo bloquean el aterrizaje otra fiesta mayor/principal o un domingo privilegiado.
     let landing = addDays(src, 1);
     while (true) {
-      const occupied = getFeastForDate(landing) || isPrivilegedSunday(getChurchDay(landing));
-      if (!occupied) break;
+      const f = getFeastForDate(landing);
+      const blocksLanding =
+        (f && RANK_WEIGHT[f.rank] >= RANK_WEIGHT["mayor"]) ||
+        isPrivilegedSunday(getChurchDay(landing));
+      if (!blocksLanding) break;
       landing = addDays(landing, 1);
     }
     if (landing.toDateString() === date.toDateString()) {
@@ -191,19 +198,29 @@ export function getOrdoEntry(date: Date): OrdoEntry {
 
   // 2) Fiesta local que cae hoy.
   if (localFeast) {
-    // 2a) Días temporales PRIVILEGIADOS no-dominicales que una fiesta menor NO
-    // puede desplazar (rige el día, la fiesta pasa a conmemoración): Miércoles
-    // de Ceniza, Semana Santa, Viernes Santo, Ascensión, Rogativas, Corpus,
-    // Sagrado Corazón, Pentecostés.
-    const privilegedTemporal =
+    // 2a) Días temporales PRIVILEGIADOS no-dominicales que una fiesta de menor rango
+    // NO puede desplazar (rige el día, la fiesta pasa a conmemoración). Dos niveles:
+    //  - FUERTE (Ceniza, Semana Santa, Ascensión, Rogativas, Corpus, Sagrado Corazón,
+    //    Pentecostés y sus vigilias): solo una fiesta PRINCIPAL los desplaza.
+    //  - OCTAVAS / TÉMPORAS: rigen sobre menores/conmemoraciones, pero una fiesta
+    //    MAYOR (p.ej. un Apóstol/Evangelista) sí rige y la octava se conmemora.
+    const strongTemporal =
       churchDay.name === "Miércoles de Ceniza" ||
       churchDay.season === "semana-santa" ||
       churchDay.name.startsWith("Día de la Ascensión") ||
       churchDay.name.includes("Rogativas") ||
       churchDay.name === "Corpus Christi" ||
       churchDay.name === "El Sagrado Corazón de Jesús" ||
-      churchDay.name === "Domingo de Pentecostés";
-    if (privilegedTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["principal"]) {
+      churchDay.name === "Domingo de Pentecostés" ||
+      churchDay.name === "Vigilia de Pentecostés" ||
+      churchDay.name === "Vigilia de la Natividad";
+    const octaveOrEmber =
+      churchDay.name.startsWith("De la Octava") ||
+      churchDay.name.startsWith("Témpora");
+    const privilegedTemporal =
+      (strongTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["principal"]) ||
+      (octaveOrEmber && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["mayor"]);
+    if (privilegedTemporal) {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
         if (f.name === localFeast.name) continue;
@@ -317,9 +334,13 @@ function finalize(base: {
     ? base.feast.color
     : base.churchDay.color;
   const { color, note } = conditionalColor(base.date, baseColor);
+  // El degradado (color2) solo aplica cuando el día lo rige el ciclo temporal
+  // (vigilias/días de dos colores del ORDO); un santo que rige impone su color único.
+  const color2 = base.feast ? undefined : base.churchDay.color2;
   return {
     ...base,
     color,
+    color2,
     note,
     propers: buildPropers(base.feast, base.churchDay),
     fast: resolveFast(base.feast, base.churchDay),
