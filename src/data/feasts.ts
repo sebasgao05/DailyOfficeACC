@@ -43,7 +43,7 @@ export const fixedFeasts: Feast[] = [
   { month: 1, day: 13, name: "Octava de la Epifanía", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Epifanía" }, },
   { month: 1, day: 14, name: "San Hilario, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 1, day: 15, name: "San Pablo, Primer Ermitaño, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
-  { month: 1, day: 16, name: "Beato William Laud, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, optional: true, },
+  { month: 1, day: 16, name: "Beato William Laud, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 17, name: "San Antonio, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 1, day: 18, name: "San Prisca, Virgen y Mártir", rank: "conmemoración", color: "verde", },
   { month: 1, day: 20, name: "Santos Fabián y Sebastián, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
@@ -150,6 +150,7 @@ export const fixedFeasts: Feast[] = [
   // ===== Julio =====
   { month: 7, day: 1, name: "Preciosísima Sangre", rank: "principal", color: "rojo", propers: { gloria: true, creed: true, preface: "Cruz" }, hasPropers: true, },
   { month: 7, day: 2, name: "Visitación de la B.V.M.", rank: "mayor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, hasPropers: true, },
+  { month: 7, day: 4, name: "Día de la Independencia (Votiva Pro Patria)", rank: "conmemoración", color: "blanco", },
   { month: 7, day: 5, name: "San Vladimiro, Rey y Confesor", rank: "conmemoración", color: "verde", },
   { month: 7, day: 13, name: "San Silas, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 7, day: 7, name: "Santos Cirilo y Metodio, Obispos y Confesores", rank: "menor", color: "blanco", propers: { gloria: true }, },

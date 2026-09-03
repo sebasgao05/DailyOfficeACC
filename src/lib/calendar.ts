@@ -47,10 +47,32 @@ export function getChurchDay(date: Date): ChurchDay {
   if (m0 === 10 && dd >= 2 && dd <= 7 && !esDomingo) {
     return { name: "De la Octava de Todos los Santos", season: "trinidad", color: "blanco", date, weekName: "Octava de Todos los Santos" };
   }
+  // Thanksgiving (EE.UU.): 4º jueves de noviembre — votiva Pro Patria, blanco.
+  if (m0 === 10 && date.getDay() === 4 && Math.ceil(dd / 7) === 4) {
+    return { name: "Día de Acción de Gracias (Votiva Pro Patria)", season: "trinidad", color: "blanco", date, weekName: "Acción de Gracias" };
+  }
   // Octava de la Concepción (9-14 dic; 8 = Concepción, 15 = día octavo). Blanco.
   // Va en Adviento pero la octava impone blanco sobre el morado en los días feriales.
   if (m0 === 11 && dd >= 9 && dd <= 14 && !esDomingo) {
     return { name: "De la Octava de la Concepción", season: "adviento", color: "blanco", date, weekName: "Octava de la Concepción" };
+  }
+
+  // ── Témporas de fecha (Ember Days de otoño e invierno), morado, con ayuno. ──
+  // Septiembre: primer miércoles/viernes/sábado DESPUÉS de la Exaltación de la Cruz (14 sep).
+  {
+    const emberSep = emberDaysAfter(new Date(date.getFullYear(), 8, 14));
+    const iso = date.toISOString().slice(0, 10);
+    if (emberSep.wed === iso) return { name: "Témpora de Septiembre (Miércoles)", season: "trinidad", color: "morado", date, weekName: "Témporas de Septiembre" };
+    if (emberSep.fri === iso) return { name: "Témpora de Septiembre (Viernes)", season: "trinidad", color: "morado", date, weekName: "Témporas de Septiembre" };
+    if (emberSep.sat === iso) return { name: "Témpora de Septiembre (Sábado)", season: "trinidad", color: "morado", date, weekName: "Témporas de Septiembre" };
+  }
+  // Adviento: miércoles/viernes/sábado tras el Domingo III de Adviento (tras Sta. Lucía, 13 dic).
+  {
+    const emberAdv = emberDaysAfter(new Date(date.getFullYear(), 11, 13));
+    const iso = date.toISOString().slice(0, 10);
+    if (emberAdv.wed === iso) return { name: "Témpora de Adviento (Miércoles)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
+    if (emberAdv.fri === iso) return { name: "Témpora de Adviento (Viernes)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
+    if (emberAdv.sat === iso) return { name: "Témpora de Adviento (Sábado)", season: "adviento", color: "morado", date, weekName: "Témporas de Adviento" };
   }
 
   // Adviento
@@ -75,7 +97,11 @@ export function getChurchDay(date: Date): ChurchDay {
   }
 
   // Octava de la Epifanía (7-12 ene), blanco. El 13 es el día octavo (fiesta en feasts.ts).
+  // Un domingo dentro de la octava rige como "Domingo I después de la Epifanía".
   if (date.getMonth() === 0 && date.getDate() >= 7 && date.getDate() <= 12) {
+    if (date.getDay() === 0) {
+      return { name: "Primer Domingo después de la Epifanía", season: "epifania", color: "blanco", date, weekName: "Octava de la Epifanía" };
+    }
     return { name: "De la Octava de la Epifanía", season: "epifania", color: "blanco", date, weekName: "Octava de la Epifanía" };
   }
 
@@ -103,6 +129,16 @@ export function getChurchDay(date: Date): ChurchDay {
     // Miércoles de Ceniza (−46): inicio de la Cuaresma, ayuno y abstinencia.
     if (diff === -46) {
       return { name: "Miércoles de Ceniza", season: "cuaresma", color: "morado", date, weekName: "Miércoles de Ceniza" };
+    }
+    // Témporas de Cuaresma: miércoles/viernes/sábado tras el Domingo I de Cuaresma.
+    if (diff === -39) {
+      return { name: "Témpora de Cuaresma (Miércoles)", season: "cuaresma", color: "morado", date, weekName: "Témporas de Cuaresma" };
+    }
+    if (diff === -37) {
+      return { name: "Témpora de Cuaresma (Viernes)", season: "cuaresma", color: "morado", date, weekName: "Témporas de Cuaresma" };
+    }
+    if (diff === -36) {
+      return { name: "Témpora de Cuaresma (Sábado)", season: "cuaresma", color: "morado", date, weekName: "Témporas de Cuaresma" };
     }
     const lentWeek = Math.floor((diff + 46) / 7) + 1;
     const isLaetare = lentWeek === 4 && date.getDay() === 0;
@@ -164,6 +200,16 @@ export function getChurchDay(date: Date): ChurchDay {
 
   // Tiempo después de Pentecostés (Trinidad)
   if (diff > 49) {
+    // Témporas de Pentecostés: miércoles/viernes/sábado tras Pentecostés (rojo).
+    if (diff === 52) {
+      return { name: "Témpora de Pentecostés (Miércoles)", season: "pentecostes", color: "rojo", date, weekName: "Témporas de Pentecostés" };
+    }
+    if (diff === 54) {
+      return { name: "Témpora de Pentecostés (Viernes)", season: "pentecostes", color: "rojo", date, weekName: "Témporas de Pentecostés" };
+    }
+    if (diff === 55) {
+      return { name: "Témpora de Pentecostés (Sábado)", season: "pentecostes", color: "rojo", date, weekName: "Témporas de Pentecostés" };
+    }
     // Corpus Christi: jueves tras la Trinidad (diff 60), blanco, con octava.
     if (diff === 60) {
       return { name: "Corpus Christi", season: "trinidad", color: "blanco", date, weekName: "Corpus Christi" };
@@ -226,6 +272,27 @@ export function calculateEaster(year: number): Date {
   const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
   const day = ((h + l - 7 * m + 114) % 31) + 1;
   return new Date(year, month, day);
+}
+
+/**
+ * Devuelve el primer miércoles, viernes y sábado ESTRICTAMENTE después de una fecha
+ * ancla (p.ej. el 14-sep para las Témporas de otoño, el 13-dic para las de Adviento).
+ * Las tres Témporas de una estación caen en la misma semana litúrgica.
+ */
+function emberDaysAfter(anchor: Date): { wed: string; fri: string; sat: string } {
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+  const firstAfter = (targetDow: number) => {
+    const d = new Date(anchor);
+    do {
+      d.setDate(d.getDate() + 1);
+    } while (d.getDay() !== targetDow);
+    return d;
+  };
+  const wed = firstAfter(3); // miércoles
+  // viernes y sábado de esa MISMA semana del miércoles
+  const fri = new Date(wed); fri.setDate(wed.getDate() + 2);
+  const sat = new Date(wed); sat.setDate(wed.getDate() + 3);
+  return { wed: iso(wed), fri: iso(fri), sat: iso(sat) };
 }
 
 function getDayOfYear(date: Date): number {

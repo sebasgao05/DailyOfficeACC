@@ -150,6 +150,10 @@ function resolveFast(
   if (feast && feast.name.startsWith("Vigilia")) return "abstinencia";
   // Miércoles de Ceniza: ayuno y abstinencia.
   if (churchDay.name === "Miércoles de Ceniza") return "ayuno-y-abstinencia";
+  // Témporas (Ember Days): días de ayuno. El viernes lleva además abstinencia.
+  if (churchDay.name.startsWith("Témpora de")) {
+    return churchDay.date.getDay() === 5 ? "ayuno-y-abstinencia" : "abstinencia";
+  }
   if (churchDay.season === "cuaresma" || churchDay.season === "semana-santa") {
     // Los viernes de Cuaresma: ayuno y abstinencia; resto: abstinencia.
     return churchDay.date.getDay() === 5 ? "ayuno-y-abstinencia" : "abstinencia";
