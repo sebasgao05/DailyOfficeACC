@@ -95,8 +95,20 @@ export function getChurchDay(date: Date): ChurchDay {
   }
 
   // Navidad (25 dic - 5 enero)
-  if ((date.getMonth() === 11 && date.getDate() >= 25) || (date.getMonth() === 0 && date.getDate() < 6)) {
-    return { name: "Tiempo de Navidad", season: "navidad", color: "blanco", date };
+  // 25 dic = Natividad; los días de la Octava sin santo propio → "De la Octava de la
+  // Natividad" (los santos 26-29 dic y la Circuncisión el 1 ene viven en feasts.ts).
+  if (date.getMonth() === 11 && date.getDate() === 25) {
+    return { name: "Natividad de Nuestro Señor", season: "navidad", color: "blanco", date, weekName: "Octava de la Natividad" };
+  }
+  if (date.getMonth() === 11 && date.getDate() >= 26 && date.getDate() <= 31) {
+    return { name: "De la Octava de la Natividad", season: "navidad", color: "blanco", date, weekName: "Octava de la Natividad" };
+  }
+  // 1 ene = Circuncisión (día octavo, en feasts.ts); 2-5 ene = días de Navidad antes de Epifanía.
+  if (date.getMonth() === 0 && date.getDate() >= 1 && date.getDate() <= 5) {
+    if (date.getDay() === 0) {
+      return { name: "Domingo después de la Navidad", season: "navidad", color: "blanco", date, weekName: "Tiempo de Navidad" };
+    }
+    return { name: "De Navidad (antes de la Epifanía)", season: "navidad", color: "blanco", date, weekName: "Tiempo de Navidad" };
   }
 
   // Epifanía
