@@ -255,13 +255,20 @@ export function getChurchDay(date: Date): ChurchDay {
     const trinityWeek = Math.floor((diff - 56) / 7);
     if (trinityWeek > 0) {
       const isSunday = date.getDay() === 0;
-      // Cristo Rey: el último domingo del año litúrgico (el domingo próximo antes de
-      // Adviento). Se detecta porque el domingo siguiente ya es Adviento I o posterior.
+      // Cristo Rey (uso ACC/Anglican Missal tradicional): el ÚLTIMO domingo de octubre.
+      if (isSunday && date.getMonth() === 9) {
+        const nextSun = new Date(date);
+        nextSun.setDate(date.getDate() + 7);
+        if (nextSun.getMonth() === 10) { // el domingo siguiente ya es noviembre → este es el último de octubre
+          return { name: "Cristo Rey", season: "trinidad", color: "blanco", date, weekName: "Cristo Rey" };
+        }
+      }
+      // Domingo próximo antes de Adviento (último domingo del año litúrgico).
       if (isSunday) {
         const nextSunday = new Date(date);
         nextSunday.setDate(date.getDate() + 7);
         if (nextSunday >= adventStart) {
-          return { name: "Cristo Rey (Domingo próximo antes de Adviento)", season: "trinidad", color: "blanco", date, weekName: "Cristo Rey" };
+          return { name: "Domingo próximo antes de Adviento", season: "trinidad", color: "verde", date, weekName: "Domingo próximo antes de Adviento" };
         }
       }
       const domingo = `${getOrdinalM(trinityWeek)} Domingo después de la Trinidad`;
