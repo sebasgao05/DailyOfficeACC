@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   // Base para resolver rutas absolutas de imágenes OG/Twitter.
   // Ajusta la URL a tu dominio de producción (CloudFront o dominio propio).
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://main.d3lfevf2rk1ee7.amplifyapp.com"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://d39xew2a81v4n8.cloudfront.net"
   ),
   title: {
     default: "Oración Común en Línea – LOC 1928",

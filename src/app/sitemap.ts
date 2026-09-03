@@ -3,7 +3,7 @@ import { psalms } from "@/data/psalms";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://main.d3lfevf2rk1ee7.amplifyapp.com";
+  "https://d39xew2a81v4n8.cloudfront.net";
 
 export const dynamic = "force-static";
 
