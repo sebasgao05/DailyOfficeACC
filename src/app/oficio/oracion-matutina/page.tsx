@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import { DailyReadings } from "@/components/DailyReadings";
-import { DailyLesson } from "@/components/DailyLesson";
-import { CanticleSelector } from "@/components/CanticleSelector";
+import { DailyReadings } from "@/components/liturgical/DailyReadings";
+import { DailyLesson } from "@/components/liturgical/DailyLesson";
+import { CanticleSelector } from "@/components/liturgical/CanticleSelector";
 
 export const metadata: Metadata = {
   title: "Oración Matutina – LOC 1928",
