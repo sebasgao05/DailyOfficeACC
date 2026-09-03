@@ -28,8 +28,19 @@ const seasons: { id: Season; label: string }[] = [
   { id: "trinidad", label: "Trinidad" },
 ];
 
-// Rutas del oficio diario donde la fecha controla las lecturas mostradas en la misma página.
-const OFFICE_PATHS = ["/oficio/oracion-matutina", "/oficio/oracion-vespertina"];
+// Rutas del oficio diario donde la fecha controla el contenido mostrado en la misma página.
+// Incluye las horas mayores (Matutina/Vespertina) y las horas menores del Breviario,
+// para que el selector de fecha mantenga la hora activa al navegar entre días.
+const OFFICE_PATHS = [
+  "/oficio/oracion-matutina",
+  "/oficio/oracion-vespertina",
+  "/oficio/prima",
+  "/oficio/tercia",
+  "/oficio/sexta",
+  "/oficio/mediodia",
+  "/oficio/nona",
+  "/oficio/completas",
+];
 
 function SiteHeaderContent() {
   const pathname = usePathname();
