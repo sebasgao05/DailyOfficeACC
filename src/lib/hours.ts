@@ -45,7 +45,8 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "prima",
     name: "Prima",
     subtitle: "La Primera Hora — Al comenzar el día",
-    psalms: [54, 118],
+    // anglicanoffice.com: Salmo 54 + Salmo 119 (dividido por día en I–VI).
+    psalms: [54, 119],
     hymnLatin: "Iam lucis orto sidere",
     hymnEs: "Ya que ha salido el lucero del día, supliquemos a Dios humildemente que en las obras de la jornada nos guarde de todo daño.",
     versicle: { v: "Levántate, Cristo, y ayúdanos.", r: "Y líbranos por tu Nombre." },
@@ -54,7 +55,8 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "tercia",
     name: "Tercia",
     subtitle: "La Hora Tercia — Media mañana",
-    psalms: [119], // sección Legem pone (119:33-48) tradicional
+    // anglicanoffice.com: Salmos Graduales 120, 121, 122 (fijos cada día).
+    psalms: [120, 121, 122],
     hymnLatin: "Nunc Sancte nobis Spiritus",
     hymnEs: "Ven, Espíritu Santo, con el Padre y el Hijo, y dígnate derramarte hoy en nuestros corazones.",
     versicle: { v: "El Señor es mi fortaleza y mi cántico.", r: "Y ha sido mi salvación." },
@@ -63,7 +65,8 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "sexta",
     name: "Sexta",
     subtitle: "La Hora Sexta — Mediodía",
-    psalms: [119],
+    // anglicanoffice.com: Salmos Graduales 123, 124, 125 (fijos cada día).
+    psalms: [123, 124, 125],
     hymnLatin: "Rector potens, verax Deus",
     hymnEs: "Poderoso Rector, Dios veraz, que gobiernas el orden de los tiempos, das al alba su fulgor y al mediodía su ardiente calor.",
     versicle: { v: "Por la tarde, por la mañana y al mediodía.", r: "Meditaré y clamaré, y él oirá mi voz." },
@@ -72,6 +75,7 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "mediodia",
     name: "Oración del Mediodía",
     subtitle: "Un orden de servicio para el mediodía",
+    // No existe en anglicanoffice.com (no hay 'Noonday'); uso LOC: 121, 124, 126.
     psalms: [121, 124, 126],
     hymnLatin: "Rerum Deus tenax vigor",
     hymnEs: "Oh Dios, fuerza constante del universo, que permaneces inmóvil ordenando el curso de las horas.",
@@ -81,7 +85,8 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "nona",
     name: "Nona",
     subtitle: "La Hora Nona — Media tarde",
-    psalms: [119],
+    // anglicanoffice.com: Salmos Graduales 126, 127, 128 (fijos cada día).
+    psalms: [126, 127, 128],
     hymnLatin: "Rerum Deus tenax vigor",
     hymnEs: "Oh Dios, fuerza constante del universo, que permaneces inmóvil ordenando el curso de las horas: concédenos, al declinar el día, una tarde clara.",
     versicle: { v: "Desde el amanecer clamo a ti, Señor.", r: "Mi esperanza está en tu palabra." },
@@ -90,6 +95,7 @@ export const HOURS: Record<HourId, HourDefinition> = {
     id: "completas",
     name: "Completas",
     subtitle: "Un oficio de oración para antes de dormir",
+    // anglicanoffice.com: 4, 31:1-6, 91, 134 (fijos cada día).
     psalms: [4, 31, 91, 134],
     hymnLatin: "Te lucis ante terminum",
     hymnEs: "Antes que la luz termine, te rogamos, Creador de todo, que por tu clemencia seas nuestro amparo y custodia.",
