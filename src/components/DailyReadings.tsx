@@ -7,6 +7,8 @@ import { fromDateParam } from "@/lib/calendar";
 import { getOrdoEntry } from "@/lib/ordo";
 import { getProperForDay, type ResolvedProper } from "@/lib/propers";
 import { psalms, parsePsalmRefs, getPsalmPortion } from "@/data/psalms";
+import { getMonthlyPsalms } from "@/data/monthlyPsalter";
+import { APOSTLES_CREED, NICENE_CREED } from "@/data/creeds";
 import { getPassage, BIBLE_VERSION } from "@/data/bible";
 import Link from "next/link";
 
@@ -18,31 +20,60 @@ function DailyReadingsContent({ period }: Props) {
   const searchParams = useSearchParams();
   const dateParam = searchParams.get("date");
   const [readings, setReadings] = useState<LectionaryDay | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [proper, setProper] = useState<ResolvedProper | null>(null);
   const [ordoLine, setOrdoLine] = useState<string>("");
   const [showPsalmText, setShowPsalmText] = useState(true); // Show by default
+  const [psalterMode, setPsalterMode] = useState<"lectionary" | "monthly">("lectionary");
+  const [creed, setCreed] = useState<"apostles" | "nicene">("apostles");
 
   useEffect(() => {
-    const date = dateParam ? fromDateParam(dateParam) : new Date();
-    setReadings(getLectionary(date));
-    const ordo = getOrdoEntry(date);
+    const d = dateParam ? fromDateParam(dateParam) : new Date();
+    setDate(d);
+    setReadings(getLectionary(d));
+    const ordo = getOrdoEntry(d);
     setProper(getProperForDay(ordo));
     setOrdoLine(ordo.ordoLine);
   }, [dateParam]);
 
-  if (!readings) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
+  if (!readings || !date) return <p className="text-center italic text-gray-400 py-4">Cargando lecturas del día...</p>;
 
   const current = period === "morning" ? readings.morning : readings.evening;
-  const psalmRefs = parsePsalmRefs(current.psalms);
+  // El Salterio: "Lectionary" usa la tabla del leccionario del día; "Monthly" usa el
+  // Salterio distribuido en 30 días (por día del mes).
+  const monthlyNums = getMonthlyPsalms(date, period);
+  const psalmRefs = psalterMode === "monthly"
+    ? monthlyNums.map((n) => ({ number: n, from: undefined as number | undefined, to: undefined as number | undefined }))
+    : parsePsalmRefs(current.psalms);
+  const psalmsLabel = psalterMode === "monthly" ? monthlyNums.join(", ") : current.psalms;
 
   // Preservar la fecha seleccionada al enlazar a los salmos
   const dateQuery = dateParam ? `?date=${dateParam}` : "";
 
   return (
     <div className="my-8">
+      {/* Selector de Salterio: Mensual (30 días) vs Leccionario (tabla del día) */}
+      <div className="flex justify-center mb-3">
+        <div className="inline-flex rounded-md border border-[var(--color-border)] overflow-hidden text-sm">
+          <button
+            onClick={() => setPsalterMode("monthly")}
+            className={`px-3 py-1.5 transition-colors ${psalterMode === "monthly" ? "bg-[var(--color-primary-dark)] text-white font-medium" : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-bg-alt)]"}`}
+          >
+            Salterio Mensual
+          </button>
+          <button
+            onClick={() => setPsalterMode("lectionary")}
+            className={`px-3 py-1.5 transition-colors border-l border-[var(--color-border)] ${psalterMode === "lectionary" ? "bg-[var(--color-primary-dark)] text-white font-medium" : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-bg-alt)]"}`}
+          >
+            Salterio del Leccionario
+          </button>
+        </div>
+      </div>
+
       {/* Psalms Section */}
       <p className="text-center text-sm mb-3 italic">
-        <span className="text-[var(--color-primary)] font-medium">Salmos:</span> {current.psalms}
+        <span className="text-[var(--color-primary)] font-medium">Salmos:</span> {psalmsLabel}
+        <span className="text-[10px] text-gray-400 ml-2">({psalterMode === "monthly" ? "reparto en 30 días" : "según el leccionario"})</span>
       </p>
 
       {psalmRefs.length > 0 && (
@@ -133,6 +164,32 @@ function DailyReadingsContent({ period }: Props) {
           )}
         </div>
       )}
+
+      {/* El Credo — selector Apóstoles / Niceno */}
+      <div className="my-6 border border-[var(--color-border)] rounded-lg p-4 bg-white">
+        <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+          <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider">El Credo</span>
+          <div className="inline-flex rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
+            <button
+              onClick={() => setCreed("apostles")}
+              className={`px-3 py-1.5 transition-colors ${creed === "apostles" ? "bg-[var(--color-primary-dark)] text-white font-medium" : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-bg-alt)]"}`}
+            >
+              Credo de los Apóstoles
+            </button>
+            <button
+              onClick={() => setCreed("nicene")}
+              className={`px-3 py-1.5 transition-colors border-l border-[var(--color-border)] ${creed === "nicene" ? "bg-[var(--color-primary-dark)] text-white font-medium" : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-bg-alt)]"}`}
+            >
+              Credo Niceno
+            </button>
+          </div>
+        </div>
+        <div className="text-sm leading-relaxed space-y-2">
+          {(creed === "apostles" ? APOSTLES_CREED : NICENE_CREED).split("\n").map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+      </div>
 
       {/* Lessons */}
       <div className="readings-box bg-white border border-[var(--color-border)] rounded-lg p-4 space-y-4">

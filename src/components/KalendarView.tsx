@@ -58,15 +58,15 @@ const COLOR_LABEL: Record<LiturgicalColor, string> = {
   rosa: "Rosa",
 };
 
-// Tonos de fondo (hex) para construir el degradado de días con dos colores (ORDO).
-// Deben coincidir aproximadamente con los tonos de colorBg.
+// Tonos de fondo (hex) para el degradado de días con dos colores (ORDO).
+// Saturados (nivel ~200) para que el degradado sea claramente visible.
 const colorBgHex: Record<LiturgicalColor, string> = {
-  rojo: "#fee2e2",
-  morado: "#f3e8ff",
-  blanco: "#fffbeb",
-  verde: "#dcfce7",
-  negro: "#d4d4d4",
-  rosa: "#fce7f3",
+  rojo: "#fca5a5",
+  morado: "#d8b4fe",
+  blanco: "#fde68a",
+  verde: "#86efac",
+  negro: "#a3a3a3",
+  rosa: "#f9a8d4",
 };
 
 export function KalendarView() {
