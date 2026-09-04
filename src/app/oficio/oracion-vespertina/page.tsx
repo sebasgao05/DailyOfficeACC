@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { DailyReadings } from "@/components/liturgical/DailyReadings";
 import { DailyLesson } from "@/components/liturgical/DailyLesson";
 import { CanticleSelector } from "@/components/liturgical/CanticleSelector";
+import { CreedSelector } from "@/components/liturgical/CreedSelector";
 
 export const metadata: Metadata = {
   title: "Oración Vespertina – LOC 1928",
@@ -141,13 +142,7 @@ export default function OracionVespertina() {
       <CanticleSelector period="evening" position="second" />
 
       {/* Credo */}
-      <h2 className="section-title" id="credo">El Credo de los Apóstoles</h2>
-      <p className="rubric">¶ Entonces el oficiante y el pueblo, de pie, dirán el Credo de los Apóstoles.</p>
-      <div className="collect">
-        <p className="mb-2">Creo en Dios Padre, Todopoderoso, Creador del cielo y de la tierra.</p>
-        <p className="mb-2">Creo en Jesucristo, su único Hijo, Nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María siempre Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios Padre Todopoderoso. Desde allí vendrá a juzgar a vivos y muertos.</p>
-        <p>Creo en el Espíritu Santo, la Santa Iglesia Católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.</p>
-      </div>
+      <CreedSelector />
 
       {/* Preces */}
       <h2 className="section-title" id="preces">Las Preces</h2>

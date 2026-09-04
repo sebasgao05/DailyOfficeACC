@@ -104,6 +104,7 @@ export const fixedFeasts: Feast[] = [
   // ===== Abril =====
   { month: 4, day: 9, name: "Beato William Law, Presbítero y Confesor", rank: "menor", color: "blanco", optional: true, },
   { month: 4, day: 11, name: "Beato George Augustus Selwyn, Obispo y Confesor", rank: "menor", color: "blanco", optional: true, },
+  { month: 4, day: 11, name: "San León Magno, Obispo, Confesor y Doctor", rank: "conmemoración", color: "blanco", },
   { month: 4, day: 14, name: "San Justino, Mártir", rank: "menor", color: "rojo", propers: { gloria: true, preface: "Pascua" }, },
   { month: 4, day: 17, name: "San Stephen Harding, Abad", rank: "menor", color: "blanco", propers: { gloria: true, preface: "Pascua" }, },
   { month: 4, day: 19, name: "San Alphege, Obispo y Mártir", rank: "conmemoración", color: "blanco", },
@@ -134,6 +135,7 @@ export const fixedFeasts: Feast[] = [
   { month: 5, day: 15, name: "San Simón Stock, Confesor", rank: "conmemoración", color: "blanco", },
   { month: 5, day: 20, name: "Beata Rhoda McNeile de Wantage, Virgen", rank: "menor", color: "blanco", optional: true, },
   { month: 5, day: 23, name: "Santa Juana de Arco, Virgen", rank: "conmemoración", color: "rojo", },
+  { month: 5, day: 27, name: "San Beda el Venerable, Confesor y Doctor", rank: "conmemoración", color: "blanco", },
   // ===== Junio =====
   { month: 6, day: 5, name: "San Bonifacio, Obispo y Mártir", rank: "conmemoración", color: "blanco", },
   { month: 6, day: 9, name: "San Columba, Abad", rank: "conmemoración", color: "blanco", },
@@ -180,6 +182,7 @@ export const fixedFeasts: Feast[] = [
   { month: 7, day: 31, name: "San Ignacio de Loyola, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   // ===== Agosto =====
   { month: 8, day: 1, name: "Cadenas de San Pedro (Lammas Day)", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Apóstoles" }, },
+  { month: 8, day: 2, name: "San Alfonso María de Ligorio, Obispo, Confesor y Doctor", rank: "conmemoración", color: "blanco", },
   { month: 8, day: 4, name: "Santo Domingo, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 8, day: 3, name: "San Nicodemo, Confesor", rank: "conmemoración", color: "blanco", },
   { month: 8, day: 5, name: "San Osvaldo, Rey y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
@@ -187,10 +190,12 @@ export const fixedFeasts: Feast[] = [
   { month: 8, day: 6, name: "La Transfiguración de Nuestro Señor", rank: "mayor", color: "blanco", propers: { gloria: true, creed: true, preface: "Navidad" }, hasPropers: true, },
   { month: 8, day: 7, name: "Santísimo Nombre de Jesús", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 8, day: 8, name: "Beato John Mason Neale, Presbítero y Confesor", rank: "menor", color: "blanco", optional: true, },
+  { month: 8, day: 9, name: "San Juan María Vianney (Cura de Ars), Confesor", rank: "conmemoración", color: "blanco", },
   { month: 8, day: 10, name: "San Lorenzo, Diácono y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 8, day: 12, name: "Santa Clara, Virgen", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 8, day: 13, name: "Santos Hipólito y Casiano, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 8, day: 14, name: "Vigilia de la Asunción", rank: "menor", color: "morado", },
+  { month: 8, day: 14, name: "Beato Jeremy Taylor, Obispo y Confesor", rank: "conmemoración", color: "blanco", optional: true, },
   { month: 8, day: 15, name: "La Asunción de la B.V.M.", rank: "principal", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, hasPropers: true, },
   { month: 8, day: 16, name: "San Joaquín, Padre de la B.V.M.", rank: "conmemoración", color: "blanco", },
   { month: 8, day: 18, name: "Santa Elena, Reina y Viuda", rank: "menor", color: "blanco", propers: { gloria: true }, },
@@ -216,7 +221,9 @@ export const fixedFeasts: Feast[] = [
   { month: 9, day: 16, name: "San Cipriano, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 9, day: 16, name: "San Niniano, Obispo y Confesor", rank: "conmemoración", color: "rojo", },
   { month: 9, day: 17, name: "San Hildegarda, Virgen", rank: "menor", color: "blanco", propers: { gloria: true }, },
+  { month: 9, day: 18, name: "Beato Edward Bouverie Pusey, Confesor", rank: "conmemoración", color: "blanco", optional: true, },
   { month: 9, day: 19, name: "San Teodoro, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
+  { month: 9, day: 20, name: "Beato John Coleridge Patteson de Melanesia, Obispo y Mártir", rank: "conmemoración", color: "rojo", optional: true, },
   { month: 9, day: 21, name: "San Mateo, Apóstol y Evangelista", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
   { month: 9, day: 22, name: "San Mauricio y Compañeros, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 9, day: 23, name: "San Lino, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
@@ -224,6 +231,7 @@ export const fixedFeasts: Feast[] = [
   { month: 9, day: 24, name: "Nuestra Señora de Walsingham", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
   { month: 9, day: 25, name: "Beato Lancelot Andrewes, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, optional: true, },
   { month: 9, day: 26, name: "Mártires de Norteamérica", rank: "menor", color: "rojo", propers: { gloria: true }, },
+  { month: 9, day: 27, name: "Santos Cosme y Damián, Mártires", rank: "conmemoración", color: "rojo", },
   { month: 9, day: 28, name: "San Wenceslao, Príncipe y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 9, day: 29, name: "San Miguel y Todos los Ángeles", rank: "mayor", color: "blanco", propers: { gloria: true, creed: true }, hasPropers: true, },
   { month: 9, day: 30, name: "San Jerónimo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
@@ -240,6 +248,7 @@ export const fixedFeasts: Feast[] = [
   { month: 10, day: 8, name: "Santa Brígida, Reina y Viuda", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 10, day: 9, name: "Santos Dionisio, Rústico y Eleuterio, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 10, day: 10, name: "San Paulino de York, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
+  { month: 10, day: 11, name: "La Maternidad de la B.V.M.", rank: "conmemoración", color: "blanco", },
   { month: 10, day: 12, name: "San Wilfredo, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 10, day: 13, name: "Traslación de San Eduardo, Rey y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 10, day: 14, name: "San Calixto, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
@@ -252,6 +261,7 @@ export const fixedFeasts: Feast[] = [
   { month: 10, day: 21, name: "Santa Úrsula y Compañeras, Vírgenes y Mártires", rank: "conmemoración", color: "blanco", },
   { month: 10, day: 22, name: "Mártires de Nueva Guinea", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 10, day: 24, name: "San Rafael, Arcángel", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
+  { month: 10, day: 25, name: "Santos Crispín y Crispiniano, Mártires", rank: "conmemoración", color: "rojo", },
   { month: 10, day: 26, name: "Beato Alfredo el Grande, Rey y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, optional: true, },
   { month: 10, day: 27, name: "Vigilia de los Santos Simón y Judas", rank: "menor", color: "morado", },
   { month: 10, day: 28, name: "Santos Simón y Judas, Apóstoles y Mártires", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
@@ -263,7 +273,9 @@ export const fixedFeasts: Feast[] = [
   { month: 11, day: 3, name: "San Winifredo, Virgen y Mártir", rank: "conmemoración", color: "blanco", },
   { month: 11, day: 4, name: "San Carlos Borromeo, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 11, day: 5, name: "Santa Isabel, Madre de San Juan Bautista", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
+  { month: 11, day: 6, name: "San Leonardo, Abad", rank: "conmemoración", color: "blanco", },
   { month: 11, day: 7, name: "San Wilibrordo, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
+  { month: 11, day: 8, name: "Todos los Mártires y Santos Anglicanos", rank: "conmemoración", color: "rojo", },
   { month: 11, day: 9, name: "San Teodoro, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 11, day: 11, name: "San Martín de Tours, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 11, day: 13, name: "San Bricio, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
@@ -316,11 +328,13 @@ export function getFeastForDate(date: Date, includeOptional = false): Feast | nu
     (f) => f.month === month && f.day === day && (includeOptional || !f.optional)
   );
   if (matches.length === 0) return null;
-  // La de mayor rango que no sea mera conmemoración rige.
+  // La de mayor rango que no sea mera conmemoración rige. Una conmemoración
+  // NUNCA rige por sí sola: si solo hay conmemoraciones, rige el ciclo temporal
+  // (devolvemos null) y ellas se recogen aparte como conmemoraciones del día.
   const ruling = matches
     .filter((f) => f.rank !== "conmemoración")
     .sort((a, b) => RANK_ORDER[b.rank] - RANK_ORDER[a.rank])[0];
-  return ruling ?? matches[0];
+  return ruling ?? null;
 }
 
 /** Todas las fiestas de una fecha (incluye conmemoraciones y beati opcionales). */
