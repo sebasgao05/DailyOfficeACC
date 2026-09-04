@@ -22,22 +22,56 @@ export interface ResolvedProper {
 
 /** Normaliza un título/nombre litúrgico a una clave comparable (sin acentos, minúsculas, ordinales unificados). */
 function normalize(s: string): string {
-  return s
+  let t = s
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // quita acentos
-    .replace(/\[.*?\]/g, "")          // quita "[25 de diciembre]"
+    .replace(/\[.*?\]/g, "");         // quita "[25 de diciembre]"
+
+  // Unifica ordinales españoles (ambos géneros y formas) a su número, 1..24.
+  const ordinals: [RegExp, string][] = [
+    [/\bvigesimocuart[oa]\b|\bvigesimo ?cuart[oa]\b/g, "24"],
+    [/\bvigesimotercer[oa]?\b|\bvigesimo ?tercer[oa]?\b/g, "23"],
+    [/\bvigesimosegund[oa]\b|\bvigesimo ?segund[oa]\b/g, "22"],
+    [/\bvigesimoprimer[oa]?\b|\bvigesimo ?primer[oa]?\b/g, "21"],
+    [/\bvigesim[oa]\b/g, "20"],
+    [/\bdecimonoven[oa]\b/g, "19"],
+    [/\bdecimoctav[oa]\b/g, "18"],
+    [/\bdecimoseptim[oa]\b/g, "17"],
+    [/\bdecimosext[oa]\b/g, "16"],
+    [/\bdecimoquint[oa]\b/g, "15"],
+    [/\bdecimocuart[oa]\b/g, "14"],
+    [/\bdecimotercer[oa]?\b/g, "13"],
+    [/\bduodecim[oa]\b/g, "12"],
+    [/\bundecim[oa]\b/g, "11"],
+    [/\bdecim[oa]\b/g, "10"],
+    [/\bnoven[oa]\b/g, "9"],
+    [/\boctav[oa]\b/g, "8"],
+    [/\bseptim[oa]\b/g, "7"],
+    [/\bsext[oa]\b/g, "6"],
+    [/\bquint[oa]\b/g, "5"],
+    [/\bcuart[oa]\b/g, "4"],
+    [/\btercer[oa]?\b/g, "3"],
+    [/\bsegund[oa]\b/g, "2"],
+    [/\bprimer[oa]?\b/g, "1"],
+  ];
+  for (const [re, num] of ordinals) t = t.replace(re, num);
+
+  return t
     .replace(/domi?nica|domingo/g, "domingo")
-    .replace(/\bi\b|primera|primer|1a|1o/g, "1")
-    .replace(/\bii\b|segunda|segundo|2a/g, "2")
-    .replace(/\biii\b|tercera|tercer|3a/g, "3")
-    .replace(/\biv\b|cuarta|cuarto|4a/g, "4")
-    .replace(/\bv\b|quinta|quinto|5a/g, "5")
-    .replace(/\bvi\b|sexta|sexto|6a/g, "6")
+    .replace(/\bi\b/g, "1")
+    .replace(/\bii\b/g, "2")
+    .replace(/\biii\b/g, "3")
+    .replace(/\biv\b/g, "4")
+    .replace(/\bv\b/g, "5")
+    .replace(/\bvi\b/g, "6")
     .replace(/despues|tras/g, "despues")
     .replace(/\bde la\b|\bde\b|\bdel\b/g, "de")
     .replace(/\bsanto\b/g, "san")
+    .replace(/\bsantos\b/g, "san")
+    .replace(/\by martires?\b|\by martir\b/g, "")   // 'y Mártires' sufijo del rango
     .replace(/natividad de san juan/g, "san juan bautista")
+    .replace(/comunmente llamad[oa]/g, "")
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 }
@@ -81,6 +115,20 @@ export function getProperForDay(ordo: OrdoEntry): ResolvedProper | null {
     if (candCore.length < 6) continue; // evita falsos positivos con núcleos muy cortos
     for (const [key, entry] of collectIndex) {
       if (key.startsWith(candCore) || candCore.startsWith(key.split(" ").slice(0, 3).join(" "))) {
+        return { title: entry.title, entry, needsMissal: false };
+      }
+    }
+  }
+
+  // Tercer intento: casar cuando el título del LOC CONTIENE el nombre del día
+  // (títulos largos del LOC: 'Quinto domingo de Cuaresma, comúnmente llamado
+  // Domingo de Pasión' contiene 'domingo de pasion'; 'Presentación... llamada
+  // Purificación...' contiene 'purificacion').
+  for (const cand of candidates) {
+    const nc = normalize(cand);
+    if (nc.length < 8) continue;
+    for (const [key, entry] of collectIndex) {
+      if (key.includes(nc) || nc.includes(key)) {
         return { title: entry.title, entry, needsMissal: false };
       }
     }
