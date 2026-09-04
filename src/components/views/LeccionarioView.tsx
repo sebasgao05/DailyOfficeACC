@@ -54,6 +54,12 @@ function LeccionarioContent() {
       </div>
 
       {/* Propios del Día — Colecta, Epístola y Evangelio (domingos y fiestas con propios en el LOC) */}
+      {ordo.commemorations.length > 0 && (
+        <div className="mb-4 text-sm">
+          <span className="text-[var(--color-primary)] font-semibold">Conmemoraciones: </span>
+          <span className="italic">{ordo.commemorations.join(" · ")}</span>
+        </div>
+      )}
       {proper && (
         <div className="mb-6 bg-white border border-[var(--color-gold)] rounded-lg overflow-hidden">
           <h2 className="bg-[var(--color-gold)] text-[var(--color-primary-dark)] px-4 py-2 text-sm font-semibold tracking-wide" style={{ fontFamily: "var(--font-heading)" }}>
