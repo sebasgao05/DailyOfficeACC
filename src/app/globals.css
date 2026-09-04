@@ -159,3 +159,31 @@ html.dark .response {
 [id] {
   scroll-margin-top: 2rem;
 }
+
+/* ── Mejoras de apariencia en móvil ─────────────────────────────── */
+@media (max-width: 640px) {
+  /* Menos padding lateral en las cajas para aprovechar el ancho */
+  .collect {
+    @apply p-3 my-3;
+  }
+  .rubric {
+    @apply text-[0.85rem] my-3;
+  }
+  /* Títulos de sección más compactos y sin desbordar */
+  .section-title {
+    @apply text-lg my-4;
+  }
+  /* El contenido del oficio no debe forzar scroll horizontal */
+  .office-content {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .office-content h1 {
+    @apply text-2xl;
+  }
+  /* Salmos: menos sangría francesa para que quepan en pantallas estrechas */
+  .psalm-verse {
+    @apply pl-3 -indent-3;
+  }
+}
+

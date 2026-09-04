@@ -10,7 +10,7 @@ import { useMounted } from "@/lib/useMounted";
 import { parsePsalmRefs, getPsalmPortion } from "@/data/psalms";
 import { getMonthlyPsalms } from "@/data/monthlyPsalter";
 import { APOSTLES_CREED, NICENE_CREED } from "@/data/creeds";
-import { getPassage, BIBLE_VERSION } from "@/data/bible";
+import { getPassage, splitAlternatives, BIBLE_VERSION } from "@/data/bible";
 import Link from "next/link";
 
 interface Props {
@@ -27,6 +27,7 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
   const [showPsalmText, setShowPsalmText] = useState(true); // Show by default
   const [psalterMode, setPsalterMode] = useState<"lectionary" | "monthly">("lectionary");
   const [creed, setCreed] = useState<"apostles" | "nicene">("apostles");
+  const [psalmAltIdx, setPsalmAltIdx] = useState(0);
 
   // Sin fecha en la URL dependemos de `new Date()` (solo cliente). Hasta
   // montar mostramos el placeholder para que coincida con el HTML estático.
@@ -42,13 +43,16 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
   const ordoLine = ordo.ordoLine;
 
   const current = period === "morning" ? readings.morning : readings.evening;
+  // El Salterio del leccionario puede ofrecer alternativas ("68 o 18:1-19").
+  const psalmOptions = splitAlternatives(current.psalms);
+  const lectPsalms = psalmOptions[Math.min(psalmAltIdx, psalmOptions.length - 1)] || current.psalms;
   // El Salterio: "Lectionary" usa la tabla del leccionario del día; "Monthly" usa el
   // Salterio distribuido en 30 días (por día del mes).
   const monthlyNums = getMonthlyPsalms(date, period);
   const psalmRefs = psalterMode === "monthly"
     ? monthlyNums.map((n) => ({ number: n, from: undefined as number | undefined, to: undefined as number | undefined }))
-    : parsePsalmRefs(current.psalms);
-  const psalmsLabel = psalterMode === "monthly" ? monthlyNums.join(", ") : current.psalms;
+    : parsePsalmRefs(lectPsalms);
+  const psalmsLabel = psalterMode === "monthly" ? monthlyNums.join(", ") : lectPsalms;
 
   // Preservar la fecha seleccionada al enlazar a los salmos
   const dateQuery = dateParam ? `?date=${dateParam}` : "";
@@ -74,6 +78,23 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
       </div>
 
       {/* Psalms Section */}
+      {psalterMode === "lectionary" && psalmOptions.length > 1 && (
+        <div className="flex justify-center mb-2">
+          <div className="inline-flex rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
+            {psalmOptions.map((opt, i) => (
+              <button
+                key={opt}
+                onClick={() => setPsalmAltIdx(i)}
+                className={`px-2.5 py-1 transition-colors ${i > 0 ? "border-l border-[var(--color-border)]" : ""} ${
+                  i === psalmAltIdx ? "bg-[var(--color-primary-dark)] text-white font-medium" : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-bg-alt)]"
+                }`}
+              >
+                Salmo {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <p className="text-center text-sm mb-3 italic">
         <span className="text-[var(--color-primary)] font-medium">Salmos:</span> {psalmsLabel}
         <span className="text-[10px] text-gray-400 ml-2">({psalterMode === "monthly" ? "reparto en 30 días" : "según el leccionario"})</span>
@@ -142,6 +163,11 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
           </p>
           {ordoLine && (
             <p className="text-center text-xs font-mono text-[var(--color-primary)] mb-3" title="Notación del ORDO Kalendar">{ordoLine}</p>
+          )}
+          {ordo.commemorations.length > 0 && (
+            <p className="text-center text-xs italic text-[var(--color-primary)] mb-3">
+              {ordo.commemorations.map((c) => `Conm. ${c}`).join(" · ")}
+            </p>
           )}
           {proper.entry ? (
             <div className="space-y-3">
