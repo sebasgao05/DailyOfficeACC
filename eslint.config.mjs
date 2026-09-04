@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Scripts de utilidad Node (no forman parte de la app; usan require()).
     "scripts/**",
+    // Código de infraestructura (CloudFront Function), no es parte de la app.
+    ".github/**",
   ]),
 ]);
 

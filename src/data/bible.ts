@@ -163,7 +163,7 @@ function parseRef(raw: string): ParsedRef | null {
   const m = s.match(/^((?:[1-3]|I{1,3})\s+)?([A-Za-zÁÉÍÓÚáéíóúñ.\s]+?)\.?\s*([\d].*)?$/);
   if (!m) return null;
   const numPrefix = (m[1] ?? "").trim();
-  let bookWords = m[2].replace(/\./g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+  const bookWords = m[2].replace(/\./g, " ").replace(/\s+/g, " ").trim().toLowerCase();
   // Número romano a arábigo para la clave de alias.
   const roman: Record<string, string> = { i: "1", ii: "2", iii: "3" };
   const arabicPrefix = roman[numPrefix.toLowerCase()] ?? numPrefix;
