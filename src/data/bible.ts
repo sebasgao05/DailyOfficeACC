@@ -1630,3 +1630,14 @@ function verseNumberOf(line: string): number | null {
 export function hasPassage(ref: string): boolean {
   return getPassage(ref) !== null;
 }
+
+/**
+ * Separa una referencia con alternativas (" o ") en sus opciones.
+ * "Gen. 22:1-18 o Sab. 2:1, 12-24" -> ["Gen. 22:1-18", "Sab. 2:1, 12-24"].
+ * Devuelve un solo elemento si no hay alternativa. También aplica a salmos
+ * ("68 o 18:1-19").
+ */
+export function splitAlternatives(ref: string): string[] {
+  if (!ref) return [];
+  return ref.split(/\s+o\s+/i).map((s) => s.trim()).filter(Boolean);
+}
