@@ -70,8 +70,11 @@ function normalize(s: string): string {
     .replace(/\bsanto\b/g, "san")
     .replace(/\bsantos\b/g, "san")
     .replace(/\by martires?\b|\by martir\b/g, "")   // 'y Mártires' sufijo del rango
+    .replace(/\bde nuestro senor\b|\bde cristo\b|\bde la b v m\b|\bde la santa virgen maria\b|\bcandelaria\b/g, "")
     .replace(/natividad de san juan/g, "san juan bautista")
     .replace(/comunmente llamad[oa]/g, "")
+    .replace(/\bproximo\b|\bproxima\b/g, "")
+    .replace(/\b(la|el|los|las)\b/g, "")            // artículos
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 }
@@ -98,6 +101,14 @@ export function getProperForDay(ordo: OrdoEntry): ResolvedProper | null {
 
   // Intentar casar por el nombre del día litúrgico y por el de la fiesta.
   const candidates = [ordo.title, ordo.churchDay.name, ordo.feast?.name].filter(Boolean) as string[];
+  // Alias: San Pablo (30 jun) comparte el propio con San Pedro (29 jun) en el LOC.
+  if (candidates.some((c) => /San Pablo/i.test(c) && !/Conversi/i.test(c))) {
+    candidates.push("San Pedro, Apóstol");
+  }
+  // Alias: la Purificación (2 feb) está en el LOC como 'Presentación de Cristo en el Templo…'.
+  if (candidates.some((c) => /Purificaci|Candelaria|Presentaci[oó]n de Cristo/i.test(c))) {
+    candidates.push("Presentación de Cristo en el Templo, comúnmente llamada Purificación de la Santa Virgen María");
+  }
   for (const cand of candidates) {
     const hit = collectIndex.get(normalize(cand));
     if (hit) {
@@ -123,12 +134,16 @@ export function getProperForDay(ordo: OrdoEntry): ResolvedProper | null {
   // Tercer intento: casar cuando el título del LOC CONTIENE el nombre del día
   // (títulos largos del LOC: 'Quinto domingo de Cuaresma, comúnmente llamado
   // Domingo de Pasión' contiene 'domingo de pasion'; 'Presentación... llamada
-  // Purificación...' contiene 'purificacion').
+  // Purificación...' contiene 'purificacion'). Se EXCLUYEN candidatos genéricos
+  // del temporal (tiempo/feria/octava) que producirían falsos positivos, y se
+  // exige que compartan ≥2 palabras significativas.
   for (const cand of candidates) {
     const nc = normalize(cand);
     if (nc.length < 8) continue;
+    if (/\btiempo\b|\bferia\b|\boctava\b/.test(nc)) continue;
     for (const [key, entry] of collectIndex) {
-      if (key.includes(nc) || nc.includes(key)) {
+      const shared = nc.split(" ").filter((w) => w.length > 3 && key.split(" ").includes(w)).length;
+      if ((key.includes(nc) || nc.includes(key)) && shared >= 2) {
         return { title: entry.title, entry, needsMissal: false };
       }
     }

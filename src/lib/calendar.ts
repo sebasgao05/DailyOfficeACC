@@ -315,7 +315,16 @@ export function getChurchDay(date: Date): ChurchDay {
 
   // Tiempo después de Epifanía (default)
   if (date >= epiphany && diff < -46) {
-    return { name: "Tiempo después de Epifanía", season: "epifania", color: "verde", date };
+    if (date.getDay() === 0) {
+      // Numera los domingos después de la Epifanía. El "Primero" cae dentro de la
+      // octava (7-12 ene); a partir del 13 ene, cada domingo incrementa el ordinal.
+      const octaveEnd = new Date(date.getFullYear(), 0, 13);
+      const weeksSince = Math.floor((date.getTime() - octaveEnd.getTime()) / (7 * 24 * 60 * 60 * 1000));
+      const n = weeksSince + 2; // el domingo inmediato tras el 13 ene es el "Segundo"
+      const domingo = `${getOrdinalM(n)} Domingo después de la Epifanía`;
+      return { name: domingo, season: "epifania", color: "verde", date, weekName: domingo };
+    }
+    return { name: "Feria de Epifanía", season: "epifania", color: "verde", date, weekName: "Tiempo después de Epifanía" };
   }
 
   return { name: "", season: "trinidad", color: "verde", date };
