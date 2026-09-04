@@ -329,9 +329,10 @@ export function getOrdoEntry(date: Date): OrdoEntry {
     });
   }
 
-  // 3) Sin fiesta: rige el domingo o la feria del ciclo temporal.
+  // 3) Sin fiesta regente: rige el domingo o la feria del ciclo temporal.
+  // Se conmemoran las entradas de rango conmemoración y los beati opcionales del día.
   for (const f of getAllFeastsForDate(date)) {
-    if (f.optional) commemorations.push(f.name);
+    if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
   }
   return finalize({
     date,
