@@ -211,6 +211,28 @@ function resolveFast(
 }
 
 /**
+ * Cuando un santo RIGE un día temporal significativo, el ORDO conmemora el día
+ * saliente ("Comm. Feria", "Comm. de la Octava", "Comm. Témpora"). Devuelve el
+ * nombre a conmemorar, o null si el día temporal no lleva conmemoración propia
+ * (tiempo ordinario, ferias comunes de Navidad/Epifanía/Trinidad).
+ */
+function salientTemporalComm(
+  churchDay: ReturnType<typeof getChurchDay>,
+  date: Date
+): string | null {
+  if (isSunday(date)) return null; // el domingo se maneja aparte
+  const n = churchDay.name;
+  // Días de octava tapados por un santo: "De la Octava de X".
+  if (n.startsWith("De la Octava")) return n;
+  // Témporas (Cuaresma, Adviento, Septiembre, Pentecostés).
+  if (n.startsWith("Témpora")) return n;
+  // Ferias penitenciales: Cuaresma, Pasión, Pre-Cuaresma.
+  if (n === "Feria de Cuaresma" || n === "Feria de Pasión") return n;
+  if (n === "Feria de Pre-Cuaresma") return n;
+  return null;
+}
+
+/**
  * Resuelve la entrada del ORDO para una fecha concreta de CUALQUIER año.
  */
 export function getOrdoEntry(date: Date): OrdoEntry {
@@ -262,7 +284,9 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
         if (f.name === localFeast.name) continue;
-        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+        // Cualquier otra fiesta del mismo día se conmemora (una 2ª 'menor'
+        // concurrente, una conmemoración de fecha fija, o un beato opcional).
+        commemorations.push(f.name);
       }
       return finalize({
         date,
@@ -296,7 +320,9 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
         if (f.name === localFeast.name) continue;
-        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+        // Cualquier otra fiesta del mismo día se conmemora (una 2ª 'menor'
+        // concurrente, una conmemoración de fecha fija, o un beato opcional).
+        commemorations.push(f.name);
       }
       return finalize({
         date,
@@ -312,12 +338,23 @@ export function getOrdoEntry(date: Date): OrdoEntry {
     // La fiesta rige. Si desplaza a un domingo (rango >= domingo), lo conmemora.
     if (isSunday(date) && RANK_WEIGHT[localFeast.rank] >= RANK_WEIGHT["domingo"]) {
       commemorations.push(churchDay.name);
+    } else {
+      // Un santo que rige un DÍA TEMPORAL significativo (feria de Cuaresma,
+      // día de octava, témpora) conmemora ese día saliente, como marca el ORDO.
+      const temporalComm = salientTemporalComm(churchDay, date);
+      if (temporalComm) commemorations.push(temporalComm);
     }
-    // Conmemoraciones del día: entradas rank 'conmemoración' + beati opcionales.
+    // Conmemoraciones del día: cualquier OTRA fiesta del día se conmemora
+    // (una 2ª 'menor' concurrente, entradas 'conmemoración', o beati opcionales).
     for (const f of getAllFeastsForDate(date)) {
       if (f.name === localFeast.name) continue;
-      if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+      commemorations.push(f.name);
     }
+    // Conmemoración mutua Pedro (29 jun) / Pablo (30 jun): cada fiesta mayor
+    // conmemora a la otra, aunque caigan en días distintos (ORDO).
+    const md = `${date.getMonth() + 1}/${date.getDate()}`;
+    if (md === "6/29") commemorations.push("San Pablo, Apóstol y Mártir");
+    else if (md === "6/30") commemorations.push("San Pedro, Apóstol y Mártir");
     return finalize({
       date,
       churchDay,
@@ -329,9 +366,10 @@ export function getOrdoEntry(date: Date): OrdoEntry {
     });
   }
 
-  // 3) Sin fiesta: rige el domingo o la feria del ciclo temporal.
+  // 3) Sin fiesta regente: rige el domingo o la feria del ciclo temporal.
+  // Se conmemoran las entradas de rango conmemoración y los beati opcionales del día.
   for (const f of getAllFeastsForDate(date)) {
-    if (f.optional) commemorations.push(f.name);
+    if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
   }
   return finalize({
     date,
