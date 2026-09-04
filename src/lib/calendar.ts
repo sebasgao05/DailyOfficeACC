@@ -87,7 +87,9 @@ export function getChurchDay(date: Date): ChurchDay {
   if (date >= adventStart && date < christmas) {
     const weekNum = Math.floor((date.getTime() - adventStart.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
     const isGaudete = weekNum === 3 && date.getDay() === 0;
-    const domingo = `${getOrdinalM(weekNum)} Domingo de Adviento`;
+    const domingo = isGaudete
+      ? "Tercer Domingo de Adviento (Gaudete)"
+      : `${getOrdinalM(weekNum)} Domingo de Adviento`;
     if (date.getDay() === 0) {
       return { name: domingo, season: "adviento", color: isGaudete ? "rosa" : "morado", color2: isGaudete ? "morado" : undefined, date, weekName: domingo };
     }
