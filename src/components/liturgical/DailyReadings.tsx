@@ -164,6 +164,11 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
           {ordoLine && (
             <p className="text-center text-xs font-mono text-[var(--color-primary)] mb-3" title="Notación del ORDO Kalendar">{ordoLine}</p>
           )}
+          {ordo.commemorations.length > 0 && (
+            <p className="text-center text-xs italic text-[var(--color-primary)] mb-3">
+              {ordo.commemorations.map((c) => `Conm. ${c}`).join(" · ")}
+            </p>
+          )}
           {proper.entry ? (
             <div className="space-y-3">
               <div>
