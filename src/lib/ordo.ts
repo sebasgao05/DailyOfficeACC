@@ -262,7 +262,9 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
         if (f.name === localFeast.name) continue;
-        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+        // Cualquier otra fiesta del mismo día se conmemora (una 2ª 'menor'
+        // concurrente, una conmemoración de fecha fija, o un beato opcional).
+        commemorations.push(f.name);
       }
       return finalize({
         date,
@@ -296,7 +298,9 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
         if (f.name === localFeast.name) continue;
-        if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+        // Cualquier otra fiesta del mismo día se conmemora (una 2ª 'menor'
+        // concurrente, una conmemoración de fecha fija, o un beato opcional).
+        commemorations.push(f.name);
       }
       return finalize({
         date,
@@ -313,10 +317,11 @@ export function getOrdoEntry(date: Date): OrdoEntry {
     if (isSunday(date) && RANK_WEIGHT[localFeast.rank] >= RANK_WEIGHT["domingo"]) {
       commemorations.push(churchDay.name);
     }
-    // Conmemoraciones del día: entradas rank 'conmemoración' + beati opcionales.
+    // Conmemoraciones del día: cualquier OTRA fiesta del día se conmemora
+    // (una 2ª 'menor' concurrente, entradas 'conmemoración', o beati opcionales).
     for (const f of getAllFeastsForDate(date)) {
       if (f.name === localFeast.name) continue;
-      if (f.rank === "conmemoración" || f.optional) commemorations.push(f.name);
+      commemorations.push(f.name);
     }
     return finalize({
       date,
