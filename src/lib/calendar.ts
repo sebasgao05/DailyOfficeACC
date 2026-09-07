@@ -419,7 +419,12 @@ export function formatDateSpanish(date: Date): string {
 }
 
 export function toDateParam(date: Date): string {
-  return date.toISOString().split("T")[0];
+  // Usar componentes LOCALES (no toISOString, que convierte a UTC y en zonas
+  // horarias negativas retrocede un día, desincronizando el selector de fecha).
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 export function fromDateParam(param: string): Date {
