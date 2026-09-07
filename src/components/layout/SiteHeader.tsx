@@ -5,6 +5,8 @@ import { useState, useEffect, Suspense } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { getChurchDay, formatDateSpanish, toDateParam, fromDateParam, type Season } from "@/lib/calendar";
 import { getFeastForDate } from "@/data/feasts";
+import { getOrdoEntry } from "@/lib/ordo";
+import { colorTextOnDarkHex, seasonColor } from "@/lib/liturgicalColors";
 
 const navLinks = [
   { href: "/oficio", label: "Oficio Diario", matchPaths: ["/oficio"] },
@@ -65,6 +67,7 @@ function SiteHeaderContent() {
   }, [darkMode]);
 
   const churchDay = getChurchDay(currentDate);
+  const ordo = getOrdoEntry(currentDate);
 
   const abbr = currentDate.toLocaleDateString("es-ES", { weekday: "short" }).replace(".", "");
   const num = currentDate.getDate();
@@ -207,46 +210,51 @@ function SiteHeaderContent() {
 
         {/* Seasons */}
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2 border-t border-white/10 text-xs">
-          {seasons.map((season) => (
-            <span
-              key={season.id}
-              className={`transition-colors ${
-                churchDay?.season === season.id
-                  ? "text-[var(--color-gold)] font-bold"
-                  : "text-white/60 hover:text-white/90"
-              }`}
-            >
-              {season.label}
-            </span>
-          ))}
+          {seasons.map((season) => {
+            const active = churchDay?.season === season.id;
+            const col = colorTextOnDarkHex[seasonColor[season.id]];
+            return (
+              <span
+                key={season.id}
+                className={`transition-all ${active ? "font-bold underline underline-offset-4" : "opacity-70 hover:opacity-100"}`}
+                style={{ color: col }}
+                title={`Color litúrgico: ${seasonColor[season.id]}`}
+              >
+                {season.label}
+              </span>
+            );
+          })}
         </div>
 
-        {/* Church Day + Feast */}
-        {churchDay && (
+        {/* Día litúrgico: el TÍTULO es el nombre de la fiesta que rige (no "FERIA"),
+            coloreado según el color litúrgico del ORDO. */}
+        {ordo && (
           <div className="text-center py-2 border-t border-white/10">
-            <p className="text-[var(--color-gold)] text-sm italic" style={{ fontFamily: "var(--font-heading)" }}>
-              {churchDay.name}
+            <p
+              className="text-sm italic font-semibold"
+              style={{ fontFamily: "var(--font-heading)", color: colorTextOnDarkHex[ordo.color] }}
+              title={`Color litúrgico: ${ordo.color}`}
+            >
+              {(() => {
+                const feast = getFeastForDate(currentDate);
+                if (feast?.hasPropers) {
+                  return (
+                    <Link href="/santa-comunion" className="hover:underline decoration-dotted">
+                      {ordo.title}
+                    </Link>
+                  );
+                }
+                return ordo.title;
+              })()}
             </p>
             {!isToday && (
               <p className="text-white/50 text-[11px] italic mt-0.5">{formatDateSpanish(currentDate)}</p>
             )}
-            {(() => {
-              const feast = getFeastForDate(currentDate);
-              if (feast && feast.name !== churchDay.name) {
-                return (
-                  <p className="text-white/80 text-xs mt-1">
-                    {feast.hasPropers ? (
-                      <Link href="/santa-comunion" className="hover:text-[var(--color-gold)] underline decoration-dotted">
-                        {feast.name} — ver propios
-                      </Link>
-                    ) : (
-                      <span>{feast.name} <span className="text-white/50">(consultar el Misal)</span></span>
-                    )}
-                  </p>
-                );
-              }
-              return null;
-            })()}
+            {ordo.commemorations.length > 0 && (
+              <p className="text-white/70 text-[11px] mt-1">
+                {ordo.commemorations.map((c) => `Conm. ${c}`).join(" · ")}
+              </p>
+            )}
           </div>
         )}
       </div>

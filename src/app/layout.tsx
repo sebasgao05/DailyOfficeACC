@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import { SectionNav } from "@/components/layout/SectionNav";
 
 const garamond = EB_Garamond({
   subsets: ["latin"],
@@ -60,6 +61,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <ScrollToTop />
+        <SectionNav />
       </body>
     </html>
   );
