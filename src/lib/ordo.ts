@@ -26,6 +26,7 @@ import {
   type LiturgicalColor,
 } from "./calendar";
 import { getFeastForDate, getAllFeastsForDate, type Feast } from "@/data/feasts";
+import { getOrdoNotes } from "@/data/ordoNotes";
 
 export interface OrdoEntry {
   date: Date;
@@ -53,6 +54,8 @@ export interface OrdoEntry {
   fast: "abstinencia" | "ayuno-y-abstinencia" | null;
   /** Nota del Ordo cuando el color es condicional. */
   note?: string;
+  /** Notas de rúbrica del ORDO para el día (velos, observancias opcionales). */
+  notes: string[];
 }
 
 const RANK_WEIGHT: Record<string, number> = {
@@ -262,8 +265,10 @@ export function getOrdoEntry(date: Date): OrdoEntry {
     // NO puede desplazar (rige el día, la fiesta pasa a conmemoración). Dos niveles:
     //  - FUERTE (Ceniza, Semana Santa, Ascensión, Rogativas, Corpus, Sagrado Corazón,
     //    Pentecostés y sus vigilias): solo una fiesta PRINCIPAL los desplaza.
-    //  - OCTAVAS / TÉMPORAS: rigen sobre menores/conmemoraciones, pero una fiesta
-    //    MAYOR (p.ej. un Apóstol/Evangelista) sí rige y la octava se conmemora.
+    //  - OCTAVAS: rigen sobre menores/conmemoraciones, pero una fiesta MAYOR
+    //    (p.ej. un Apóstol/Evangelista) sí rige y la octava se conmemora.
+    // NOTA: las TÉMPORAS NO bloquean: la fiesta del santo SIEMPRE rige sobre la
+    // témpora (regla del ORDO/usuario) y la témpora se conmemora vía salientTemporalComm.
     const strongTemporal =
       churchDay.name === "Miércoles de Ceniza" ||
       churchDay.season === "semana-santa" ||
@@ -274,12 +279,10 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       churchDay.name === "Domingo de Pentecostés" ||
       churchDay.name === "Vigilia de Pentecostés" ||
       churchDay.name === "Vigilia de la Natividad";
-    const octaveOrEmber =
-      churchDay.name.startsWith("De la Octava") ||
-      churchDay.name.startsWith("Témpora");
+    const octaveActive = churchDay.name.startsWith("De la Octava");
     const privilegedTemporal =
       (strongTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["principal"]) ||
-      (octaveOrEmber && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["mayor"]);
+      (octaveActive && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["mayor"]);
     if (privilegedTemporal) {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
@@ -419,6 +422,7 @@ function finalize(base: {
     color,
     color2,
     note,
+    notes: getOrdoNotes(base.date, base.churchDay.name),
     propers,
     ordoLine: buildOrdoLine(propers),
     fast: resolveFast(base.feast, base.churchDay),

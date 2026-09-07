@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { type LiturgicalColor } from "@/lib/calendar";
+import { type LiturgicalColor, toDateParam } from "@/lib/calendar";
 import { getOrdoEntry, getOrdoMonth, type OrdoEntry } from "@/lib/ordo";
 import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
@@ -170,10 +170,10 @@ export function KalendarView() {
       </div>
 
       {/* Rejilla del calendario */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
         {cells.map((date, i) => {
           if (!date) {
-            return <div key={`empty-${i}`} className="min-h-[90px] bg-gray-50/50 rounded"></div>;
+            return <div key={`empty-${i}`} className="min-h-[52px] sm:min-h-[90px] bg-gray-50/50 rounded"></div>;
           }
           const ordo = getOrdoEntry(date);
           const isToday =
@@ -188,14 +188,14 @@ export function KalendarView() {
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
               style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
-              className={`text-left min-h-[90px] p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
+              className={`text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >
-              <div className={`text-lg font-bold ${colorNumber[ordo.color]} ${isSunday ? "text-xl" : ""}`}>
+              <div className={`text-sm sm:text-lg font-bold ${colorNumber[ordo.color]} ${isSunday ? "sm:text-xl" : ""}`}>
                 {date.getDate()}
               </div>
-              <div className={`text-[9px] leading-tight mt-0.5 ${isHighRank ? "font-bold uppercase" : isSunday ? "text-[var(--color-primary)] font-bold" : "text-gray-600"} ${colorNumber[ordo.color]}`}>
+              <div className={`hidden sm:block text-[9px] leading-tight mt-0.5 ${isHighRank ? "font-bold uppercase" : isSunday ? "text-[var(--color-primary)] font-bold" : "text-gray-600"} ${colorNumber[ordo.color]}`}>
                 {ordo.title.length > 50 ? ordo.title.slice(0, 47) + "…" : ordo.title}
               </div>
               {ordo.fast && (
@@ -247,8 +247,17 @@ export function KalendarView() {
           {selected.note && (
             <p className="text-sm mt-1 italic text-[var(--color-primary)]">Nota: {selected.note}</p>
           )}
+          {selected.notes.length > 0 && (
+            <div className="mt-2 space-y-1">
+              {selected.notes.map((n, i) => (
+                <p key={i} className="text-xs italic text-gray-600 border-l-2 border-[var(--color-gold)] pl-2">
+                  ✚ {n}
+                </p>
+              ))}
+            </div>
+          )}
           <Link
-            href={`/leccionario?date=${selected.date.toISOString().split("T")[0]}`}
+            href={`/leccionario?date=${toDateParam(selected.date)}`}
             className="inline-block mt-3 text-xs text-[var(--color-primary)] hover:text-[var(--color-gold)] underline"
           >
             Ver leccionario y propios del día →

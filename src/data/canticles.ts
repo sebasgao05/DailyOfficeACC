@@ -203,6 +203,23 @@ const deusMisereatur: Canticle = {
   gloria: GLORIA,
 };
 
+const benedicAnima: Canticle = {
+  id: "benedic-anima",
+  label: "Benedic, anima mea",
+  title: "Benedic, anima mea",
+  subtitle: "Salmo 103",
+  verses: [
+    "Bendice, alma mía, al Señor, * y todo mi ser a su santo nombre.",
+    "Bendice, alma mía, al Señor, * y no olvides sus beneficios.",
+    "Él perdona todas tus culpas * y cura todas tus enfermedades;",
+    "Él rescata tu vida de la fosa, * y te colma de gracia y de ternura.",
+    "Bendecid al Señor, ángeles suyos, poderosos ejecutores de sus órdenes, * prontos a la voz de su palabra.",
+    "Bendecid al Señor, ejércitos suyos, * servidores que cumplís sus deseos.",
+    "Bendecid al Señor, todas sus obras, en todo lugar de su imperio. * ¡Bendice, alma mía, al Señor!",
+  ],
+  gloria: GLORIA,
+};
+
 // ===== ÍNDICE POR PERIODO Y POSICIÓN =====
 
 export type Period = "morning" | "evening";
@@ -215,7 +232,7 @@ const CANTICLES: Record<Period, Record<Position, Canticle[]>> = {
   },
   evening: {
     first: [magnificat, cantate, bonumEst],
-    second: [nuncDimittis, deusMisereatur],
+    second: [nuncDimittis, deusMisereatur, benedicAnima],
   },
 };
 
