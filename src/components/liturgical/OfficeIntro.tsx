@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChurchDay, fromDateParam } from "@/lib/calendar";
+import { useOffice } from "@/components/liturgical/OfficeContext";
 import {
   MORNING,
   EVENING,
@@ -45,7 +46,7 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
   const churchDay = getChurchDay(date);
 
   const [exhortBreve, setExhortBreve] = useState(false);
-  const [pnPos, setPnPos] = useState<"absolucion" | "preces">("absolucion");
+  const { pnPos, setPnPos } = useOffice();
   const [absAlterna, setAbsAlterna] = useState(false);
 
   const T = office === "morning" ? MORNING : EVENING;
@@ -56,7 +57,7 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
   const PadreNuestro = (
     <>
-      <h2 className="section-title">El Padre Nuestro</h2>
+      <h2 className="section-title" id="padrenuestro">El Padre Nuestro</h2>
       <p className="rubric">{T.padreNuestroRubrica}</p>
       <div className="collect"><p>{T.padreNuestro}</p></div>
     </>
@@ -81,7 +82,7 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
       {/* Exhortación con selector larga/breve */}
       <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
-        <h2 className="section-title mb-0">Exhortación</h2>
+        <h2 className="section-title mb-0" id="exhortacion">Exhortación</h2>
         <div className="inline-flex rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
           <button
             onClick={() => setExhortBreve(false)}
@@ -107,7 +108,7 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
       {/* Absolución (con alterna en Vespertina) */}
       <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
-        <h2 className="section-title mb-0">{T.absolucionTitulo}</h2>
+        <h2 className="section-title mb-0" id="absolucion">{T.absolucionTitulo}</h2>
         {office === "evening" && (
           <div className="inline-flex rounded-md border border-[var(--color-border)] overflow-hidden text-xs">
             <button
@@ -166,14 +167,6 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
           <p key={i}><strong>{inv.ocasion}.</strong> {inv.texto}</p>
         ))}
       </div>
-
-      {/* Marcador para que el Padre Nuestro pueda ir entre las preces (tras el credo) */}
-      {pnPos === "preces" && (
-        <div data-pn-preces>
-          <p className="rubric mt-6">¶ Aquí se dice el Padre Nuestro (elegido para las Preces):</p>
-          {PadreNuestro}
-        </div>
-      )}
     </>
   );
 }

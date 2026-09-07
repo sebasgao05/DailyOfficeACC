@@ -5,6 +5,8 @@ import { CanticleSelector } from "@/components/liturgical/CanticleSelector";
 import { CreedSelector } from "@/components/liturgical/CreedSelector";
 import { OfficeIntro } from "@/components/liturgical/OfficeIntro";
 import { OfficeFinalPrayers } from "@/components/liturgical/OfficeFinalPrayers";
+import { OfficePreces } from "@/components/liturgical/OfficePreces";
+import { OfficeProvider } from "@/components/liturgical/OfficeContext";
 import { EVENING } from "@/data/officeText";
 
 export const metadata: Metadata = {
@@ -13,6 +15,7 @@ export const metadata: Metadata = {
 
 export default function OracionVespertina() {
   return (
+    <OfficeProvider>
     <article className="office-content">
       <h1
         className="text-3xl text-[var(--color-primary-dark)] text-center mb-2 font-medium"
@@ -65,14 +68,11 @@ export default function OracionVespertina() {
       {/* Credo */}
       <CreedSelector />
 
-      {/* Preces tras el credo, Colectas y Oraciones finales completas */}
-      <div className="my-4 space-y-1">
-        <p className="versicle"><strong>Ofic.</strong> El Señor esté con ustedes.</p>
-        <p className="versicle response"><strong>R.</strong> Y con tu espíritu.</p>
-        <p className="versicle"><strong>Ofic.</strong> Oremos.</p>
-      </div>
+      {/* Preces tras el credo (con Padre Nuestro condicional), y Oraciones finales */}
+      <OfficePreces office="evening" />
 
       <OfficeFinalPrayers office="evening" />
     </article>
+    </OfficeProvider>
   );
 }

@@ -14,10 +14,20 @@ export function SectionNav() {
   const [sections, setSections] = useState<SectionLink[]>([]);
 
   useEffect(() => {
-    const nodes = Array.from(
-      document.querySelectorAll<HTMLElement>("h2.section-title[id]")
-    );
-    setSections(nodes.map((n) => ({ id: n.id, label: n.textContent?.trim() || n.id })));
+    const scan = () => {
+      const nodes = Array.from(
+        document.querySelectorAll<HTMLElement>("h2.section-title[id]")
+      );
+      setSections(nodes.map((n) => ({ id: n.id, label: n.textContent?.trim() || n.id })));
+    };
+    scan();
+    // Los componentes cliente del oficio montan tras la hidratación; reescanear
+    // un par de veces y observar cambios del DOM para captar sus section-title.
+    const t1 = setTimeout(scan, 300);
+    const t2 = setTimeout(scan, 1200);
+    const obs = new MutationObserver(scan);
+    obs.observe(document.body, { childList: true, subtree: true });
+    return () => { clearTimeout(t1); clearTimeout(t2); obs.disconnect(); };
   }, []);
 
   if (sections.length === 0) return null;
