@@ -26,6 +26,7 @@ import {
   type LiturgicalColor,
 } from "./calendar";
 import { getFeastForDate, getAllFeastsForDate, type Feast } from "@/data/feasts";
+import { getOrdoNotes } from "@/data/ordoNotes";
 
 export interface OrdoEntry {
   date: Date;
@@ -53,6 +54,8 @@ export interface OrdoEntry {
   fast: "abstinencia" | "ayuno-y-abstinencia" | null;
   /** Nota del Ordo cuando el color es condicional. */
   note?: string;
+  /** Notas de rúbrica del ORDO para el día (velos, observancias opcionales). */
+  notes: string[];
 }
 
 const RANK_WEIGHT: Record<string, number> = {
@@ -419,6 +422,7 @@ function finalize(base: {
     color,
     color2,
     note,
+    notes: getOrdoNotes(base.date, base.churchDay.name),
     propers,
     ordoLine: buildOrdoLine(propers),
     fast: resolveFast(base.feast, base.churchDay),
