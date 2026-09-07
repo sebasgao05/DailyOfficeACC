@@ -279,7 +279,7 @@ export function getOrdoEntry(date: Date): OrdoEntry {
       churchDay.name.startsWith("Témpora");
     const privilegedTemporal =
       (strongTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["principal"]) ||
-      (octaveOrEmber && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["mayor"]);
+      (octaveOrEmber && !localFeast.overTemporal && RANK_WEIGHT[localFeast.rank] < RANK_WEIGHT["mayor"]);
     if (privilegedTemporal) {
       commemorations.push(localFeast.name);
       for (const f of getAllFeastsForDate(date)) {
