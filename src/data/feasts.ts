@@ -31,9 +31,6 @@ export interface Feast {
   transferable?: boolean;
   /** Beato anglicano opcional (por permiso episcopal); no desplaza la feria. */
   optional?: boolean;
-  /** Excepción del ORDO: esta fiesta RIGE sobre una témpora/octava que
-   *  normalmente la bloquearía (p.ej. San Cipriano 16 sep rige la Témpora). */
-  overTemporal?: boolean;
 }
 
 export const fixedFeasts: Feast[] = [
@@ -48,7 +45,7 @@ export const fixedFeasts: Feast[] = [
   { month: 1, day: 15, name: "San Pablo, Primer Ermitaño, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 1, day: 16, name: "Beato William Laud, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 17, name: "San Antonio, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
-  { month: 1, day: 18, name: "San Prisca, Virgen y Mártir", rank: "conmemoración", color: "verde", },
+  { month: 1, day: 18, name: "Santa Prisca, Virgen y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 20, name: "Santos Fabián y Sebastián, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 21, name: "Santa Inés, Virgen y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 22, name: "Santos Vicente y Anastasio, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
@@ -62,7 +59,7 @@ export const fixedFeasts: Feast[] = [
   { month: 1, day: 30, name: "Beato Carlos Estuardo, Rey y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 1, day: 31, name: "San Juan Bosco, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   // ===== Febrero =====
-  { month: 2, day: 1, name: "San Ignacio, Obispo y Mártir", rank: "conmemoración", color: "morado", },
+  { month: 2, day: 1, name: "San Ignacio, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 2, day: 2, name: "Purificación de la B.V.M. (Candelaria)", rank: "principal", color: "blanco", propers: { gloria: true, creed: true, preface: "Purificación" }, hasPropers: true, },
   { month: 2, day: 3, name: "San Blas, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 2, day: 4, name: "San Gilberto de Sempringham, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
@@ -78,6 +75,7 @@ export const fixedFeasts: Feast[] = [
   { month: 2, day: 12, name: "San Benito Biscop, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 2, day: 13, name: "San Kentigern, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 2, day: 14, name: "San Valentín, Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
+  { month: 2, day: 15, name: "Santos Faustino y Jovita, Mártires", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 2, day: 15, name: "Santos Mártires de Japón", rank: "conmemoración", color: "rojo", },
   { month: 2, day: 21, name: "San Pedro Damián, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Cuaresma" }, },
   { month: 2, day: 24, name: "San Matías, Apóstol y Mártir", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
@@ -86,11 +84,11 @@ export const fixedFeasts: Feast[] = [
   { month: 2, day: 23, name: "Vigilia de San Matías, Apóstol y Mártir", rank: "conmemoración", color: "morado", },
   { month: 2, day: 27, name: "Beato George Herbert, Confesor", rank: "conmemoración", color: "morado", optional: true, },
   // ===== Marzo =====
-  { month: 3, day: 1, name: "San David, Obispo y Confesor", rank: "conmemoración", color: "morado", },
+  { month: 3, day: 1, name: "San David, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 3, day: 2, name: "San Chad, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true, preface: "Cuaresma" }, },
   { month: 3, day: 6, name: "Santos Perpetua y Felicidad, Mártires", rank: "menor", color: "rojo", propers: { gloria: true, preface: "Cuaresma" }, },
   { month: 3, day: 7, name: "San Tomás de Aquino, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Cuaresma" }, },
-  { month: 3, day: 8, name: "San Juan de Dios, Confesor", rank: "conmemoración", color: "morado", },
+  { month: 3, day: 8, name: "San Juan de Dios, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 3, day: 9, name: "Santa Francisca de Roma, Viuda", rank: "menor", color: "blanco", propers: { gloria: true, preface: "Cuaresma" }, },
   { month: 3, day: 10, name: "Cuarenta Santos Mártires", rank: "menor", color: "rojo", propers: { gloria: true, preface: "Cuaresma" }, },
   { month: 3, day: 12, name: "San Gregorio el Grande, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Cuaresma" }, },
@@ -221,7 +219,7 @@ export const fixedFeasts: Feast[] = [
   { month: 9, day: 12, name: "Santísimo Nombre de María", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
   { month: 9, day: 14, name: "Exaltación de la Santa Cruz", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Cruz" }, hasPropers: true, },
   { month: 9, day: 15, name: "Siete Dolores de la B.V.M.", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
-  { month: 9, day: 16, name: "San Cipriano, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, overTemporal: true, },
+  { month: 9, day: 16, name: "San Cipriano, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 9, day: 16, name: "San Niniano, Obispo y Confesor", rank: "conmemoración", color: "rojo", },
   { month: 9, day: 17, name: "San Hildegarda, Virgen", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 9, day: 18, name: "Beato Edward Bouverie Pusey, Confesor", rank: "conmemoración", color: "blanco", optional: true, },
@@ -303,7 +301,7 @@ export const fixedFeasts: Feast[] = [
   { month: 12, day: 4, name: "San Clemente de Alejandría, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 12, day: 4, name: "Santa Bárbara, Virgen y Mártir", rank: "conmemoración", color: "blanco", },
   { month: 12, day: 5, name: "San Sabas, Abad", rank: "conmemoración", color: "morado", },
-  { month: 12, day: 6, name: "San Nicolás, Obispo y Confesor", rank: "conmemoración", color: "morado", },
+  { month: 12, day: 6, name: "San Nicolás, Obispo y Confesor", rank: "conmemoración", color: "blanco", },
   { month: 12, day: 7, name: "San Ambrosio, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 12, day: 8, name: "Concepción de la B.V.M.", rank: "principal", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, hasPropers: true, },
   { month: 12, day: 13, name: "Santa Lucía, Virgen y Mártir", rank: "conmemoración", color: "rojo", },
@@ -311,7 +309,7 @@ export const fixedFeasts: Feast[] = [
   { month: 12, day: 25, name: "Natividad de Nuestro Señor", rank: "principal", color: "blanco", propers: { gloria: true, creed: true, preface: "Navidad" }, hasPropers: true, },
   { month: 12, day: 26, name: "San Esteban, Protomártir", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Navidad" }, hasPropers: true, },
   { month: 12, day: 27, name: "San Juan, Apóstol y Evangelista", rank: "mayor", color: "blanco", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
-  { month: 12, day: 28, name: "Santos Inocentes", rank: "mayor", color: "morado", propers: { creed: true, preface: "Navidad" }, hasPropers: true, },
+  { month: 12, day: 28, name: "Santos Inocentes", rank: "mayor", color: "rojo", propers: { creed: true, preface: "Navidad" }, hasPropers: true, },
   { month: 12, day: 29, name: "Santo Tomás de Canterbury, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true, creed: true, preface: "Navidad" }, },
   { month: 12, day: 31, name: "San Silvestre, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Navidad" }, },
 ];
