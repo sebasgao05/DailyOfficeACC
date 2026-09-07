@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://d39xew2a81v4n8.cloudfront.net";
+  "https://oficio-diario.david-barrera.com";
 
 export const dynamic = "force-static";
 
