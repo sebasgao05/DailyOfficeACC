@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Siglas y Abreviaturas",
@@ -130,6 +131,19 @@ export default function SiglasPage() {
             </div>
           </section>
         ))}
+      </div>
+
+      <div className="text-center mt-8">
+        <Link
+          href="/rubricas"
+          className="inline-block bg-[var(--color-primary-dark)] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Reglas y Tablas del LOC →
+        </Link>
+        <p className="text-xs text-gray-500 mt-2">
+          Reglas de las fiestas movibles, días de fiesta, ayunos, rogativas y precedencias.
+        </p>
       </div>
     </article>
   );
