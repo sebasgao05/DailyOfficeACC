@@ -174,7 +174,7 @@ function SiteHeaderContent() {
               <div className="absolute top-10 right-0 z-50 bg-white rounded-lg shadow-xl p-3 min-w-[200px]">
                 <input
                   type="date"
-                  defaultValue={toDateParam(currentDate)}
+                  value={toDateParam(currentDate)}
                   onChange={(e) => {
                     if (e.target.value) {
                       const [y, m, d] = e.target.value.split("-").map(Number);

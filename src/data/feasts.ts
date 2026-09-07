@@ -31,6 +31,9 @@ export interface Feast {
   transferable?: boolean;
   /** Beato anglicano opcional (por permiso episcopal); no desplaza la feria. */
   optional?: boolean;
+  /** Excepción del ORDO: esta fiesta RIGE sobre una témpora/octava que
+   *  normalmente la bloquearía (p.ej. San Cipriano 16 sep rige la Témpora). */
+  overTemporal?: boolean;
 }
 
 export const fixedFeasts: Feast[] = [
@@ -218,7 +221,7 @@ export const fixedFeasts: Feast[] = [
   { month: 9, day: 12, name: "Santísimo Nombre de María", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
   { month: 9, day: 14, name: "Exaltación de la Santa Cruz", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Cruz" }, hasPropers: true, },
   { month: 9, day: 15, name: "Siete Dolores de la B.V.M.", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
-  { month: 9, day: 16, name: "San Cipriano, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
+  { month: 9, day: 16, name: "San Cipriano, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, overTemporal: true, },
   { month: 9, day: 16, name: "San Niniano, Obispo y Confesor", rank: "conmemoración", color: "rojo", },
   { month: 9, day: 17, name: "San Hildegarda, Virgen", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 9, day: 18, name: "Beato Edward Bouverie Pusey, Confesor", rank: "conmemoración", color: "blanco", optional: true, },
