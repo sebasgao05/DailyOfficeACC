@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { type LiturgicalColor } from "@/lib/calendar";
+import { type LiturgicalColor, toDateParam } from "@/lib/calendar";
 import { getOrdoEntry, getOrdoMonth, type OrdoEntry } from "@/lib/ordo";
 import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
@@ -247,8 +247,17 @@ export function KalendarView() {
           {selected.note && (
             <p className="text-sm mt-1 italic text-[var(--color-primary)]">Nota: {selected.note}</p>
           )}
+          {selected.notes.length > 0 && (
+            <div className="mt-2 space-y-1">
+              {selected.notes.map((n, i) => (
+                <p key={i} className="text-xs italic text-gray-600 border-l-2 border-[var(--color-gold)] pl-2">
+                  ✚ {n}
+                </p>
+              ))}
+            </div>
+          )}
           <Link
-            href={`/leccionario?date=${selected.date.toISOString().split("T")[0]}`}
+            href={`/leccionario?date=${toDateParam(selected.date)}`}
             className="inline-block mt-3 text-xs text-[var(--color-primary)] hover:text-[var(--color-gold)] underline"
           >
             Ver leccionario y propios del día →

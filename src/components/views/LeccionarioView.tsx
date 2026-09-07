@@ -60,6 +60,15 @@ function LeccionarioContent() {
           <span className="italic">{ordo.commemorations.join(" · ")}</span>
         </div>
       )}
+      {ordo.notes.length > 0 && (
+        <div className="mb-4 space-y-1">
+          {ordo.notes.map((n, i) => (
+            <p key={i} className="text-xs italic text-gray-600 border-l-2 border-[var(--color-gold)] pl-2">
+              ✚ Nota del ORDO: {n}
+            </p>
+          ))}
+        </div>
+      )}
       {proper && (
         <div className="mb-6 bg-white border border-[var(--color-gold)] rounded-lg overflow-hidden">
           <h2 className="bg-[var(--color-gold)] text-[var(--color-primary-dark)] px-4 py-2 text-sm font-semibold tracking-wide" style={{ fontFamily: "var(--font-heading)" }}>
