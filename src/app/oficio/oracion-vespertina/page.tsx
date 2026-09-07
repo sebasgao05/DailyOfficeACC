@@ -53,17 +53,8 @@ export default function OracionVespertina() {
       <p className="rubric">¶ Después se leerá la Segunda Lección, tomada del Nuevo Testamento. Antes de la lección el oficiante dirá: «Comienza el capítulo … (o el versículo … del capítulo …) del libro de …»; y al terminar: «Aquí termina la Segunda Lección».</p>
       <DailyLesson period="evening" which="second" />
 
-      {/* Cántico después de la Segunda Lectura: Nunc Dimittis / Deus Misereatur */}
+      {/* Cántico después de la Segunda Lectura: Nunc Dimittis / Deus Misereatur / Benedic, anima mea */}
       <CanticleSelector period="evening" position="second" />
-
-      {/* Benedic, anima mea (Salmo 103) — tercer cántico alternativo tras la 2ª lectura */}
-      <h2 className="section-title">{EVENING.canticoBenedicAnimaTitulo} <span className="text-sm text-gray-500 font-normal">({EVENING.canticoBenedicAnimaRef})</span></h2>
-      <p className="rubric">¶ O bien este cántico, en lugar del Nunc Dimittis o del Deus Misereatur.</p>
-      <div className="my-4 space-y-2">
-        {EVENING.canticoBenedicAnima.split(" * ").map((line, i) => (
-          <p key={i} className="psalm-verse">{line}{i < EVENING.canticoBenedicAnima.split(" * ").length - 1 ? " *" : ""}</p>
-        ))}
-      </div>
 
       {/* Credo */}
       <CreedSelector />
