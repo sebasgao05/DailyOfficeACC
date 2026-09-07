@@ -211,7 +211,8 @@ export const fixedFeasts: Feast[] = [
   // ===== Septiembre =====
   { month: 9, day: 1, name: "San Gil, Abad", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 9, day: 2, name: "San Esteban de Hungría, Rey y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
-  { month: 9, day: 5, name: "B.V.M. en Sábado", rank: "menor", color: "blanco", propers: { gloria: true, preface: "B.V.M." }, },
+  // B.V.M. en Sábado: NO es fecha fija; se calcula como el primer sábado de
+  // septiembre en getMovableVotives (regla del ORDO). Ver más abajo.
   { month: 9, day: 7, name: "San Evurcio, Obispo y Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
   { month: 9, day: 8, name: "Natividad de la B.V.M.", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "B.V.M." }, },
   { month: 9, day: 9, name: "San Pedro Claver, Confesor", rank: "menor", color: "blanco", propers: { gloria: true }, },
@@ -292,7 +293,10 @@ export const fixedFeasts: Feast[] = [
   { month: 11, day: 23, name: "San Clemente, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 11, day: 24, name: "San Juan de la Cruz, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true }, },
   { month: 11, day: 25, name: "Santa Catalina de Alejandría, Virgen y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
-  { month: 11, day: 28, name: "Vigilia de San Andrés, Apóstol y Mártir", rank: "menor", color: "morado", },
+  { month: 11, day: 28, name: "Santa Catalina Labouré, Virgen", rank: "conmemoración", color: "blanco", },
+  // Vigilia de San Andrés: NO es fija; es la víspera de la celebración de San
+  // Andrés (30 nov, o 1 dic si el 30 cae en domingo privilegiado). Se calcula
+  // en getMovableVigils. Ver más abajo.
   { month: 11, day: 30, name: "San Andrés, Apóstol y Mártir", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
   // ===== Diciembre =====
   { month: 12, day: 1, name: "Beato Nicolás Ferrar, Diácono y Confesor", rank: "conmemoración", color: "morado", },
@@ -325,9 +329,12 @@ const RANK_ORDER: Record<FeastRank, number> = {
 export function getFeastForDate(date: Date, includeOptional = false): Feast | null {
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const matches = fixedFeasts.filter(
-    (f) => f.month === month && f.day === day && (includeOptional || !f.optional)
-  );
+  const matches = [
+    ...fixedFeasts.filter(
+      (f) => f.month === month && f.day === day && (includeOptional || !f.optional)
+    ),
+    ...getMovableVotives(date),
+  ];
   if (matches.length === 0) return null;
   // La de mayor rango que no sea mera conmemoración rige. Una conmemoración
   // NUNCA rige por sí sola: si solo hay conmemoraciones, rige el ciclo temporal
@@ -342,6 +349,57 @@ export function getFeastForDate(date: Date, includeOptional = false): Feast | nu
 export function getAllFeastsForDate(date: Date): Feast[] {
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  return fixedFeasts.filter((f) => f.month === month && f.day === day);
+  return [
+    ...fixedFeasts.filter((f) => f.month === month && f.day === day),
+    ...getMovableVotives(date),
+  ];
+}
+
+/**
+ * Fiestas votivas MÓVILES (sin fecha fija). Regla del ORDO:
+ *  - B.V.M. en Sábado: el PRIMER SÁBADO de septiembre.
+ * (Se calcula por año, no se clava en un día concreto.)
+ */
+export function getMovableVotives(date: Date): Feast[] {
+  const out: Feast[] = [];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const dow = date.getDay(); // 0=dom ... 6=sáb
+  // Primer sábado de septiembre: sábado (dow===6) con día 1–7.
+  if (month === 9 && dow === 6 && day <= 7) {
+    out.push({
+      month: 9, day, name: "B.V.M. en Sábado", rank: "menor", color: "blanco",
+      propers: { gloria: true, preface: "B.V.M." },
+    });
+  }
+  // Vigilia de San Andrés: víspera de la celebración. San Andrés es el 30 nov,
+  // pero si el 30 cae en domingo (Domínica antes de Adviento, privilegiada) la
+  // fiesta se traslada al lunes 1 dic; la vigilia es entonces el sábado 29 nov.
+  // Regla: la vigilia es el día ANTERIOR a la celebración, y nunca en domingo.
+  {
+    const yr = date.getFullYear();
+    const nov30 = new Date(yr, 10, 30);
+    const andresCae = nov30.getDay() === 0 ? new Date(yr, 11, 1) : nov30; // dom -> 1 dic
+    let vigilia = addDaysLocal(andresCae, -1);
+    // Si la víspera cae en domingo, la vigilia se anticipa al sábado anterior
+    // (el domingo privilegiado rige y no admite vigilia).
+    if (vigilia.getDay() === 0) vigilia = addDaysLocal(vigilia, -1);
+    if (
+      vigilia.getMonth() === month - 1 &&
+      vigilia.getDate() === day
+    ) {
+      out.push({
+        month: vigilia.getMonth() + 1, day: vigilia.getDate(),
+        name: "Vigilia de San Andrés, Apóstol y Mártir", rank: "menor", color: "morado",
+      });
+    }
+  }
+  return out;
+}
+
+function addDaysLocal(d: Date, n: number): Date {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
 }
 
