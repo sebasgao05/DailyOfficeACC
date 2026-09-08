@@ -19,6 +19,9 @@ export default function OficioLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname();
   const isMorning = pathname.includes("matutina");
   const isEvening = pathname.includes("vespertina");
+  // Las secciones fijas de arriba son de Matutina/Vespertina; en las horas
+  // menores no concuerdan y aún no están validadas: mostrar "Próximamente".
+  const isMinorHour = !isMorning && !isEvening;
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
@@ -62,15 +65,19 @@ export default function OficioLayout({ children }: { children: React.ReactNode }
             Secciones
           </p>
           <div className="space-y-2">
-            {sidebarSections.map((section) => (
-              <a
-                key={section.href}
-                href={section.href}
-                className="block text-sm text-[var(--color-primary)] hover:text-[var(--color-gold)] transition-colors"
-              >
-                {section.label}
-              </a>
-            ))}
+            {isMinorHour ? (
+              <p className="text-sm italic text-gray-400">Próximamente</p>
+            ) : (
+              sidebarSections.map((section) => (
+                <a
+                  key={section.href}
+                  href={section.href}
+                  className="block text-sm text-[var(--color-primary)] hover:text-[var(--color-gold)] transition-colors"
+                >
+                  {section.label}
+                </a>
+              ))
+            )}
           </div>
         </nav>
       </aside>
