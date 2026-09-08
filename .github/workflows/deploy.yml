@@ -1,11 +1,11 @@
 name: CI & Deploy
 
-# Ejecuta CI en cada push y PR; despliega solo en push a main.
+# Ejecuta CI en push/PR a main y dev; despliega solo en push a main.
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 # Cancela ejecuciones anteriores de la misma rama si llega una nueva.
 concurrency:
