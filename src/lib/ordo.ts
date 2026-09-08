@@ -248,6 +248,11 @@ export function getOrdoEntry(date: Date): OrdoEntry {
   if (transferredIn) {
     // El día pierde su feria; si era domingo se conmemora.
     if (isSunday(date)) commemorations.push(churchDay.name);
+    // Conmemorar cualquier fiesta propia de este día de aterrizaje (p.ej. San
+    // Andrés trasladado al 1 dic conmemora a Nicolás Ferrar).
+    for (const f of getAllFeastsForDate(date)) {
+      commemorations.push(f.name);
+    }
     return finalize({
       date,
       churchDay,
