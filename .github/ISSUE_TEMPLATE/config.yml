@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Guía de contribución
+    url: https://github.com/sebasgao05/DailyOfficeACC/blob/main/CONTRIBUTING.md
+    about: Lee el flujo de ramas y las convenciones antes de abrir un issue o PR.
