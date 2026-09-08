@@ -1,0 +1,10 @@
+# Propietarios de código por defecto.
+# Se solicitará su revisión automáticamente en cada Pull Request.
+* @sebasgao05
+
+# Textos litúrgicos: cualquier cambio a los datos fuente requiere revisión cuidadosa.
+/src/data/       @sebasgao05
+/src/lib/lectionary.ts   @sebasgao05
+
+# CI/CD e infraestructura.
+/.github/        @sebasgao05
