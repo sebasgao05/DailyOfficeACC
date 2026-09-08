@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { type LiturgicalColor, toDateParam } from "@/lib/calendar";
 import { getOrdoEntry, getOrdoMonth, type OrdoEntry } from "@/lib/ordo";
+import { hasExhortacion } from "@/data/ordoNotes";
 import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
 
@@ -118,6 +119,10 @@ export function KalendarView() {
   for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
   while (cells.length % 7 !== 0) cells.push(null);
 
+  // Cuántos días del mes llevan nota del ORDO (para el color de la viñeta:
+  // dorado si es la única nota del mes, morado si hay varias).
+  const notedDaysInMonth = monthEntries.filter((e) => e.notes.length > 0).length;
+
   return (
     <div className="bg-white border border-[var(--color-border)] rounded-lg p-4 md:p-6">
       {/* Cabecera del mes + selector de año */}
@@ -182,16 +187,38 @@ export function KalendarView() {
             date.getFullYear() === today.getFullYear();
           const isSunday = date.getDay() === 0;
           const isHighRank = ordo.rank === "principal" || ordo.rank === "mayor";
+          const hasNote = ordo.notes.length > 0;
+          const hasExh = hasExhortacion(ordo.churchDay.name);
 
           return (
             <button
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
               style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
-              className={`text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
+              className={`relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >
+              {/* Viñetas de esquina: nota del ORDO (dorada si única en el mes,
+                  morada si hay varias) y exhortación (azul). */}
+              {(hasNote || hasExh) && (
+                <span className="absolute top-0.5 right-0.5 flex gap-0.5">
+                  {hasNote && (
+                    <span
+                      title="Nota del ORDO"
+                      className="inline-block w-1.5 h-1.5 rounded-full"
+                      style={{ background: notedDaysInMonth > 1 ? "#7e22ce" : "#a16207" }}
+                    />
+                  )}
+                  {hasExh && (
+                    <span
+                      title="Exhortación"
+                      className="inline-block w-1.5 h-1.5 rounded-full"
+                      style={{ background: "#1d4ed8" }}
+                    />
+                  )}
+                </span>
+              )}
               <div className={`text-sm sm:text-lg font-bold ${colorNumber[ordo.color]} ${isSunday ? "sm:text-xl" : ""}`}>
                 {date.getDate()}
               </div>
@@ -255,6 +282,12 @@ export function KalendarView() {
                 </p>
               ))}
             </div>
+          )}
+          {hasExhortacion(selected.churchDay.name) && (
+            <p className="text-xs italic mt-2 border-l-2 pl-2" style={{ borderColor: "#1d4ed8", color: "#1d4ed8" }}>
+              ✚ Hoy se lee una Exhortación de la Santa Comunión —{" "}
+              <Link href="/exhortaciones" className="underline">ver Exhortaciones</Link>
+            </p>
           )}
           <Link
             href={`/leccionario?date=${toDateParam(selected.date)}`}

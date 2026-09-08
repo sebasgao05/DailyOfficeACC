@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { getChurchDay, formatDateSpanish, fromDateParam, toDateParam } from "@/lib/calendar";
 import { getLectionary, type LectionaryDay } from "@/lib/lectionary";
 import { getOrdoEntry } from "@/lib/ordo";
+import { hasExhortacion } from "@/data/ordoNotes";
+import { ExhortacionSelector } from "@/components/liturgical/ExhortacionSelector";
 import { getProperForDay } from "@/lib/propers";
 import { useMounted } from "@/lib/useMounted";
 import Link from "next/link";
@@ -69,6 +71,7 @@ function LeccionarioContent() {
           ))}
         </div>
       )}
+      {hasExhortacion(ordo.churchDay.name) && <ExhortacionSelector />}
       {proper && (
         <div className="mb-6 bg-white border border-[var(--color-gold)] rounded-lg overflow-hidden">
           <h2 className="bg-[var(--color-gold)] text-[var(--color-primary-dark)] px-4 py-2 text-sm font-semibold tracking-wide" style={{ fontFamily: "var(--font-heading)" }}>

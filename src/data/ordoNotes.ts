@@ -58,3 +58,17 @@ export function getOrdoNotes(date: Date, dayName: string): string[] {
   }
   return out;
 }
+
+/**
+ * ¿Se lee hoy una de las Exhortaciones de la Santa Comunión? El LOC manda la
+ * primera Exhortación el Primer Domingo de Adviento, el Primero de Cuaresma y
+ * el Domingo de la Trinidad.
+ */
+export function hasExhortacion(dayName: string): boolean {
+  return (
+    dayName === "Primer Domingo de Adviento" ||
+    dayName === "Primer Domingo de Cuaresma" ||
+    dayName === "Domingo de la Trinidad" ||
+    dayName === "Domingo de la Santísima Trinidad"
+  );
+}

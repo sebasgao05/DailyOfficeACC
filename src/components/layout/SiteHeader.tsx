@@ -17,7 +17,7 @@ const navLinks = [
   { href: "/letania", label: "Letanía", matchPaths: ["/letania"] },
   { href: "/santa-comunion", label: "Santa Comunión", matchPaths: ["/santa-comunion"] },
   { href: "/salterio", label: "El Salterio", matchPaths: ["/salterio"] },
-  { href: "/siglas", label: "Siglas", matchPaths: ["/siglas"] },
+  { href: "/recursos", label: "Recursos Extras", matchPaths: ["/recursos", "/siglas", "/rubricas", "/exhortaciones"] },
 ];
 
 const seasons: { id: Season; label: string }[] = [
