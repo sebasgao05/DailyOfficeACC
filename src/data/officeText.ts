@@ -109,6 +109,42 @@ export function getSeasonalSentences(season: Season, dayName: string): Sentence[
   return [...extra, ...bySeason, ...SENTENCES_GENERAL];
 }
 
+/**
+ * TODAS las sentencias del Oficio agrupadas por tiempo litúrgico (para mostrarlas
+ * SIEMPRE, no solo las del día). `activeSeason` marca el grupo del día en curso.
+ */
+export interface SentenceGroup { etiqueta: string; season?: Season; sentencias: Sentence[]; activo: boolean; }
+
+export function getAllSentencesGrouped(office: "morning" | "evening", activeSeason: Season, dayName: string): SentenceGroup[] {
+  const bySeason = office === "morning" ? SENTENCES_BY_SEASON : SENTENCES_EVENING_BY_SEASON;
+  const general = office === "morning" ? SENTENCES_GENERAL : SENTENCES_EVENING_GENERAL;
+  const ascension = office === "morning" ? SENTENCES_ASCENSION : SENTENCES_EVENING_ASCENSION;
+  const order: { season: Season; etiqueta: string }[] = [
+    { season: "adviento", etiqueta: "Adviento" },
+    { season: "navidad", etiqueta: "Navidad" },
+    { season: "epifania", etiqueta: "Epifanía" },
+    { season: "cuaresma", etiqueta: "Cuaresma" },
+    { season: "semana-santa", etiqueta: "Viernes Santo" },
+    { season: "pascua", etiqueta: "Pascua" },
+    { season: "pentecostes", etiqueta: "Pentecostés" },
+    { season: "trinidad", etiqueta: "Domínica de la Trinidad" },
+  ];
+  const groups: SentenceGroup[] = [
+    { etiqueta: "Generales", sentencias: general, activo: true },
+  ];
+  for (const { season, etiqueta } of order) {
+    const s = bySeason[season] ?? [];
+    if (s.length) groups.push({ etiqueta, season, sentencias: s, activo: activeSeason === season });
+  }
+  // Ascensión (no tiene season propio) y Acción de Gracias.
+  const isAsc = dayName.startsWith("Día de la Ascensión") || dayName.includes("Ascensión");
+  groups.push({ etiqueta: "Ascensión", sentencias: ascension, activo: isAsc });
+  if (office === "morning") {
+    groups.push({ etiqueta: "Acción de Gracias", sentencias: SENTENCES_THANKSGIVING, activo: dayName.includes("Acción de Gracias") });
+  }
+  return groups;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
  * Sentencias de VESPERTINA (propias del oficio de la tarde).
  * ──────────────────────────────────────────────────────────────────────── */
