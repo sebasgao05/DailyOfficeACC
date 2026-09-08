@@ -45,6 +45,11 @@ export function getChurchDay(date: Date): ChurchDay {
   if (m0 === 7 && dd >= 16 && dd <= 22 && !esDomingo) {
     return { name: "De la Octava de la Asunción", season: "trinidad", color: "blanco", date, weekName: "Octava de la Asunción" };
   }
+  // Conmemoración de los Fieles Difuntos: normalmente el 2 nov (negro). Si el 2
+  // cae en domingo, se traslada al lunes 3. Va ANTES de la octava de Todos los Santos.
+  if (m0 === 10 && ((dd === 2 && !esDomingo) || (dd === 3 && new Date(date.getFullYear(), 10, 2).getDay() === 0 && date.getDay() === 1))) {
+    return { name: "Conmemoración de los Fieles Difuntos", season: "trinidad", color: "negro", date, weekName: "Fieles Difuntos" };
+  }
   // Octava de Todos los Santos (2-7 nov; 1 = Todos los Santos, 8 = día octavo). Blanco.
   if (m0 === 10 && dd >= 2 && dd <= 7 && !esDomingo) {
     return { name: "De la Octava de Todos los Santos", season: "trinidad", color: "blanco", date, weekName: "Octava de Todos los Santos" };
@@ -107,6 +112,10 @@ export function getChurchDay(date: Date): ChurchDay {
   }
   // 1 ene = Circuncisión (día octavo, en feasts.ts); 2-5 ene = días de Navidad antes de Epifanía.
   if (date.getMonth() === 0 && date.getDate() >= 1 && date.getDate() <= 5) {
+    // 4 ene = Octava de los Santos Inocentes (rojo, día octavo del 28 dic).
+    if (date.getDate() === 4 && date.getDay() !== 0) {
+      return { name: "Octava de los Santos Inocentes", season: "navidad", color: "rojo", date, weekName: "Octava de la Natividad" };
+    }
     if (date.getDay() === 0) {
       return { name: "Domingo después de la Navidad", season: "navidad", color: "blanco", date, weekName: "Tiempo de Navidad" };
     }
