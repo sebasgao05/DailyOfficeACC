@@ -7,8 +7,7 @@ import { useOffice } from "@/components/liturgical/OfficeContext";
 import {
   MORNING,
   EVENING,
-  getSeasonalSentences,
-  getEveningSentences,
+  getAllSentencesGrouped,
   INVITATORIES,
   type Prece,
 } from "@/data/officeText";
@@ -50,10 +49,7 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
   const [absAlterna, setAbsAlterna] = useState(false);
 
   const T = office === "morning" ? MORNING : EVENING;
-  const sentences =
-    office === "morning"
-      ? getSeasonalSentences(churchDay.season, churchDay.name)
-      : getEveningSentences(churchDay.season, churchDay.name);
+  const sentenceGroups = getAllSentencesGrouped(office, churchDay.season, churchDay.name);
 
   const PadreNuestro = (
     <>
@@ -69,14 +65,24 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
       {/* Sentencias por tiempo litúrgico */}
       <h2 className="section-title" id="sentencias">Sentencias de la Escritura</h2>
-      <p className="text-xs text-[var(--color-primary)] italic mb-2">
-        Propias del tiempo: {churchDay.name}
-      </p>
-      <div className="my-4 space-y-3">
-        {sentences.map((s, i) => (
-          <p key={i}>
-            {s.texto} <em className="text-gray-500">{s.cita}</em>
-          </p>
+      <div className="my-4 space-y-4">
+        {sentenceGroups.map((g) => (
+          <div
+            key={g.etiqueta}
+            className={g.activo ? "rounded-md p-2 -mx-2" : ""}
+            style={g.activo ? { background: "var(--color-bg-alt)", borderLeft: "3px solid var(--color-gold)" } : undefined}
+          >
+            <p className="text-[11px] uppercase tracking-widest font-semibold mb-1" style={{ color: g.activo ? "var(--color-primary-dark)" : "var(--color-primary)" }}>
+              {g.etiqueta}{g.activo ? " — hoy" : ""}
+            </p>
+            <div className="space-y-2">
+              {g.sentencias.map((s, i) => (
+                <p key={i} className="text-sm">
+                  {s.texto} <em className="text-gray-500">{s.cita}</em>
+                </p>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
