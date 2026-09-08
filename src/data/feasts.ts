@@ -114,7 +114,8 @@ export const fixedFeasts: Feast[] = [
   { month: 4, day: 17, name: "San Stephen Harding, Abad", rank: "menor", color: "blanco", propers: { gloria: true, preface: "Pascua" }, },
   { month: 4, day: 19, name: "San Alphege, Obispo y Mártir", rank: "menor", color: "rojo", propers: { gloria: true }, },
   { month: 4, day: 21, name: "San Anselmo, Obispo, Confesor y Doctor", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "Pascua" }, },
-  { month: 4, day: 22, name: "Patrocinio de San José", rank: "menor", color: "blanco", propers: { gloria: true, creed: true, preface: "San José" }, },
+  // Patrocinio de San José: NO es fecha fija; es el miércoles de la 2ª Domínica
+  // después de Pascua (variable). Se resuelve en ordo.ts (getVotiveForDate).
   { month: 4, day: 23, name: "San Jorge, Mártir", rank: "menor", color: "rojo", propers: { gloria: true, preface: "Pascua" }, },
   { month: 4, day: 25, name: "San Marcos, Evangelista", rank: "mayor", color: "rojo", propers: { gloria: true, creed: true, preface: "Apóstoles" }, hasPropers: true, transferable: true, },
   { month: 4, day: 26, name: "Beato Nathaniel Woodard, Presbítero y Confesor", rank: "menor", color: "blanco", optional: true, },
@@ -371,22 +372,15 @@ export function getAllFeastsForDate(date: Date): Feast[] {
 }
 
 /**
- * Fiestas votivas MÓVILES (sin fecha fija). Regla del ORDO:
- *  - B.V.M. en Sábado: el PRIMER SÁBADO de septiembre.
- * (Se calcula por año, no se clava en un día concreto.)
+ * Fiestas votivas MÓVILES por fecha-relativa simple (sin depender del ciclo
+ * temporal). La Vigilia de San Andrés se calcula aquí; B.V.M. en Sábado y el
+ * Patrocinio de San José, que dependen de "sábado libre" / la fecha de Pascua,
+ * se resuelven en ordo.ts (getVotiveForDate), que ya conoce el churchDay.
  */
 export function getMovableVotives(date: Date): Feast[] {
   const out: Feast[] = [];
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const dow = date.getDay(); // 0=dom ... 6=sáb
-  // Primer sábado de septiembre: sábado (dow===6) con día 1–7.
-  if (month === 9 && dow === 6 && day <= 7) {
-    out.push({
-      month: 9, day, name: "B.V.M. en Sábado", rank: "menor", color: "blanco",
-      propers: { gloria: true, preface: "B.V.M." },
-    });
-  }
   // Vigilia de San Andrés: víspera de la celebración. San Andrés es el 30 nov,
   // pero si el 30 cae en domingo (Domínica antes de Adviento, privilegiada) la
   // fiesta se traslada al lunes 1 dic; la vigilia es entonces el sábado 29 nov.

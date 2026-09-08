@@ -22,6 +22,7 @@
 
 import {
   getChurchDay,
+  calculateEaster,
   type ChurchDay,
   type LiturgicalColor,
 } from "./calendar";
@@ -137,14 +138,32 @@ function buildOrdoLine(propers: string[]): string {
 
 /** Prefacio propio de la temporada litúrgica (como el ORDO lo asigna al temporal). */
 function prefaceForSeason(churchDay: ChurchDay): string | undefined {
+  const n = churchDay.name;
+  // Prefacio de la Cruz: desde el Domingo de Pasión (Cuaresma V) hasta el Jueves
+  // Santo inclusive.
+  if (
+    n === "Domingo de Pasión" || n === "Feria de Pasión" ||
+    n === "Lunes Santo" || n === "Martes Santo" || n === "Miércoles Santo" ||
+    n.startsWith("Jueves Santo")
+  ) {
+    return "la Cruz";
+  }
+  // Prefacio del Espíritu Santo: desde la Vigilia de Pentecostés hasta el sábado
+  // de esa semana (Témporas de Pentecostés / Octava de Pentecostés).
+  if (
+    n === "Vigilia de Pentecostés" || n === "Domingo de Pentecostés" ||
+    n.startsWith("De la Octava de Pentecostés") || n.startsWith("Témpora de Pentecostés")
+  ) {
+    return "el Espíritu Santo";
+  }
   switch (churchDay.season) {
     case "adviento": return "Trinidad";
     case "navidad": return "Navidad";
     case "epifania": return "Epifanía";
     case "cuaresma": return "Cuaresma";
-    case "semana-santa": return "Cruz";
+    case "semana-santa": return "la Cruz";
     case "pascua": return "Pascua";
-    case "pentecostes": return "Pentecostés";
+    case "pentecostes": return "el Espíritu Santo";
     case "trinidad": return "Trinidad";
     default: return undefined;
   }
@@ -236,11 +255,60 @@ function salientTemporalComm(
 }
 
 /**
+ * Fiestas votivas que dependen del ciclo temporal:
+ *  - Patrocinio de San José: miércoles de la 2ª Domínica después de Pascua
+ *    (mayor, blanco). Prima sobre otros santos de ese día.
+ *  - B.V.M. en Sábado: misa votiva de cualquier sábado LIBRE (sin fiesta de
+ *    rango que rija y fuera de tiempo litúrgico privilegiado).
+ * Devuelve la fiesta votiva del día, o null.
+ */
+function getVotiveForDate(date: Date, churchDay: ChurchDay, localFeast: Feast | null): Feast | null {
+  const easter = calculateEaster(date.getFullYear());
+  const diff = Math.round((date.getTime() - easter.getTime()) / 86400000);
+  // Patrocinio de San José: diff 17 (miércoles tras la 2ª Domínica después de Pascua).
+  if (diff === 17) {
+    return { month: date.getMonth() + 1, day: date.getDate(), name: "Patrocinio de San José",
+      rank: "mayor", color: "blanco", propers: { gloria: true, creed: true, preface: "San José" } };
+  }
+  // B.V.M. en Sábado: sábado sin fiesta regente y en tiempo NO privilegiado.
+  if (date.getDay() === 6) {
+    // Vigilia anticipada: si el domingo siguiente lleva una "Vigilia de X" fija
+    // (que se perdería porque el domingo rige), se anticipa a este sábado.
+    // No en Navidad/Epifanía, donde las octavas priman sobre la vigilia.
+    const sun = new Date(date); sun.setDate(date.getDate() + 1);
+    const anticipaOk = churchDay.season !== "navidad" && churchDay.season !== "epifania";
+    const sunFeasts = anticipaOk ? getAllFeastsForDate(sun) : [];
+    const vigilDom = sunFeasts.find((f) => f.name.startsWith("Vigilia de"));
+    if (vigilDom) {
+      return { ...vigilDom, month: date.getMonth() + 1, day: date.getDate() };
+    }
+    const rulingHigh = localFeast && RANK_WEIGHT[localFeast.rank] >= RANK_WEIGHT["menor"];
+    const privileged =
+      churchDay.season === "adviento" || churchDay.season === "cuaresma" ||
+      churchDay.season === "semana-santa" || churchDay.season === "navidad" ||
+      churchDay.season === "epifania" ||
+      churchDay.name.startsWith("De la Octava") || churchDay.name.startsWith("Octava") ||
+      churchDay.name.startsWith("Témpora") ||
+      churchDay.name.includes("Vigilia") || churchDay.name.includes("Rogativas") ||
+      churchDay.name.includes("Fieles Difuntos");
+    if (!rulingHigh && !privileged) {
+      return { month: date.getMonth() + 1, day: date.getDate(), name: "B.V.M. en Sábado",
+        rank: "menor", color: "blanco", propers: { gloria: true, preface: "B.V.M." } };
+    }
+  }
+  return null;
+}
+
+/**
  * Resuelve la entrada del ORDO para una fecha concreta de CUALQUIER año.
  */
 export function getOrdoEntry(date: Date): OrdoEntry {
   const churchDay = getChurchDay(date);
-  const localFeast = getFeastForDate(date);
+  const fixedFeast = getFeastForDate(date);
+  const votive = getVotiveForDate(date, churchDay, fixedFeast);
+  // El Patrocinio de San José (mayor) prima; la B.V.M. en sábado solo si no hay
+  // fiesta fija que rija.
+  const localFeast = votive && (votive.rank === "mayor" || !fixedFeast) ? votive : fixedFeast;
   const transferredIn = findTransferredInto(date);
   const commemorations: string[] = [];
 
