@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/santa-comunion", label: "Santa Comunión", matchPaths: ["/santa-comunion"] },
   { href: "/salterio", label: "El Salterio", matchPaths: ["/salterio"] },
   { href: "/recursos", label: "Recursos Extras", matchPaths: ["/recursos", "/siglas", "/rubricas", "/exhortaciones"] },
+  { href: "/donaciones", label: "Donar", matchPaths: ["/donaciones"] },
 ];
 
 const seasons: { id: Season; label: string }[] = [
