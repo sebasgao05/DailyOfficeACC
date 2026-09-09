@@ -3,11 +3,13 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChurchDay, fromDateParam } from "@/lib/calendar";
+import { getFeastForDate } from "@/data/feasts";
 import { useOffice } from "@/components/liturgical/OfficeContext";
 import {
   MORNING,
   EVENING,
   getAllSentencesGrouped,
+  getActiveInvitatoryIndex,
   INVITATORIES,
   type Prece,
 } from "@/data/officeText";
@@ -54,6 +56,10 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
   const T = office === "morning" ? MORNING : EVENING;
   const sentenceGroups = getAllSentencesGrouped(office, churchDay.season, churchDay.name);
+
+  // Invitatorio recomendado para el día en curso (se resalta en dorado).
+  const hasPropers = getFeastForDate(date)?.hasPropers ?? false;
+  const activeInvitatory = getActiveInvitatoryIndex(churchDay.season, churchDay.name, hasPropers);
 
   const PadreNuestro = (
     <>
@@ -170,12 +176,24 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
       <h2 className="section-title" id="preces">Las Preces</h2>
       <Preces items={T.precesApertura} />
 
-      {/* Invitatorio antes del Venite */}
+      {/* Invitatorio antes del Venite. Se resalta en dorado el recomendado para hoy. */}
       <p className="rubric">¶ En los días siguientes, antes del Venite se puede cantar o decir:</p>
       <div className="my-4 text-sm space-y-1 pl-4 border-l-2 border-[var(--color-border)]">
-        {INVITATORIES.map((inv, i) => (
-          <p key={i}><strong>{inv.ocasion}.</strong> {inv.texto}</p>
-        ))}
+        {INVITATORIES.map((inv, i) => {
+          const activo = i === activeInvitatory;
+          return (
+            <p
+              key={i}
+              className={activo ? "rounded-md p-2 -mx-2" : ""}
+              style={activo ? { background: "var(--color-bg-alt)", borderLeft: "3px solid var(--color-gold)" } : undefined}
+            >
+              <strong style={activo ? { color: "var(--color-primary-dark)" } : undefined}>
+                {inv.ocasion}{activo ? " — hoy" : ""}.
+              </strong>{" "}
+              {inv.texto}
+            </p>
+          );
+        })}
       </div>
     </>
   );

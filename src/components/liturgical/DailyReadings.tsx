@@ -135,9 +135,23 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
                       Salmo {psalm.number}{rangeLabel} — <span className="italic font-normal">{psalm.latinTitle}</span>
                     </h4>
                     <div className="text-sm space-y-1">
-                      {verses.map((v, i) => (
-                        <p key={i} className="leading-relaxed">{v.replace(/\*/g, " · ")}</p>
-                      ))}
+                      {verses.map((v, i) => {
+                        // Número de versículo pequeño en superíndice (mismo patrón que
+                        // el Salterio y las demás lecturas); el `*` marca la puntuación salmódica.
+                        const verseNum = v.match(/^(\d+)/)?.[1];
+                        const parts = v.split("*");
+                        return (
+                          <p key={i} className="leading-relaxed">
+                            {verseNum && <sup className="text-xs text-gray-400 mr-1">{verseNum}</sup>}
+                            {parts.map((part, j) => (
+                              <span key={j}>
+                                {j > 0 && <span className="text-[var(--color-gold)] mx-1">·</span>}
+                                {j === 0 ? part.replace(/^\d+\s*(\([^)]*\)\s*)?/, "").trim() : part.trim()}
+                              </span>
+                            ))}
+                          </p>
+                        );
+                      })}
                     </div>
                     <p className="text-xs italic text-gray-500 mt-2">
                       Gloria al Padre, y al Hijo, y al Espíritu Santo; como era al principio, es ahora y será siempre, por los siglos de los siglos. Amén.
