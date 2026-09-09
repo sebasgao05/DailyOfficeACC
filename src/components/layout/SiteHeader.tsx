@@ -19,6 +19,7 @@ const navLinks = [
   { href: "/salterio", label: "El Salterio", matchPaths: ["/salterio"] },
   { href: "/biblia", label: "La Biblia", matchPaths: ["/biblia"] },
   { href: "/recursos", label: "Recursos Extras", matchPaths: ["/recursos", "/siglas", "/rubricas", "/exhortaciones"] },
+  { href: "/donaciones", label: "Donar", matchPaths: ["/donaciones"] },
 ];
 
 const seasons: { id: Season; label: string }[] = [
