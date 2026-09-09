@@ -94,6 +94,54 @@ export const INVITATORIES: Invitatory[] = [
 ];
 
 /**
+ * Determina qué invitatorio del array `INVITATORIES` recomendar para el día en curso,
+ * a partir del tiempo litúrgico y del nombre del día. Devuelve el índice dentro de
+ * `INVITATORIES`, o `null` si el tiempo no tiene invitatorio propio (p. ej. Cuaresma,
+ * Semana Santa o el tiempo ordinario después de Trinidad), en cuyo caso se usa el
+ * Venite normal.
+ *
+ * Sigue el mismo enfoque que las sentencias: mapeo por `season` con casos especiales
+ * detectados por el nombre del día (Ascensión, fiestas del Señor, festividades con
+ * propios), ya que estos no tienen un `season` propio.
+ */
+export function getActiveInvitatoryIndex(
+  season: Season,
+  dayName: string,
+  hasPropers = false,
+): number | null {
+  const name = dayName.toLowerCase();
+
+  // Casos especiales detectados por nombre (tienen prioridad sobre el season).
+  if (name.includes("ascensión") || name.includes("ascension")) return 4; // Ascensión → Pentecostés
+  if (name.includes("purificación") || name.includes("anunciación")) return 7;
+  if (name.includes("transfiguración")) return 2; // Transfiguración → invitatorio de Epifanía
+
+  // Mapeo por tiempo litúrgico.
+  switch (season) {
+    case "adviento":
+      return 0;
+    case "navidad":
+      return 1;
+    case "epifania":
+      return 2;
+    case "pascua":
+      return 3; // Pascua hasta el día antes de la Ascensión
+    case "pentecostes":
+      return 5;
+    case "trinidad":
+      // Solo el propio Domingo de Trinidad tiene invitatorio; el resto del tiempo
+      // "después de Trinidad" usa el Venite normal, salvo festividades con propios.
+      if (name.includes("trinidad")) return 6;
+      return hasPropers ? 8 : null;
+    // Cuaresma y Semana Santa no llevan invitatorio propio (Venite normal).
+    case "cuaresma":
+    case "semana-santa":
+    default:
+      return hasPropers ? 8 : null;
+  }
+}
+
+/**
  * Resuelve las sentencias del día combinando las generales con las del tiempo
  * (o la ocasión especial: Ascensión, Acción de Gracias) según el ChurchDay.
  */
