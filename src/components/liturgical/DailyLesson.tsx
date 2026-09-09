@@ -64,12 +64,16 @@ function DailyLessonContent({ period, which }: Props) {
       </p>
       {passage ? (
         <div className="text-sm space-y-1 pl-3 border-l-2 border-[var(--color-gold)]">
-          {passage.verses.map((v, i) => (
-            <p key={i} className="leading-relaxed">
-              {v.replace(/^(\d+(?::\d+)?)\s/, "")}
-              <sup className="text-[9px] text-gray-400 ml-0.5">{(v.match(/^(\d+(?::\d+)?)/) || [])[1]}</sup>
-            </p>
-          ))}
+          {passage.verses.map((v, i) => {
+            const num = (v.match(/^(\d+(?:[a-z])?(?::\d+)?)/) || [])[1] ?? "";
+            const texto = v.replace(/^(\d+(?:[a-z])?(?::\d+)?)\s*/, "").replace(/\s*\|\s*/g, " ");
+            return (
+              <p key={i} className="leading-relaxed">
+                <sup className="text-[9px] text-[var(--color-primary)] mr-0.5 font-semibold">{num}</sup>
+                {texto}
+              </p>
+            );
+          })}
           <p className="text-[10px] italic text-gray-400 pt-1">Texto bíblico: {BIBLE_VERSION}</p>
         </div>
       ) : (

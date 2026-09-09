@@ -17,6 +17,7 @@ const navLinks = [
   { href: "/letania", label: "Letanía", matchPaths: ["/letania"] },
   { href: "/santa-comunion", label: "Santa Comunión", matchPaths: ["/santa-comunion"] },
   { href: "/salterio", label: "El Salterio", matchPaths: ["/salterio"] },
+  { href: "/biblia", label: "La Biblia", matchPaths: ["/biblia"] },
   { href: "/recursos", label: "Recursos Extras", matchPaths: ["/recursos", "/siglas", "/rubricas", "/exhortaciones"] },
 ];
 

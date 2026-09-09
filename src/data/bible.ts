@@ -224,6 +224,43 @@ import bibleData from "./bibleData.json";
 
 export const bible: Record<string, string[]> = bibleData as Record<string, string[]>;
 
+/** Orden canónico de los libros (para el navegador de la Biblia). */
+const BIBLE_BOOK_ORDER = [
+  "Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio", "Josué", "Jueces", "Rut",
+  "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes", "1 Crónicas", "2 Crónicas", "Esdras",
+  "Nehemías", "Tobías", "Judit", "Ester", "1 Macabeos", "2 Macabeos", "Job", "Salmos",
+  "Proverbios", "Eclesiastés", "Cantar de los Cantares", "Sabiduría", "Eclesiástico",
+  "Isaías", "Jeremías", "Lamentaciones", "Baruc", "Ezequiel", "Daniel", "Oseas", "Joel",
+  "Amós", "Abdías", "Jonás", "Miqueas", "Nahúm", "Habacuc", "Sofonías", "Ageo",
+  "Zacarías", "Malaquías", "San Mateo", "San Marcos", "San Lucas", "San Juan", "Hechos",
+  "Romanos", "1 Corintios", "2 Corintios", "Gálatas", "Efesios", "Filipenses",
+  "Colosenses", "1 Tesalonicenses", "2 Tesalonicenses", "1 Timoteo", "2 Timoteo", "Tito",
+  "Filemón", "Hebreos", "Santiago", "1 San Pedro", "2 San Pedro", "1 San Juan",
+  "2 San Juan", "3 San Juan", "San Judas", "Apocalipsis",
+];
+
+/** Libros presentes en el store, en orden canónico. */
+export function getBibleBooks(): string[] {
+  const present = new Set<string>();
+  for (const key of Object.keys(bible)) {
+    const m = key.match(/^(.*) \d+$/);
+    if (m) present.add(m[1]);
+  }
+  const ordered = BIBLE_BOOK_ORDER.filter((b) => present.has(b));
+  const rest = [...present].filter((b) => !BIBLE_BOOK_ORDER.includes(b)).sort();
+  return [...ordered, ...rest];
+}
+
+/** Números de capítulo disponibles de un libro, ordenados. */
+export function getBibleChapters(book: string): number[] {
+  const nums: number[] = [];
+  for (const key of Object.keys(bible)) {
+    const m = key.match(/^(.*) (\d+)$/);
+    if (m && m[1] === book) nums.push(Number(m[2]));
+  }
+  return nums.sort((a, b) => a - b);
+}
+
 /**
  * Devuelve los versículos de una referencia, o null si aún no está cargada.
  * Acepta tanto la referencia del leccionario ("Isa. 40:1-11") como la canónica.

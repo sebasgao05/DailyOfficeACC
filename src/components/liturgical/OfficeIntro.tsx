@@ -29,7 +29,11 @@ function Preces({ items }: { items: Prece[] }) {
           <p key={i} className="rubric">{p.rubrica}</p>
         ) : (
           <p key={i} className={`versicle ${p.voz === "R." ? "response" : ""}`}>
-            {p.voz && <strong>{p.voz} </strong>}
+            {p.voz && (
+              <strong style={{ color: p.voz === "R." ? "var(--color-gold)" : "var(--color-primary)" }}>
+                {p.voz}{" "}
+              </strong>
+            )}
             {p.texto}
           </p>
         )
