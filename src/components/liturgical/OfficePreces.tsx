@@ -14,7 +14,11 @@ function Line({ p }: { p: Prece }) {
   if (p.rubrica) return <p className="rubric">{p.rubrica}</p>;
   return (
     <p className={`versicle ${p.voz === "R." ? "response" : ""}`}>
-      {p.voz && <strong>{p.voz} </strong>}
+      {p.voz && (
+        <strong style={{ color: p.voz === "R." ? "var(--color-gold)" : "var(--color-primary)" }}>
+          {p.voz}{" "}
+        </strong>
+      )}
       {p.texto}
     </p>
   );
