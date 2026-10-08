@@ -35,6 +35,7 @@ export function OfficePreces({ office }: { office: "morning" | "evening" }) {
 
   return (
     <>
+      <h2 className="section-title" id="preces-credo">Las Preces (tras el Credo)</h2>
       <div className="my-4 space-y-1">
         {salutation.map((p, i) => <Line key={`s-${i}`} p={p} />)}
       </div>

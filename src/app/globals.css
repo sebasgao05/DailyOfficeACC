@@ -25,103 +25,150 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Dark Mode */
+/* ──────────────────────────────────────────────────────────────────────────
+ * MODO OSCURO
+ * Redefinimos las variables de color bajo `html.dark` para que TODO lo que use
+ * `var(--color-*)` se adapte automáticamente (fondos, bordes, acentos). Luego
+ * se afinan unos pocos casos puntuales. Así se evita el contraste pobre que
+ * aparecía al dejar en claro los elementos que no tenían override explícito.
+ * ────────────────────────────────────────────────────────────────────────── */
+html.dark {
+  --color-primary: #e9a3a3;        /* rojo claro legible sobre fondo oscuro */
+  --color-primary-dark: #f0b4b4;   /* acentos/títulos */
+  --color-gold: #d8b974;           /* dorado algo más brillante */
+  --color-gold-light: #e8d5a3;
+  --color-bg: #1a1714;             /* fondo general */
+  --color-bg-alt: #262118;         /* fondo de cajas/realces */
+  --color-text-light: #b8b2a6;     /* texto secundario */
+  --color-border: #4a4238;         /* bordes visibles pero discretos */
+}
+
 html.dark body {
-  background-color: #1a1714;
-  color: #e0ddd5;
-}
-
-html.dark .bg-white {
-  background-color: #2a2520 !important;
-}
-
-html.dark .bg-\[var\(--color-bg-alt\)\] {
-  background-color: #221f1a !important;
-}
-
-html.dark .border-\[var\(--color-border\)\] {
-  border-color: #3d362e !important;
-}
-
-html.dark .text-gray-500 {
-  color: #999 !important;
-}
-
-html.dark .text-gray-600 {
-  color: #aaa !important;
-}
-
-html.dark .text-gray-400 {
-  color: #777 !important;
-}
-
-html.dark .collect {
-  background-color: #252015 !important;
-  border-left-color: var(--color-gold) !important;
-}
-
-html.dark .text-\[var\(--color-primary-dark\)\] {
-  color: #c44 !important;
-}
-
-html.dark .rubric {
-  color: #c44 !important;
-}
-
-html.dark .bg-\[var\(--color-primary-dark\)\] {
-  background-color: #3a0000 !important;
+  background-color: var(--color-bg);
+  color: #e6e2d9;
 }
 
 html.dark main {
-  background-color: #1a1714;
+  background-color: var(--color-bg);
 }
 
-/* Dark mode: toggle buttons (Morning/Evening) */
-html.dark .border-\[var\(--color-border\)\] {
-  border-color: #4d4438 !important;
-  color: #ccc !important;
+/* Superficies claras (cajas, selectores, tarjetas) → superficie oscura */
+html.dark .bg-white {
+  background-color: #241f1a !important;
+  color: #e6e2d9 !important;
 }
 
-/* Dark mode: section-title override */
-html.dark .section-title {
-  color: #e8a0a0 !important;
+/* El fondo de pantalla fijo (barras sticky) debe seguir al fondo oscuro */
+html.dark .bg-\[var\(--color-bg\)\] {
+  background-color: var(--color-bg) !important;
 }
 
-/* Dark mode: readings box */
-html.dark .bg-white.border {
-  background-color: #2a2520 !important;
-  border-color: #3d362e !important;
+/* Grises de Tailwind: subir luminosidad para contraste suficiente */
+html.dark .text-gray-400 { color: #9a948a !important; }
+html.dark .text-gray-500 { color: #a8a299 !important; }
+html.dark .text-gray-600 { color: #bcb6ac !important; }
+html.dark .text-gray-700 { color: #cdc8bf !important; }
+html.dark .text-gray-800 { color: #e0dcd3 !important; }
+
+/* Cajas de colecta/realce */
+html.dark .collect {
+  background-color: var(--color-bg-alt) !important;
+  border-left-color: var(--color-gold) !important;
 }
 
-/* Dark mode: link buttons for psalms */
-html.dark a.border-\[var\(--color-primary\)\] {
-  border-color: #c44 !important;
-  color: #e8a0a0 !important;
-}
-
-html.dark a.border-\[var\(--color-primary\)\]:hover {
-  background-color: #5c0000 !important;
+/* Botón activo granate: aclararlo un poco para que el texto blanco resalte */
+html.dark .bg-\[var\(--color-primary-dark\)\] {
+  background-color: #7a1414 !important;
   color: #fff !important;
 }
 
-/* Dark mode: sticky sidebar */
-html.dark aside nav {
-  color: #ccc;
+/* Cajas con borde (recuadros de lecturas, tarjetas) */
+html.dark .bg-white.border {
+  background-color: #241f1a !important;
+  border-color: var(--color-border) !important;
 }
 
-/* Dark mode: gloria text */
-html.dark .gloria {
-  color: #bbb;
+/* Enlaces de salmos con borde granate */
+html.dark a.border-\[var\(--color-primary\)\] {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+html.dark a.border-\[var\(--color-primary\)\]:hover {
+  background-color: #7a1414 !important;
+  color: #fff !important;
 }
 
-/* Dark mode: psalm verse */
-html.dark .psalm-verse {
-  color: #d5d0c8;
+/* Textos litúrgicos */
+html.dark .rubric { color: #e3a0a0 !important; }
+html.dark .section-title { color: #f0b4b4 !important; }
+html.dark .gloria { color: #c7c1b6; }
+html.dark .psalm-verse { color: #ddd8ce; }
+html.dark .response { color: #efeae0; }
+html.dark aside nav { color: #cdc8bf; }
+
+/* Campos de formulario nativos (select/input) legibles en oscuro */
+html.dark select,
+html.dark input,
+html.dark textarea {
+  background-color: #241f1a !important;
+  color: #e6e2d9 !important;
+  border-color: var(--color-border) !important;
+}
+html.dark select option {
+  background-color: #241f1a;
+  color: #e6e2d9;
 }
 
-/* Dark mode: versicle response */
-html.dark .response {
-  color: #e0ddd5;
+/* ── Calendario (Ordo Kalendar): color de las celdas ────────────────────────
+ * Cada color litúrgico se expresa con una variable `--kal-*`. En modo claro son
+ * pasteles; en modo oscuro, tonos oscuros teñidos para integrarse con el tema.
+ * Las clases `kal-bg-*` pintan el fondo y `kal-cell` toma el color de texto
+ * adecuado según el tema. */
+:root {
+  --kal-rojo: #fecaca;    /* red-200 */
+  --kal-morado: #e9d5ff;  /* purple-200 */
+  --kal-blanco: #fef3c7;  /* amber-100 */
+  --kal-verde: #bbf7d0;   /* green-200 */
+  --kal-negro: #d4d4d4;   /* neutral-300 */
+  --kal-rosa: #fbcfe8;    /* pink-200 */
+}
+
+.kal-bg-rojo { background-color: var(--kal-rojo); border-color: #fca5a5; }
+.kal-bg-morado { background-color: var(--kal-morado); border-color: #d8b4fe; }
+.kal-bg-blanco { background-color: var(--kal-blanco); border-color: #fde68a; }
+.kal-bg-verde { background-color: var(--kal-verde); border-color: #86efac; }
+.kal-bg-negro { background-color: var(--kal-negro); border-color: #a3a3a3; }
+.kal-bg-rosa { background-color: var(--kal-rosa); border-color: #f9a8d4; }
+
+/* Modo oscuro: tonos oscuros teñidos del color litúrgico. */
+html.dark {
+  --kal-rojo: #4a1d1d;
+  --kal-morado: #3a2a4d;
+  --kal-blanco: #3d3524;
+  --kal-verde: #1e3a2a;
+  --kal-negro: #2f2b27;
+  --kal-rosa: #4a2434;
+}
+
+/* Texto dentro de las celdas: oscuro en claro, claro en oscuro. */
+html.dark .kal-cell,
+html.dark .kal-cell * {
+  color: #e8e3d9 !important;
+}
+
+/* Celdas vacías (relleno antes del día 1): fondo oscuro acorde al tema. */
+html.dark .kal-empty {
+  background-color: #1f1b16 !important;
+}
+
+/* Bordes de las celdas de color en modo oscuro: discretos. */
+html.dark .kal-bg-rojo,
+html.dark .kal-bg-morado,
+html.dark .kal-bg-blanco,
+html.dark .kal-bg-verde,
+html.dark .kal-bg-negro,
+html.dark .kal-bg-rosa {
+  border-color: var(--color-border) !important;
 }
 
 /* Liturgical text styling */

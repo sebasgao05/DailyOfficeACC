@@ -13,14 +13,16 @@ const MONTHS_ES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-// Fondo de la celda según el color litúrgico (los 6 colores del Ordo, saturación legible)
+// Fondo de la celda según el color litúrgico. Usamos una clase propia
+// (`kal-bg-*`) cuyo color se define en globals.css y tiene variante de modo
+// oscuro (tono oscuro teñido en vez de pastel claro).
 const colorBg: Record<LiturgicalColor, string> = {
-  rojo: "bg-red-100 border-red-300",
-  morado: "bg-purple-100 border-purple-300",
-  blanco: "bg-amber-50 border-amber-200",
-  verde: "bg-green-100 border-green-300",
-  negro: "bg-neutral-300 border-neutral-500",
-  rosa: "bg-pink-100 border-pink-300",
+  rojo: "kal-bg-rojo",
+  morado: "kal-bg-morado",
+  blanco: "kal-bg-blanco",
+  verde: "kal-bg-verde",
+  negro: "kal-bg-negro",
+  rosa: "kal-bg-rosa",
 };
 
 const colorDot: Record<LiturgicalColor, string> = {
@@ -60,15 +62,16 @@ const COLOR_LABEL: Record<LiturgicalColor, string> = {
   rosa: "Rosa",
 };
 
-// Tonos de fondo (hex) para el degradado de días con dos colores (ORDO).
-// Saturados (nivel ~200) para que el degradado sea claramente visible.
-const colorBgHex: Record<LiturgicalColor, string> = {
-  rojo: "#fca5a5",
-  morado: "#d8b4fe",
-  blanco: "#fde68a",
-  verde: "#86efac",
-  negro: "#a3a3a3",
-  rosa: "#f9a8d4",
+// Para el degradado de días con dos colores (ORDO) usamos variables CSS por
+// color, definidas en globals.css con su variante clara y oscura. Así el
+// degradado también se adapta al modo oscuro.
+const colorBgVar: Record<LiturgicalColor, string> = {
+  rojo: "var(--kal-rojo)",
+  morado: "var(--kal-morado)",
+  blanco: "var(--kal-blanco)",
+  verde: "var(--kal-verde)",
+  negro: "var(--kal-negro)",
+  rosa: "var(--kal-rosa)",
 };
 
 export function KalendarView() {
@@ -80,6 +83,9 @@ export function KalendarView() {
     null
   );
   const [selected, setSelected] = useState<OrdoEntry | null>(null);
+  // Texto del campo de año: permite escribir libremente (incluso vacío o
+  // parcial) sin que la validación revierta cada tecla. Se aplica al confirmar.
+  const [yearInput, setYearInput] = useState<string | null>(null);
 
   if (!mounted) return null;
 
@@ -95,21 +101,39 @@ export function KalendarView() {
   const startOffset = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
 
+  // Al navegar a un mes, seleccionamos un día de ese mes (hoy si cae en él, o el
+  // día 1) en lugar de limpiar la selección. Así el calendario «se selecciona y
+  // cambia» sin que el panel de detalle se oculte bruscamente.
+  function selectDayOf(y: number, m: number) {
+    const now = new Date();
+    const day = now.getFullYear() === y && now.getMonth() === m ? now.getDate() : 1;
+    setSelected(getOrdoEntry(new Date(y, m, day)));
+  }
+
   function shiftMonth(delta: number) {
     const base = new Date(year, month + delta, 1);
     setCurrent({ year: base.getFullYear(), month: base.getMonth() });
-    setSelected(null);
+    selectDayOf(base.getFullYear(), base.getMonth());
   }
   function goToday() {
     const now = new Date();
     setCurrent({ year: now.getFullYear(), month: now.getMonth() });
-    setSelected(null);
+    selectDayOf(now.getFullYear(), now.getMonth());
   }
   function setYear(y: number) {
     if (!Number.isNaN(y) && y >= 1583 && y <= 4099) {
       setCurrent({ year: y, month });
-      setSelected(null);
+      selectDayOf(y, month);
     }
+  }
+  // Aplica el año tecleado (si es válido) y vuelve a sincronizar el campo con el
+  // año efectivo. Se llama al pulsar Enter o al salir del campo.
+  function commitYear() {
+    const y = parseInt(yearInput ?? "", 10);
+    if (!Number.isNaN(y) && y >= 1583 && y <= 4099) {
+      setYear(y);
+    }
+    setYearInput(null); // vuelve a mostrar el año efectivo
   }
 
   const monthEntries = getOrdoMonth(year, month);
@@ -138,13 +162,21 @@ export function KalendarView() {
           <label className="flex items-center gap-1 text-sm text-gray-500">
             Año:
             <input
-              type="number"
-              value={year}
-              min={1583}
-              max={4099}
-              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              value={yearInput ?? String(year)}
+              onChange={(e) => setYearInput(e.target.value.replace(/[^0-9]/g, ""))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  commitYear();
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              onBlur={commitYear}
               className="w-20 px-2 py-1 border border-[var(--color-border)] rounded text-sm text-center bg-white dark:bg-[#2a2520]"
-              aria-label="Buscar año"
+              aria-label="Escribir año"
             />
           </label>
           <button onClick={() => setYear(year - 1)} className="px-2 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">−</button>
@@ -178,7 +210,7 @@ export function KalendarView() {
       <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
         {cells.map((date, i) => {
           if (!date) {
-            return <div key={`empty-${i}`} className="min-h-[52px] sm:min-h-[90px] bg-gray-50/50 rounded"></div>;
+            return <div key={`empty-${i}`} className="kal-empty min-h-[52px] sm:min-h-[90px] bg-gray-50/50 rounded"></div>;
           }
           const ordo = getOrdoEntry(date);
           const isToday =
@@ -194,8 +226,8 @@ export function KalendarView() {
             <button
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
-              style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
-              className={`relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
+              style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgVar[ordo.color]} 0%, ${colorBgVar[ordo.color]} 45%, ${colorBgVar[ordo.color2]} 55%, ${colorBgVar[ordo.color2]} 100%)` } : undefined}
+              className={`kal-cell relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300 dark:border-[var(--color-border)]" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >

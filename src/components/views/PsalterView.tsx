@@ -37,7 +37,7 @@ export function PsalterView() {
   const now = mounted ? new Date() : null;
   const today = pickedDay ?? (now ? now.getDate() : 1);
   const period: "morning" | "evening" =
-    pickedPeriod ?? (now && now.getHours() >= 14 ? "evening" : "morning");
+    pickedPeriod ?? (now && now.getHours() >= 12 ? "evening" : "morning");
 
   const dayIndex = today - 1;
   const currentPsalms = psalmCycle[period][dayIndex] || [];
@@ -71,8 +71,8 @@ export function PsalterView() {
             Día del Mes
           </p>
 
-          {/* Day Grid - 5 columns x 6 rows like the reference image */}
-          <div className="grid grid-cols-5 sm:grid-cols-8 gap-2 mb-6 max-w-[450px] mx-auto">
+          {/* Day Grid - 6 columns x 5 rows */}
+          <div className="grid grid-cols-6 gap-2 mb-6 max-w-[420px] mx-auto">
             {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => (
               <button
                 key={day}

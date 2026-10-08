@@ -244,7 +244,7 @@ function DailyReadingsContent({ period, psalmsOnly }: Props) {
         <p className="text-[10px] uppercase tracking-widest text-gray-400 text-center mb-2">
           {period === "morning" ? "☀ Oración Matutina" : "☽ Oración Vespertina"}
         </p>
-        {([["Primera Lectura", current.firstLesson], ["Segunda Lectura", current.secondLesson]] as const).map(
+        {([["Primera Lección", current.firstLesson], ["Segunda Lección", current.secondLesson]] as const).map(
           ([label, ref]) => {
             const passage = getPassage(ref);
             return (
