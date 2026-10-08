@@ -50,20 +50,20 @@ export default function OracionMatutina() {
       <p className="rubric">¶ Entonces seguirá una porción de los Salmos, según el Uso de la Iglesia.</p>
       <DailyReadings period="morning" psalmsOnly />
 
-      <h2 className="section-title" id="lecturas">La Primera Lectura</h2>
+      <h2 className="section-title" id="lecturas">Primera Lección</h2>
       <p className="rubric">¶ Enseguida se leerá la Primera Lección, según la Tabla de Lecciones o el Calendario. Antes de la lección el oficiante dirá: «Comienza el capítulo … (o el versículo … del capítulo …) del libro de …»; y al terminar: «Aquí termina la Primera Lección».</p>
       <DailyLesson period="morning" which="first" />
 
       {/* Cántico después de la Primera Lectura: Te Deum / Benedictus es / Benedicite */}
       <CanticleSelector period="morning" position="first" />
 
-      {/* Segunda Lectura */}
-      <h2 className="section-title">La Segunda Lectura</h2>
+      {/* Segunda Lección */}
+      <h2 className="section-title">Segunda Lección</h2>
       <p className="rubric">¶ Enseguida se leerá la Segunda Lección del Nuevo Testamento. Antes de la lección el oficiante dirá: «Comienza el capítulo … (o el versículo … del capítulo …) del libro de …»; y al terminar: «Aquí termina la Segunda Lección».</p>
       <DailyLesson period="morning" which="second" />
 
-      {/* Cántico después de la Segunda Lectura: Benedictus / Jubilate Deo */}
-      <CanticleSelector period="morning" position="second" />
+      {/* Cántico después de la Segunda Lección: Benedictus / Jubilate Deo (por defecto Jubilate Deo) */}
+      <CanticleSelector period="morning" position="second" defaultId="jubilate" />
 
       {/* Credo */}
       <CreedSelector />

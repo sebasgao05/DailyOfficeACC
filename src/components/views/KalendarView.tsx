@@ -80,6 +80,9 @@ export function KalendarView() {
     null
   );
   const [selected, setSelected] = useState<OrdoEntry | null>(null);
+  // Texto del campo de año: permite escribir libremente (incluso vacío o
+  // parcial) sin que la validación revierta cada tecla. Se aplica al confirmar.
+  const [yearInput, setYearInput] = useState<string | null>(null);
 
   if (!mounted) return null;
 
@@ -95,21 +98,39 @@ export function KalendarView() {
   const startOffset = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
 
+  // Al navegar a un mes, seleccionamos un día de ese mes (hoy si cae en él, o el
+  // día 1) en lugar de limpiar la selección. Así el calendario «se selecciona y
+  // cambia» sin que el panel de detalle se oculte bruscamente.
+  function selectDayOf(y: number, m: number) {
+    const now = new Date();
+    const day = now.getFullYear() === y && now.getMonth() === m ? now.getDate() : 1;
+    setSelected(getOrdoEntry(new Date(y, m, day)));
+  }
+
   function shiftMonth(delta: number) {
     const base = new Date(year, month + delta, 1);
     setCurrent({ year: base.getFullYear(), month: base.getMonth() });
-    setSelected(null);
+    selectDayOf(base.getFullYear(), base.getMonth());
   }
   function goToday() {
     const now = new Date();
     setCurrent({ year: now.getFullYear(), month: now.getMonth() });
-    setSelected(null);
+    selectDayOf(now.getFullYear(), now.getMonth());
   }
   function setYear(y: number) {
     if (!Number.isNaN(y) && y >= 1583 && y <= 4099) {
       setCurrent({ year: y, month });
-      setSelected(null);
+      selectDayOf(y, month);
     }
+  }
+  // Aplica el año tecleado (si es válido) y vuelve a sincronizar el campo con el
+  // año efectivo. Se llama al pulsar Enter o al salir del campo.
+  function commitYear() {
+    const y = parseInt(yearInput ?? "", 10);
+    if (!Number.isNaN(y) && y >= 1583 && y <= 4099) {
+      setYear(y);
+    }
+    setYearInput(null); // vuelve a mostrar el año efectivo
   }
 
   const monthEntries = getOrdoMonth(year, month);
@@ -138,13 +159,21 @@ export function KalendarView() {
           <label className="flex items-center gap-1 text-sm text-gray-500">
             Año:
             <input
-              type="number"
-              value={year}
-              min={1583}
-              max={4099}
-              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              value={yearInput ?? String(year)}
+              onChange={(e) => setYearInput(e.target.value.replace(/[^0-9]/g, ""))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  commitYear();
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              onBlur={commitYear}
               className="w-20 px-2 py-1 border border-[var(--color-border)] rounded text-sm text-center bg-white dark:bg-[#2a2520]"
-              aria-label="Buscar año"
+              aria-label="Escribir año"
             />
           </label>
           <button onClick={() => setYear(year - 1)} className="px-2 py-1 border border-[var(--color-border)] rounded text-sm hover:bg-[var(--color-bg-alt)]">−</button>
@@ -178,7 +207,7 @@ export function KalendarView() {
       <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
         {cells.map((date, i) => {
           if (!date) {
-            return <div key={`empty-${i}`} className="min-h-[52px] sm:min-h-[90px] bg-gray-50/50 rounded"></div>;
+            return <div key={`empty-${i}`} className="kal-empty min-h-[52px] sm:min-h-[90px] bg-gray-50/50 rounded"></div>;
           }
           const ordo = getOrdoEntry(date);
           const isToday =
@@ -195,7 +224,7 @@ export function KalendarView() {
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
               style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
-              className={`relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
+              className={`kal-cell relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >

@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 const sidebarSections = [
   { href: "#sentencias", label: "Sentencias" },
   { href: "#confesion", label: "Confesión" },
+  { href: "#preces", label: "Preces (antes del Venite)" },
   { href: "#invitatorio", label: "Invitatorio" },
   { href: "#salmos", label: "Salmos del Día" },
   { href: "#lecturas", label: "Lecturas" },
   { href: "#credo", label: "Credo" },
-  { href: "#preces", label: "Preces" },
+  { href: "#preces-credo", label: "Preces (tras el Credo)" },
   { href: "#colectas", label: "Colectas" },
-  { href: "#accion-gracias", label: "Acción de Gracias" },
+  { href: "#accion-de-gracias-general", label: "Acción de Gracias" },
 ];
 
 export default function OficioLayout({ children }: { children: React.ReactNode }) {

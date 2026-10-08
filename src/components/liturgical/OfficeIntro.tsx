@@ -9,7 +9,7 @@ import {
   MORNING,
   EVENING,
   getAllSentencesGrouped,
-  getActiveInvitatoryIndex,
+  getSeasonInvitatoryIndex,
   INVITATORIES,
   type Prece,
 } from "@/data/officeText";
@@ -57,9 +57,11 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
   const T = office === "morning" ? MORNING : EVENING;
   const sentenceGroups = getAllSentencesGrouped(office, churchDay.season, churchDay.name);
 
-  // Invitatorio recomendado para el día en curso (se resalta en dorado).
+  // Invitatorio del tiempo litúrgico en curso (se resalta en dorado). Siempre
+  // marca el que corresponde al tiempo actual, aun cuando la rúbrica use el
+  // Venite normal (p. ej. tiempo después de Trinidad).
   const hasPropers = getFeastForDate(date)?.hasPropers ?? false;
-  const activeInvitatory = getActiveInvitatoryIndex(churchDay.season, churchDay.name, hasPropers);
+  const activeInvitatory = getSeasonInvitatoryIndex(churchDay.season, churchDay.name, hasPropers);
 
   const PadreNuestro = (
     <>
@@ -172,8 +174,8 @@ function OfficeIntroInner({ office }: { office: "morning" | "evening" }) {
 
       {pnPos === "absolucion" && PadreNuestro}
 
-      {/* Preces de apertura */}
-      <h2 className="section-title" id="preces">Las Preces</h2>
+      {/* Preces de apertura (antes del Venite) */}
+      <h2 className="section-title" id="preces">Las Preces (antes del Venite)</h2>
       <Preces items={T.precesApertura} />
 
       {/* Invitatorio antes del Venite. Se resalta en dorado el recomendado para hoy. */}

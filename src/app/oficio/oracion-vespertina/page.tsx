@@ -41,15 +41,15 @@ export default function OracionVespertina() {
       <p className="rubric">¶ Al final de toda la selección de los Salmos del día se dice el Gloria Patri o el Gloria in excelsis.</p>
       <div className="collect"><p>{EVENING.gloriaInExcelsis}</p></div>
 
-      <h2 className="section-title" id="lecturas">La Primera Lectura</h2>
+      <h2 className="section-title" id="lecturas">Primera Lección</h2>
       <p className="rubric">¶ Entonces se leerá la Primera Lección, conforme a la Tabla de Lecciones o el Calendario. Antes de la lección el oficiante dirá: «Comienza el capítulo … (o el versículo … del capítulo …) del libro de …»; y al terminar: «Aquí termina la Primera Lección».</p>
       <DailyLesson period="evening" which="first" />
 
       {/* Cántico después de la Primera Lectura: Magnificat / Cantate Domino / Bonum est */}
       <CanticleSelector period="evening" position="first" />
 
-      {/* Segunda Lectura */}
-      <h2 className="section-title">La Segunda Lectura</h2>
+      {/* Segunda Lección */}
+      <h2 className="section-title">Segunda Lección</h2>
       <p className="rubric">¶ Después se leerá la Segunda Lección, tomada del Nuevo Testamento. Antes de la lección el oficiante dirá: «Comienza el capítulo … (o el versículo … del capítulo …) del libro de …»; y al terminar: «Aquí termina la Segunda Lección».</p>
       <DailyLesson period="evening" which="second" />
 

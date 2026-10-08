@@ -142,6 +142,48 @@ export function getActiveInvitatoryIndex(
 }
 
 /**
+ * Índice del invitatorio que CORRESPONDE AL TIEMPO litúrgico en curso, usado solo
+ * para resaltar visualmente en la lista «Las Preces» cuál se diría hoy. A diferencia
+ * de `getActiveInvitatoryIndex` (que respeta la rúbrica y devuelve `null` cuando el
+ * tiempo usa el Venite normal), esta siempre señala el invitatorio del tiempo actual
+ * —incluido el tiempo después de Trinidad, que se asocia al de la Trinidad.
+ */
+export function getSeasonInvitatoryIndex(
+  season: Season,
+  dayName: string,
+  hasPropers = false,
+): number {
+  const rubrical = getActiveInvitatoryIndex(season, dayName, hasPropers);
+  if (rubrical !== null) return rubrical;
+
+  const name = dayName.toLowerCase();
+  if (name.includes("ascensión") || name.includes("ascension")) return 4;
+  if (name.includes("purificación") || name.includes("anunciación")) return 7;
+  if (name.includes("transfiguración")) return 2;
+
+  switch (season) {
+    case "adviento":
+      return 0;
+    case "navidad":
+      return 1;
+    case "epifania":
+      return 2;
+    case "pascua":
+      return 3;
+    case "pentecostes":
+      return 5;
+    case "trinidad":
+      // Incluye el tiempo "después de Trinidad": se resalta el invitatorio de la Trinidad.
+      return 6;
+    // Cuaresma y Semana Santa: no hay invitatorio propio; se resalta el genérico de festividades.
+    case "cuaresma":
+    case "semana-santa":
+    default:
+      return 8;
+  }
+}
+
+/**
  * Resuelve las sentencias del día combinando las generales con las del tiempo
  * (o la ocasión especial: Ascensión, Acción de Gracias) según el ChurchDay.
  */
@@ -268,12 +310,12 @@ export const MORNING = {
   exhortacionBreve: "CONFESEMOS humildemente nuestros pecados a Dios todopoderoso.",
   confesionRubrica: "¶ La dirá toda la congregación, de rodillas, repitiéndola después del oficiante.",
   confesion:
-    "PADRE todopoderoso y misericordiosísimo: hemos errado y nos hemos apartado de tus caminos como ovejas perdidas. Hemos seguido demasiado los deseos e intenciones de nuestro propio corazón. Hemos quebrantado tus santas leyes. Hemos dejado de hacer lo que debíamos hacer, y hemos hecho lo que no debíamos; y no hay salud en nosotros. Pero tú, Señor, ten compasión de nosotros, pobres pecadores. Perdona, oh Dios, a los que confiesan sus culpas; restaura a los que se arrepienten, conforme a tus promesas anunciadas al género humano en Cristo Jesús, nuestro Señor. Y concédenos, oh Padre misericordiosísimo, por amor de él, vivir de aquí en adelante una vida justa, santa y sobria, para gloria de tu santo Nombre. Amén.",
+    "PADRE todopoderoso y misericordiosísimo: hemos errado y nos hemos apartado de tus caminos como ovejas perdidas. Hemos seguido demasiado los deseos e intenciones de nuestro propio corazón. Hemos quebrantado tus santas leyes. Hemos dejado de hacer lo que debíamos hacer, y hemos hecho lo que no debíamos; y no hay salud en nosotros. Pero tú, Señor, ten compasión de nosotros, pobres pecadores. Perdona, oh Dios, a los que confiesan sus culpas; restaura a los que se arrepienten, conforme a tus promesas anunciadas al género humano en Jesucristo, nuestro Señor. Y concédenos, oh Padre misericordiosísimo, por amor de él, vivir de aquí en adelante una vida justa, santa y sobria, para gloria de tu santo Nombre. Amén.",
   absolucionTitulo: "Declaración de la Absolución o Remisión de los Pecados",
   absolucionRubrica:
     "¶ La hará solo el presbítero, de pie, mientras la congregación permanece de rodillas. A su criterio puede usar, en lugar de esta, la absolución del Oficio de la Santa Comunión.",
   absolucion:
-    "DIOS todopoderoso, Padre de nuestro Señor Jesucristo, que no quiere la muerte del pecador, sino que se convierta de su maldad y viva, ha dado a sus ministros poder y mandato de declarar y anunciar a su pueblo arrepentido la absolución y el perdón de sus pecados. Él perdona y absuelve a todos los que de veras se arrepienten y creen con sinceridad en su santo Evangelio. Pidámosle, por tanto, que nos conceda verdadero arrepentimiento y su Espíritu Santo, para que lo que ahora hacemos le sea agradable, y para que el resto de nuestra vida sea puro y santo, de modo que al fin lleguemos a su gozo eterno; por Cristo Jesús, nuestro Señor. Amén.",
+    "DIOS todopoderoso, Padre de nuestro Señor Jesucristo, que no quiere la muerte del pecador, sino que se convierta de su maldad y viva, ha dado a sus ministros poder y mandato de declarar y anunciar a su pueblo arrepentido la absolución y el perdón de sus pecados. Él perdona y absuelve a todos los que de veras se arrepienten y creen con sinceridad en su santo Evangelio. Pidámosle, por tanto, que nos conceda verdadero arrepentimiento y su Espíritu Santo, para que lo que ahora hacemos le sea agradable, y para que el resto de nuestra vida sea puro y santo, de modo que al fin lleguemos a su gozo eterno; por Jesucristo, nuestro Señor. Amén.",
   padreNuestroRubrica:
     "¶ El oficiante se arrodillará y dirá el Padre Nuestro, y el pueblo, también de rodillas, lo repetirá con él; y así en todo otro lugar del Oficio Divino donde se use.",
   padreNuestro:
@@ -322,11 +364,11 @@ export const EVENING = {
   exhortacionBreve: "CONFESEMOS humildemente nuestros pecados a Dios todopoderoso.",
   confesionRubrica: "¶ La dirá toda la congregación, de rodillas, repitiéndola después del oficiante.",
   confesion:
-    "PADRE todopoderoso y misericordiosísimo: hemos errado y nos hemos apartado de tus caminos como ovejas perdidas. Hemos seguido demasiado los deseos e intenciones de nuestro propio corazón. Hemos quebrantado tus santas leyes. Hemos dejado de hacer lo que debíamos hacer, y hemos hecho lo que no debíamos; y no hay salud en nosotros. Pero tú, Señor, ten compasión de nosotros, pobres pecadores. Perdona, oh Dios, a los que confiesan sus culpas; restaura a los que se arrepienten, conforme a tus promesas anunciadas al género humano en Cristo Jesús, nuestro Señor. Y concédenos, oh Padre misericordiosísimo, por amor de él, vivir de aquí en adelante una vida justa, santa y sobria, para gloria de tu santo Nombre. Amén.",
+    "PADRE todopoderoso y misericordiosísimo: hemos errado y nos hemos apartado de tus caminos como ovejas perdidas. Hemos seguido demasiado los deseos e intenciones de nuestro propio corazón. Hemos quebrantado tus santas leyes. Hemos dejado de hacer lo que debíamos hacer, y hemos hecho lo que no debíamos; y no hay salud en nosotros. Pero tú, Señor, ten compasión de nosotros, pobres pecadores. Perdona, oh Dios, a los que confiesan sus culpas; restaura a los que se arrepienten, conforme a tus promesas anunciadas al género humano en Jesucristo, nuestro Señor. Y concédenos, oh Padre misericordiosísimo, por amor de él, vivir de aquí en adelante una vida justa, santa y sobria, para gloria de tu santo Nombre. Amén.",
   absolucionTitulo: "Declaración de la Absolución o Remisión de los Pecados",
   absolucionRubrica: "¶ La hará solo el presbítero, de pie, mientras la congregación permanece de rodillas.",
   absolucion:
-    "DIOS todopoderoso, Padre de nuestro Señor Jesucristo, que no quiere la muerte del pecador, sino que se convierta de su maldad y viva, ha dado a sus ministros poder y mandato de declarar y anunciar a su pueblo arrepentido la absolución y el perdón de sus pecados. Él perdona y absuelve a todos los que de veras se arrepienten y creen con sinceridad en su santo Evangelio. Pidámosle, por tanto, que nos conceda verdadero arrepentimiento y su Espíritu Santo, para que lo que ahora hacemos le sea agradable, y para que el resto de nuestra vida sea puro y santo, de modo que al fin lleguemos a su gozo eterno; por Cristo Jesús, nuestro Señor. Amén.",
+    "DIOS todopoderoso, Padre de nuestro Señor Jesucristo, que no quiere la muerte del pecador, sino que se convierta de su maldad y viva, ha dado a sus ministros poder y mandato de declarar y anunciar a su pueblo arrepentido la absolución y el perdón de sus pecados. Él perdona y absuelve a todos los que de veras se arrepienten y creen con sinceridad en su santo Evangelio. Pidámosle, por tanto, que nos conceda verdadero arrepentimiento y su Espíritu Santo, para que lo que ahora hacemos le sea agradable, y para que el resto de nuestra vida sea puro y santo, de modo que al fin lleguemos a su gozo eterno; por Jesucristo, nuestro Señor. Amén.",
   absolucionAlternaRubrica: "¶ O ésta:",
   absolucionAlterna:
     "EL Señor Omnipotente y Misericordioso os conceda Absolución y Remisión de todos vuestros pecados, verdadero arrepentimiento, enmienda de vida, y la gracia y el consuelo de su Espíritu Santo. Amén.",

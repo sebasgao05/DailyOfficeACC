@@ -13,9 +13,10 @@ export function OfficeFinalPrayers({ office }: { office: "morning" | "evening" }
       .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
   return (
     <>
-      {/* Colectas del oficio */}
+      {/* Colectas del oficio. La primera lleva además el id de ancla "colectas"
+          para que el enlace del índice lateral salte al inicio de esta sección. */}
       {T.colectas.map((c, i) => (
-        <div key={`col-${i}`}>
+        <div key={`col-${i}`} id={i === 0 ? "colectas" : undefined}>
           <h2 className="section-title" id={slug(c.titulo)}>{c.titulo}</h2>
           <div className="collect"><p>{c.texto}</p></div>
         </div>

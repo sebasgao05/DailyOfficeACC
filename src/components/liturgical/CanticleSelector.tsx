@@ -6,19 +6,21 @@ import { getCanticles, type Period, type Position } from "@/data/canticles";
 interface Props {
   period: Period;
   position?: Position; // first = después de la 1ª lectura, second = después de la 2ª lectura
+  defaultId?: string; // id del cántico seleccionado por defecto (si no, el primero)
 }
 
-export function CanticleSelector({ period, position = "first" }: Props) {
+export function CanticleSelector({ period, position = "first", defaultId }: Props) {
   const options = getCanticles(period, position);
-  const [selectedId, setSelectedId] = useState(options[0].id);
+  const initial = (defaultId && options.find((c) => c.id === defaultId)?.id) ?? options[0].id;
+  const [selectedId, setSelectedId] = useState(initial);
   const selected = options.find((c) => c.id === selectedId) ?? options[0];
 
   return (
     <div className="my-6">
       <p className="text-center text-xs text-gray-500 italic mb-2">
         {position === "first"
-          ? "¶ Cántico después de la Primera Lectura:"
-          : "¶ Cántico después de la Segunda Lectura:"}
+          ? "¶ Cántico después de la Primera Lección:"
+          : "¶ Cántico después de la Segunda Lección:"}
       </p>
 
       {/* Botones de selección */}
