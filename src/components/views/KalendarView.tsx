@@ -13,14 +13,16 @@ const MONTHS_ES = [
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
-// Fondo de la celda según el color litúrgico (los 6 colores del Ordo, saturación legible)
+// Fondo de la celda según el color litúrgico. Usamos una clase propia
+// (`kal-bg-*`) cuyo color se define en globals.css y tiene variante de modo
+// oscuro (tono oscuro teñido en vez de pastel claro).
 const colorBg: Record<LiturgicalColor, string> = {
-  rojo: "bg-red-100 border-red-300",
-  morado: "bg-purple-100 border-purple-300",
-  blanco: "bg-amber-50 border-amber-200",
-  verde: "bg-green-100 border-green-300",
-  negro: "bg-neutral-300 border-neutral-500",
-  rosa: "bg-pink-100 border-pink-300",
+  rojo: "kal-bg-rojo",
+  morado: "kal-bg-morado",
+  blanco: "kal-bg-blanco",
+  verde: "kal-bg-verde",
+  negro: "kal-bg-negro",
+  rosa: "kal-bg-rosa",
 };
 
 const colorDot: Record<LiturgicalColor, string> = {
@@ -60,15 +62,16 @@ const COLOR_LABEL: Record<LiturgicalColor, string> = {
   rosa: "Rosa",
 };
 
-// Tonos de fondo (hex) para el degradado de días con dos colores (ORDO).
-// Saturados (nivel ~200) para que el degradado sea claramente visible.
-const colorBgHex: Record<LiturgicalColor, string> = {
-  rojo: "#fca5a5",
-  morado: "#d8b4fe",
-  blanco: "#fde68a",
-  verde: "#86efac",
-  negro: "#a3a3a3",
-  rosa: "#f9a8d4",
+// Para el degradado de días con dos colores (ORDO) usamos variables CSS por
+// color, definidas en globals.css con su variante clara y oscura. Así el
+// degradado también se adapta al modo oscuro.
+const colorBgVar: Record<LiturgicalColor, string> = {
+  rojo: "var(--kal-rojo)",
+  morado: "var(--kal-morado)",
+  blanco: "var(--kal-blanco)",
+  verde: "var(--kal-verde)",
+  negro: "var(--kal-negro)",
+  rosa: "var(--kal-rosa)",
 };
 
 export function KalendarView() {
@@ -223,8 +226,8 @@ export function KalendarView() {
             <button
               key={date.toISOString()}
               onClick={() => setSelected(ordo)}
-              style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgHex[ordo.color]} 0%, ${colorBgHex[ordo.color]} 45%, ${colorBgHex[ordo.color2]} 55%, ${colorBgHex[ordo.color2]} 100%)` } : undefined}
-              className={`kal-cell relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300" : colorBg[ordo.color]} ${
+              style={ordo.color2 ? { backgroundImage: `linear-gradient(135deg, ${colorBgVar[ordo.color]} 0%, ${colorBgVar[ordo.color]} 45%, ${colorBgVar[ordo.color2]} 55%, ${colorBgVar[ordo.color2]} 100%)` } : undefined}
+              className={`kal-cell relative text-left min-h-[52px] sm:min-h-[90px] p-1 sm:p-1.5 rounded border transition-all hover:shadow-md ${ordo.color2 ? "border-gray-300 dark:border-[var(--color-border)]" : colorBg[ordo.color]} ${
                 isToday ? "ring-2 ring-[var(--color-gold)] ring-offset-1" : ""
               } ${selected?.date.toDateString() === date.toDateString() ? "ring-2 ring-[var(--color-primary)]" : ""}`}
             >
